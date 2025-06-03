@@ -3,12 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VonMesser Collection</title>
+    <title>VonMesser Collection - Art Leads Culture</title>
+    
+    <!-- Meta tags for SEO and social sharing -->
+    <meta name="description" content="A carefully curated assembly of contemporary and classical works exploring the intersection of traditional artistry and modern expression.">
+    <meta name="keywords" content="art collection, contemporary art, classical art, curated collection, VonMesser, art gallery">
+    <meta name="author" content="VonMesser Collection">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vonmessmer-collection-8k8d.vercel.app/">
+    <meta property="og:title" content="VonMesser Collection - Art Leads Culture">
+    <meta property="og:description" content="A carefully curated assembly of contemporary and classical works exploring the intersection of traditional artistry and modern expression.">
+    <meta property="og:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHZpZXdCb3g9IjAgMCAxMjAwIDYzMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIGZpbGw9IiNmZmZmZmYiLz4KICA8IS0tIExvZ28gLS0+CiAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNTUsIDUwKSI+CiAgICA8c3ZnIHdpZHRoPSIxNzAiIGhlaWdodD0iNzYiIHZpZXdCb3g9IjAgMCA4NSAzMiI+CiAgICAgIDxnIGZpbGw9IiMzMzMiPgogICAgICAgIDxwb2x5Z29uIHBvaW50cz0iMjQsMyAyNywzIDMyLDE3IDM1LDMgMzgsMyAzMS41LDE5IDI4LjUsMTkiLz4KICAgICAgICA8cG9seWdvbiBwb2ludHM9IjQwLDMgNDMsMyA0NiwxNCA0OSwzIDUyLDMgNTIsMTkgNDkuNSwxOSA0OS41LDcgNDcuNSwxNiA0NC41LDE2IDQyLjUsNyA0Mi41LDE5IDQwLDE5Ii8+CiAgICAgIDwvZz4KICAgICAgPHRleHQgeD0iNDIuNSIgeT0iMjkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMzMzMiIHN0eWxlPSJmb250LWZhbWlseTogLWFwcGxlLXN5c3RlbSwgQmxpbmtNYWNTeXN0ZW1Gb250LCBzYW5zLXNlcmlmOyBmb250LXNpemU6IDZweDsgZm9udC13ZWlnaHQ6IDQwMDsgbGV0dGVyLXNwYWNpbmc6IDEuOHB4OyI+Vk9OTUVEUERSR1I8L3RleHQ+CiAgICA8L3N2Zz4KICA8L2c+CiAgPCEtLSBUYWdsaW5lIC0tPgogIDx0ZXh0IHg9IjYwMCIgeT0iMzgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiBzdHlsZT0iZm9udC1mYW1pbHk6IEltcGFjdCwgJ0FyaWFsIEJsYWNrJywgSGVsdmV0aWNhLCBzYW5zLXNlcmlmOyBmb250LXNpemU6IDEwMHB4OyBmb250LXdlaWdodDogOTAwOyB0ZXh0LXRyYW5zZm9ybTogdXBwZXJjYXNlOyBsZXR0ZXItc3BhY2luZzogNHB4OyI+QVJUIExFQURTIENVTFRVUkU8L3RleHQ+CiAgPCEtLSBEZWNvcmF0aXZlIGxpbmVzIC0tPgogIDxsaW5lIHgxPSIxMDAiIHkxPSIzODAiIHgyPSIyNDAiIHkyPSIzODAiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPGxpbmUgeDE9Ijk2MCIgeTE9IjM4MCIgeDI9IjExMDAiIHkyPSIzODAiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSI0Ii8+Cjwvc3ZnPgo=">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://vonmessmer-collection-8k8d.vercel.app/">
+    <meta property="twitter:title" content="VonMesser Collection - Art Leads Culture">
+    <meta property="twitter:description" content="A carefully curated assembly of contemporary and classical works exploring the intersection of traditional artistry and modern expression.">
+    <meta property="twitter:image" content="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIHZpZXdCb3g9IjAgMCAxMjAwIDYzMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIGZpbGw9IiNmZmZmZmYiLz4KICA8IS0tIExvZ28gLS0+CiAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNTUsIDUwKSI+CiAgICA8c3ZnIHdpZHRoPSIxNzAiIGhlaWdodD0iNzYiIHZpZXdCb3g9IjAgMCA4NSAzMiI+CiAgICAgIDxnIGZpbGw9IiMzMzMiPgogICAgICAgIDxwb2x5Z29uIHBvaW50cz0iMjQsMyAyNywzIDMyLDE3IDM1LDMgMzgsMyAzMS41LDE5IDI4LjUsMTkiLz4KICAgICAgICA8cG9seWdvbiBwb2ludHM9IjQwLDMgNDMsMyA0NiwxNCA0OSwzIDUyLDMgNTIsMTkgNDkuNSwxOSA0OS41LDcgNDcuNSwxNiA0NC41LDE2IDQyLjUsNyA0Mi41LDE5IDQwLDE5Ii8+CiAgICAgIDwvZz4KICAgICAgPHRleHQgeD0iNDIuNSIgeT0iMjkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMzMzMiIHN0eWxlPSJmb250LWZhbWlseTogLWFwcGxlLXN5c3RlbSwgQmxpbmtNYWNTeXN0ZW1Gb250LCBzYW5zLXNlcmlmOyBmb250LXNpemU6IDZweDsgZm9udC13ZWlnaHQ6IDQwMDsgbGV0dGVyLXNwYWNpbmc6IDEuOHB4OyI+Vk9OTUVEUERSR1I8L3RleHQ+CiAgICA8L3N2Zz4KICA8L2c+CiAgPCEtLSBUYWdsaW5lIC0tPgogIDx0ZXh0IHg9IjYwMCIgeT0iMzgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiBzdHlsZT0iZm9udC1mYW1pbHk6IEltcGFjdCwgJ0FyaWFsIEJsYWNrJywgSGVsdmV0aWNhLCBzYW5zLXNlcmlmOyBmb250LXNpemU6IDEwMHB4OyBmb250LXdlaWdodDogOTAwOyB0ZXh0LXRyYW5zZm9ybTogdXBwZXJjYXNlOyBsZXR0ZXItc3BhY2luZzogNHB4OyI+QVJUIExFQURTIENVTFRVUkU8L3RleHQ+CiAgPCEtLSBEZWNvcmF0aXZlIGxpbmVzIC0tPgogIDxsaW5lIHgxPSIxMDAiIHkxPSIzODAiIHgyPSIyNDAiIHkyPSIzODAiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSI0Ii8+CiAgPGxpbmUgeDE9Ijk2MCIgeTE9IjM4MCIgeDI9IjExMDAiIHkyPSIzODAiIHN0cm9rZT0iIzMzMyIgc3Ryb2tlLXdpZHRoPSI0Ii8+Cjwvc3ZnPgo=">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNmZmZmZmYiLz4KICA8ZyBmaWxsPSIjMzMzIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iOCwyIDEwLDIgMTMsOSAxNiwyIDE4LDIgMTQsMTIgMTEsMTIiLz4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTksMiAyMSwyIDIzLDcgMjUsMiAyNywyIDI3LDEyIDI1LDEyIDI1LDUgMjMsOSAyMSw5IDIwLDUgMjAsMTIgMTksMTIiLz4KICA8L2c+CiAgPHRleHQgeD0iMTYiIHk9IjI3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiBzdHlsZT0iZm9udC1mYW1pbHk6IHNhbnMtc2VyaWY7IGZvbnQtc2l6ZTogNXB4OyBmb250LXdlaWdodDogNDAwOyBsZXR0ZXItc3BhY2luZzogMC41cHg7Ij5WTTwvdGV4dD4KPC9zdmc+Cg==">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNmZmZmZmYiLz4KICA8ZyBmaWxsPSIjMzMzIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iOCwyIDEwLDIgMTMsOSAxNiwyIDE4LDIgMTQsMTIgMTEsMTIiLz4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTksMiAyMSwyIDIzLDcgMjUsMiAyNywyIDI3LDEyIDI1LDEyIDI1LDUgMjMsOSAyMSw5IDIwLDUgMjAsMTIgMTksMTIiLz4KICA8L2c+CiAgPHRleHQgeD0iMTYiIHk9IjI3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiBzdHlsZT0iZm9udC1mYW1pbHk6IHNhbnMtc2VyaWY7IGZvbnQtc2l6ZTogNXB4OyBmb250LXdlaWdodDogNDAwOyBsZXR0ZXItc3BhY2luZzogMC41cHg7Ij5WTTwvdGV4dD4KPC9zdmc+Cg==">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIGZpbGw9IiNmZmZmZmYiLz4KICA8ZyBmaWxsPSIjMzMzIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iNDUsMTAgNTUsMTAgNzAsNTAgODUsMTAgOTUsMTAgNzgsNzAgNjMsNzAiLz4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTAwLDEwIDExMCwxMCAxMjAsMzUgMTMwLDEwIDE0MCwxMCAxNDAsNzAgMTMwLDcwIDEzMCwyNSAxMjAsNDUgMTEwLDQ1IDEwNSwyNSAxMDUsNzAgMTAwLDcwIi8+CiAgPC9nPgogIDx0ZXh0IHg9IjkwIiB5PSIxNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMzMzMiIHN0eWxlPSJmb250LWZhbWlseTogc2Fucy1zZXJpZjsgZm9udC1zaXplOiAyMHB4OyBmb250LXdlaWdodDogNDAwOyBsZXR0ZXItc3BhY2luZzogMnB4OyI+Vk08L3RleHQ+Cjwvc3ZnPgo=">
     <meta name="theme-color" content="#333333">
     
     <!-- Supabase -->

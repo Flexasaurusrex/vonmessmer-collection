@@ -851,10 +851,19 @@
         let currentImageIndex = 0;
         let aboutText = '';
 
-        // Load artworks from localStorage in production
+        // FIXED: Load artworks properly on page load
         document.addEventListener('DOMContentLoaded', function() {
-            loadAbout();
+            console.log('Page loaded, initializing...');
+            
+            // Load existing data first
             loadArtworks();
+            loadAbout();
+            
+            // Debug: Check what we loaded
+            console.log('Loaded artworks:', artworks.length);
+            console.log('Artworks data:', artworks);
+            
+            // Render the gallery
             renderGallery();
         });
 
@@ -875,12 +884,12 @@
         function loadAbout() {
             try {
                 const stored = localStorage.getItem('vonmesser_about');
-                if (stored) {
+                if (stored && stored !== 'undefined' && stored !== 'null') {
                     aboutText = stored;
                     document.getElementById('aboutContent').innerHTML = aboutText.split('\n').map(p => `<p>${p}</p>`).join('');
                 }
             } catch (error) {
-                // localStorage not available
+                console.error('Error loading about:', error);
             }
         }
 
@@ -888,8 +897,9 @@
             aboutText = document.getElementById('aboutText').value;
             try {
                 localStorage.setItem('vonmesser_about', aboutText);
+                console.log('About saved successfully');
             } catch (error) {
-                console.log('About saved in memory');
+                console.error('Error saving about:', error);
             }
             
             // Update the display
@@ -902,29 +912,47 @@
             document.getElementById('aboutText').focus();
         }
 
-        // Artwork management
+        // FIXED: Artwork management with better error handling
         function loadArtworks() {
             try {
                 const stored = localStorage.getItem('vonmesser_artworks');
-                if (stored) {
-                    artworks = JSON.parse(stored);
+                console.log('Raw localStorage data:', stored);
+                
+                if (stored && stored !== 'undefined' && stored !== 'null') {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed)) {
+                        artworks = parsed;
+                        console.log('Successfully loaded', artworks.length, 'artworks');
+                    } else {
+                        console.warn('Stored data is not an array:', parsed);
+                        artworks = [];
+                    }
+                } else {
+                    console.log('No stored artworks found');
+                    artworks = [];
                 }
             } catch (error) {
-                console.log('Using in-memory storage');
+                console.error('Error loading artworks:', error);
+                artworks = [];
             }
         }
 
         function saveArtworks() {
             try {
-                localStorage.setItem('vonmesser_artworks', JSON.stringify(artworks));
+                const dataToSave = JSON.stringify(artworks);
+                localStorage.setItem('vonmesser_artworks', dataToSave);
+                console.log('Successfully saved', artworks.length, 'artworks');
+                console.log('Saved data:', dataToSave);
             } catch (error) {
-                console.log('Data saved in memory');
+                console.error('Error saving artworks:', error);
             }
         }
 
         function addArtwork(artworkData) {
             const id = Date.now().toString();
-            artworks.push({ id, ...artworkData });
+            const newArtwork = { id, ...artworkData };
+            artworks.push(newArtwork);
+            console.log('Added artwork:', newArtwork);
             saveArtworks();
             renderGallery();
         }
@@ -933,6 +961,7 @@
             const index = artworks.findIndex(a => a.id === id);
             if (index !== -1) {
                 artworks[index] = { id, ...artworkData };
+                console.log('Updated artwork:', artworks[index]);
                 saveArtworks();
                 renderGallery();
             }
@@ -941,6 +970,7 @@
         function deleteArtwork(id) {
             if (confirm('Are you sure you want to delete this artwork?')) {
                 artworks = artworks.filter(a => a.id !== id);
+                console.log('Deleted artwork, remaining:', artworks.length);
                 saveArtworks();
                 renderGallery();
             }
@@ -949,6 +979,7 @@
         // Form handling with multiple images
         document.getElementById('artworkForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            console.log('Form submitted');
             
             const formData = {
                 title: document.getElementById('artworkTitle').value,
@@ -960,6 +991,7 @@
             };
 
             const imageFiles = document.getElementById('imageUpload').files;
+            console.log('Number of image files:', imageFiles.length);
             
             if (imageFiles.length > 0) {
                 let loadedImages = 0;
@@ -970,6 +1002,7 @@
                     reader.onload = function(e) {
                         formData.images.push(e.target.result);
                         loadedImages++;
+                        console.log('Loaded image', loadedImages, 'of', totalImages);
                         
                         if (loadedImages === totalImages) {
                             const editingId = document.getElementById('editingId').value;
@@ -1030,8 +1063,9 @@
         // Gallery rendering
         function renderGallery() {
             const grid = document.getElementById('galleryGrid');
+            console.log('Rendering gallery with', artworks.length, 'artworks');
             
-            if (artworks.length === 0) {
+            if (!artworks || artworks.length === 0) {
                 grid.innerHTML = `
                     <div class="empty-gallery">
                         <h3>No Artworks Yet</h3>
@@ -1063,6 +1097,8 @@
                     </div>
                 </div>
             `).join('');
+            
+            console.log('Gallery rendered successfully');
         }
 
         // Modal functions with multiple image support

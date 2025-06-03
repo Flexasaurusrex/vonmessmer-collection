@@ -74,7 +74,7 @@
             text-decoration: none;
             color: #999;
             font-weight: 300;
-            font-size: 13px;
+            font-size: 16px;
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: color 0.3s ease;
@@ -82,6 +82,59 @@
         
         .nav-links a:hover {
             color: #333;
+        }
+        
+        /* Hero Tagline Section */
+        .hero-tagline {
+            margin-top: 120px;
+            padding: 40px 0 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .tagline {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            line-height: 0.9;
+            font-family: Impact, 'Arial Black', 'Helvetica Neue', Helvetica, sans-serif;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tagline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -60px;
+            width: 40px;
+            height: 2px;
+            background: #333;
+            transform: translateY(-50%);
+        }
+        
+        .tagline::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -60px;
+            width: 40px;
+            height: 2px;
+            background: #333;
+            transform: translateY(-50%);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-tagline {
+                padding: 30px 0 20px;
+            }
+            
+            .tagline::before,
+            .tagline::after {
+                display: none;
+            }
         }
         
         /* Admin Trigger Diamond */
@@ -277,7 +330,6 @@
         
         /* Main Content */
         main {
-            margin-top: 120px;
             padding: 60px 0 120px;
         }
         
@@ -765,16 +817,11 @@
             }
             
             .nav-links a {
-                font-size: 11px;
+                font-size: 13px;
             }
             
             nav {
                 padding: 25px 0;
-            }
-            
-            main {
-                margin-top: 100px;
-                padding: 40px 0 80px;
             }
             
             .admin-panel {
@@ -842,7 +889,7 @@
     <header>
         <nav class="container">
             <a href="#" class="logo">
-                <svg width="85" height="32" viewBox="0 0 85 32" xmlns="http://www.w3.org/2000/svg">
+                <svg width="102" height="38" viewBox="0 0 85 32" xmlns="http://www.w3.org/2000/svg">
                     <!-- VM monogram -->
                     <g fill="#333" style="font-weight: 400;">
                         <!-- V -->
@@ -871,6 +918,13 @@
             </ul>
         </nav>
     </header>
+
+    <!-- Hero Tagline Section -->
+    <section class="hero-tagline">
+        <div class="container">
+            <h1 class="tagline">Art Leads Culture</h1>
+        </div>
+    </section>
 
     <!-- Admin Trigger Diamond -->
     <div class="admin-trigger" onclick="toggleAdmin()">

@@ -207,6 +207,22 @@
             right: 0;
         }
         
+        /* NEW: Minimized Admin Panel State */
+        .admin-panel.minimized {
+            right: -350px; /* Only show a small portion */
+            width: 400px;
+        }
+        
+        .admin-panel.minimized .admin-content {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .admin-panel.minimized .admin-header {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
         .admin-header {
             display: flex;
             justify-content: space-between;
@@ -223,12 +239,65 @@
             letter-spacing: 1px;
         }
         
+        /* NEW: Admin Header Controls */
+        .admin-header-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .minimize-admin,
         .close-admin {
             background: none;
             border: none;
-            font-size: 20px;
+            font-size: 16px;
             cursor: pointer;
             color: #999;
+            padding: 5px;
+            transition: color 0.3s ease;
+        }
+        
+        .minimize-admin:hover,
+        .close-admin:hover {
+            color: #333;
+        }
+        
+        .close-admin {
+            font-size: 20px;
+        }
+        
+        /* NEW: Minimized Admin Indicator */
+        .minimized-admin-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(51, 51, 51, 0.9);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 1500;
+            opacity: 0;
+            transform: translateX(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .minimized-admin-indicator.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .minimized-admin-indicator:hover {
+            background: rgba(51, 51, 51, 1);
+            transform: scale(1.05);
+        }
+        
+        .admin-content {
+            transition: opacity 0.3s ease;
         }
         
         .admin-form {
@@ -1141,6 +1210,10 @@
                 right: -100%;
             }
             
+            .admin-panel.minimized {
+                right: -90%;
+            }
+            
             .modal {
                 padding: 10px;
             }
@@ -1277,11 +1350,19 @@
         </svg>
     </div>
 
+    <!-- NEW: Minimized Admin Indicator -->
+    <div class="minimized-admin-indicator" id="minimizedIndicator" onclick="expandAdmin()">
+        Admin Mode Active
+    </div>
+
     <!-- Admin Panel -->
     <div class="admin-panel" id="adminPanel">
         <div class="admin-header">
             <h3 class="admin-title">Admin Panel</h3>
-            <button class="close-admin" onclick="toggleAdmin()">×</button>
+            <div class="admin-header-controls">
+                <button class="minimize-admin" id="minimizeBtn" onclick="minimizeAdmin()" title="Minimize Panel">−</button>
+                <button class="close-admin" onclick="toggleAdmin()">×</button>
+            </div>
         </div>
         
         <!-- Login Form (shows when not authenticated) -->
@@ -1299,7 +1380,7 @@
         </div>
 
         <!-- Admin Content (shows when authenticated) -->
-        <div id="adminContent" style="display: none;">
+        <div class="admin-content" id="adminContent" style="display: none;">
             <div class="logout-section">
                 <span class="user-email" id="userEmail"></span>
                 <button class="btn logout-btn" onclick="logout()">Logout</button>
@@ -1500,6 +1581,7 @@
         let draggedElement = null;
         let draggedArtworkId = null;
         let hasUnsavedChanges = false;
+        let isAdminPanelMinimized = false; // NEW: Track minimized state
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -1583,6 +1665,40 @@
                     imageObserver.observe(img);
                 }
             });
+        }
+
+        // NEW: Admin Panel Minimize/Expand Functions
+        function minimizeAdmin() {
+            const panel = document.getElementById('adminPanel');
+            const indicator = document.getElementById('minimizedIndicator');
+            const minimizeBtn = document.getElementById('minimizeBtn');
+            
+            panel.classList.add('minimized');
+            indicator.classList.add('show');
+            isAdminPanelMinimized = true;
+            
+            // Update minimize button
+            minimizeBtn.innerHTML = '+';
+            minimizeBtn.title = 'Expand Panel';
+            minimizeBtn.onclick = expandAdmin;
+            
+            // Keep admin mode and drag & drop active
+            // No need to disable anything - admin functionality remains
+        }
+
+        function expandAdmin() {
+            const panel = document.getElementById('adminPanel');
+            const indicator = document.getElementById('minimizedIndicator');
+            const minimizeBtn = document.getElementById('minimizeBtn');
+            
+            panel.classList.remove('minimized');
+            indicator.classList.remove('show');
+            isAdminPanelMinimized = false;
+            
+            // Update minimize button
+            minimizeBtn.innerHTML = '−';
+            minimizeBtn.title = 'Minimize Panel';
+            minimizeBtn.onclick = minimizeAdmin;
         }
 
         // Drag & Drop Curation Functions
@@ -1844,9 +1960,11 @@
         function cleanupDragAndDrop() {
             const grid = document.getElementById('galleryGrid');
             const controls = document.getElementById('curationControls');
+            const indicator = document.getElementById('minimizedIndicator');
             
             grid.classList.remove('admin-mode');
             controls.classList.remove('show');
+            indicator.classList.remove('show'); // NEW: Hide indicator when not in admin mode
             
             // Remove draggable attributes and event listeners
             document.querySelectorAll('.artwork-card').forEach(card => {
@@ -1855,6 +1973,7 @@
             });
             
             hasUnsavedChanges = false;
+            isAdminPanelMinimized = false; // NEW: Reset minimized state
         }
 
         // Search & Filter Functions with performance optimizations
@@ -2061,6 +2180,7 @@
 
                 isAuthenticated = false;
                 isAdminMode = false;
+                isAdminPanelMinimized = false; // NEW: Reset minimized state
                 cleanupDragAndDrop(); // Clean up drag and drop
                 showLoginForm();
                 toggleAdmin(); // Close admin panel
@@ -2072,9 +2192,17 @@
             }
         }
 
-        // Admin functions
+        // UPDATED: Admin functions
         function toggleAdmin() {
             const panel = document.getElementById('adminPanel');
+            const indicator = document.getElementById('minimizedIndicator');
+            
+            // If panel is currently minimized, expand it first
+            if (isAdminPanelMinimized) {
+                expandAdmin();
+                return;
+            }
+            
             panel.classList.toggle('open');
             isAdminMode = panel.classList.contains('open') && isAuthenticated;
             
@@ -2085,6 +2213,8 @@
                 setTimeout(() => initializeDragAndDrop(), 100);
             } else {
                 document.getElementById('editAboutBtn').style.display = 'none';
+                indicator.classList.remove('show'); // Hide indicator when closing
+                isAdminPanelMinimized = false; // Reset minimized state
                 // Disable drag and drop curation
                 cleanupDragAndDrop();
             }
@@ -2579,10 +2709,13 @@
         document.addEventListener('click', function(e) {
             const adminPanel = document.getElementById('adminPanel');
             const adminTrigger = document.querySelector('.admin-trigger');
+            const minimizedIndicator = document.getElementById('minimizedIndicator');
             
             if (adminPanel.classList.contains('open') && 
+                !adminPanel.classList.contains('minimized') &&
                 !adminPanel.contains(e.target) && 
-                !adminTrigger.contains(e.target)) {
+                !adminTrigger.contains(e.target) &&
+                !minimizedIndicator.contains(e.target)) {
                 toggleAdmin();
             }
         });

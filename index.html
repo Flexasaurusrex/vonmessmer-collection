@@ -644,8 +644,7 @@
             transition: opacity 0.3s ease;
         }
         
-        .artwork-image:has(img[data-lazy])::before,
-        .artwork-image:has(img:not(.loaded))::before {
+        .artwork-image:has(img[data-lazy]:not(.loaded))::before {
             opacity: 1;
         }
         
@@ -2571,7 +2570,7 @@
                 <div class="artwork-card" onclick="openModal('${artwork.id}')">
                     <div class="artwork-image ${artwork.orientation}">
                         ${artwork.images && artwork.images.length > 0 ? 
-                            `<img ${index < 6 ? `src="${artwork.images[0]}"` : `data-lazy="${artwork.images[0]}"`} alt="${artwork.title}" ${index >= 6 ? 'loading="lazy"' : ''}>` 
+                            `<img ${index < 6 ? `src="${artwork.images[0]}" class="loaded"` : `data-lazy="${artwork.images[0]}"`} alt="${artwork.title}" ${index >= 6 ? 'loading="lazy"' : ''}>` 
                             : ''
                         }
                         ${artwork.images && artwork.images.length > 1 ? `<div style="position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.8); padding: 4px 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px;">${artwork.images.length} Images</div>` : ''}

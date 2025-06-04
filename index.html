@@ -10,14 +10,16 @@
     <meta name="keywords" content="art collection, contemporary art, classical art, curated collection, VonMesser, art gallery">
     <meta name="author" content="VonMesser Collection">
     
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph / Facebook / Instagram -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://vonmesser.xyz/">
     <meta property="og:title" content="VonMesser Collection - Art Leads Culture">
     <meta property="og:description" content="A carefully curated assembly of contemporary and classical works exploring the intersection of traditional artistry and modern expression.">
-    <meta property="og:image" content="https://vonmesser.xyz/social-preview.png">
+    <meta property="og:image" content="https://vonmesser.xyz/social-preview-square.png">
+    <meta property="og:image:width" content="1080">
+    <meta property="og:image:height" content="1080">
     
-    <!-- Twitter -->
+    <!-- Twitter (keeps your perfect rectangular image) -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://vonmesser.xyz/">
     <meta property="twitter:title" content="VonMesser Collection - Art Leads Culture">
@@ -491,7 +493,14 @@
             color: #333;
         }
         
-        /* Animation classes */
+        /* Performance Optimizations */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Optimize animations for performance */
         .artwork-card {
             break-inside: avoid;
             margin-bottom: 40px;
@@ -501,7 +510,8 @@
             width: 100%;
             opacity: 0;
             transform: translateY(30px);
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            will-change: transform, opacity;
         }
         
         .artwork-card.animate-in {
@@ -521,12 +531,74 @@
             margin-bottom: 15px;
             overflow: hidden;
             position: relative;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease;
+            will-change: transform;
         }
         
         .artwork-card:hover .artwork-image {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        /* Optimize image loading */
+        .artwork-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+            background: #f5f5f5;
+        }
+        
+        .artwork-image img[data-lazy] {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .artwork-image img.loaded {
+            opacity: 1;
+        }
+        
+        /* Loading state for images */
+        .artwork-image::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #f0f0f0;
+            border-top: 2px solid #ccc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .artwork-image:has(img[data-lazy])::before,
+        .artwork-image:has(img:not(.loaded))::before {
+            opacity: 1;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Reduce animations on mobile for better performance */
+        @media (max-width: 768px) {
+            .artwork-card {
+                transition: opacity 0.3s ease, transform 0.3s ease;
+            }
+            
+            .artwork-card:hover .artwork-image {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .artwork-image {
+                transition: none;
+            }
         }
         
         .artwork-image.landscape {
@@ -1298,7 +1370,7 @@
             <div class="contact-content">
                 <h2>Contact</h2>
                 <p>Interested in learning more about the VonMesser Collection or inquiring about specific pieces? We welcome correspondence from collectors, curators, and art enthusiasts.</p>
-                <a href="mailto:flex@capyapp.xyz" class="contact-email">flex@capyapp.xyz</a>
+                <a href="mailto:flex@vonmesser.xyz" class="contact-email">flex@vonmesser.xyz</a>
             </div>
         </div>
     </section>
@@ -1323,6 +1395,7 @@
         let currentImageIndex = 0;
         let aboutText = '';
         let animationObserver = null;
+        let imageObserver = null;
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -1330,12 +1403,37 @@
             loadArtworks();
             loadAbout();
             initializeAnimations();
+            initializeLazyLoading();
             setupSearchAndFilters();
         });
 
+        // Performance Optimizations
+        function initializeLazyLoading() {
+            // Lazy loading for images
+            imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        const src = img.getAttribute('data-lazy');
+                        if (src) {
+                            img.src = src;
+                            img.onload = () => {
+                                img.classList.add('loaded');
+                                img.removeAttribute('data-lazy');
+                            };
+                            imageObserver.unobserve(img);
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '50px 0px'
+            });
+        }
+
         // Animation Functions
         function initializeAnimations() {
-            // Create intersection observer for scroll animations
+            // Optimized intersection observer for scroll animations
             animationObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -1344,7 +1442,7 @@
                 });
             }, {
                 threshold: 0.1,
-                rootMargin: '50px 0px'
+                rootMargin: '30px 0px' // Reduced margin for better performance
             });
         }
 
@@ -1356,10 +1454,11 @@
                 });
             }
 
-            // Animate cards with staggered delay
+            // Animate cards with optimized delays
             const cards = document.querySelectorAll('.artwork-card');
             cards.forEach((card, index) => {
-                card.style.transitionDelay = `${index * 0.1}s`;
+                // Reduce delay for better perceived performance
+                card.style.transitionDelay = `${Math.min(index * 0.05, 0.3)}s`;
                 card.classList.remove('animate-in');
                 
                 // Start observing for scroll animation
@@ -1367,9 +1466,22 @@
                     animationObserver.observe(card);
                 }
             });
+            
+            // Initialize lazy loading for new images
+            initializeImageLazyLoading();
         }
 
-        // Search & Filter Functions
+        function initializeImageLazyLoading() {
+            // Set up lazy loading for all images
+            const images = document.querySelectorAll('.artwork-image img[data-lazy]');
+            images.forEach(img => {
+                if (imageObserver) {
+                    imageObserver.observe(img);
+                }
+            });
+        }
+
+        // Search & Filter Functions with performance optimizations
         function setupSearchAndFilters() {
             const searchInput = document.getElementById('searchInput');
             const artistFilter = document.getElementById('artistFilter');
@@ -1377,16 +1489,16 @@
             const mediumFilter = document.getElementById('mediumFilter');
             const clearFilters = document.getElementById('clearFilters');
 
-            // Search input with debouncing
+            // Optimized debounced search input
             let searchTimeout;
             searchInput.addEventListener('input', function() {
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(() => {
                     filterAndRenderGallery();
-                }, 300);
+                }, 150); // Reduced from 300ms for more responsive feel
             });
 
-            // Filter dropdowns
+            // Filter dropdowns with immediate response
             artistFilter.addEventListener('change', filterAndRenderGallery);
             yearFilter.addEventListener('change', filterAndRenderGallery);
             mediumFilter.addEventListener('change', filterAndRenderGallery);
@@ -1464,8 +1576,50 @@
         }
 
         function filterAndRenderGallery() {
-            filterArtworks();
-            renderGallery();
+            // Use requestAnimationFrame for smoother rendering
+            requestAnimationFrame(() => {
+                filterArtworks();
+                renderGallery();
+            });
+        }
+
+        // Optimized memory cleanup
+        function cleanupObservers() {
+            if (animationObserver) {
+                document.querySelectorAll('.artwork-card').forEach(card => {
+                    animationObserver.unobserve(card);
+                });
+            }
+            if (imageObserver) {
+                document.querySelectorAll('img[data-lazy]').forEach(img => {
+                    imageObserver.unobserve(img);
+                });
+            }
+        }
+
+        // Performance monitoring
+        let performanceMode = window.innerWidth <= 768 ? 'mobile' : 'desktop';
+        
+        window.addEventListener('resize', debounce(() => {
+            const newMode = window.innerWidth <= 768 ? 'mobile' : 'desktop';
+            if (newMode !== performanceMode) {
+                performanceMode = newMode;
+                // Re-render with optimized settings for current device
+                renderGallery();
+            }
+        }, 250));
+
+        // Utility function for debouncing
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
 
         // Authentication functions
@@ -1728,8 +1882,8 @@
             document.getElementById('aboutText').focus();
         }
 
-        // Image compression function
-        function compressImage(file, maxWidth = 800, quality = 0.8) {
+        // Optimized image compression function
+        function compressImage(file, maxWidth = 600, quality = 0.85) {
             return new Promise((resolve) => {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
@@ -1738,9 +1892,13 @@
                 img.onload = function() {
                     let { width, height } = img;
                     
-                    if (width > maxWidth) {
-                        height = (height * maxWidth) / width;
-                        width = maxWidth;
+                    // More aggressive compression for mobile
+                    const isMobile = window.innerWidth <= 768;
+                    const targetMaxWidth = isMobile ? 400 : maxWidth;
+                    
+                    if (width > targetMaxWidth) {
+                        height = (height * targetMaxWidth) / width;
+                        width = targetMaxWidth;
                     }
                     
                     canvas.width = width;
@@ -1863,7 +2021,7 @@
             }
         }
 
-        // Gallery rendering
+        // Gallery rendering with lazy loading
         function renderGallery() {
             const grid = document.getElementById('galleryGrid');
             
@@ -1887,10 +2045,13 @@
                 return;
             }
 
-            grid.innerHTML = filteredArtworks.map(artwork => `
+            grid.innerHTML = filteredArtworks.map((artwork, index) => `
                 <div class="artwork-card" onclick="openModal('${artwork.id}')">
                     <div class="artwork-image ${artwork.orientation}">
-                        ${artwork.images && artwork.images.length > 0 ? `<img src="${artwork.images[0]}" alt="${artwork.title}">` : ''}
+                        ${artwork.images && artwork.images.length > 0 ? 
+                            `<img ${index < 6 ? `src="${artwork.images[0]}"` : `data-lazy="${artwork.images[0]}"`} alt="${artwork.title}" ${index >= 6 ? 'loading="lazy"' : ''}>` 
+                            : ''
+                        }
                         ${artwork.images && artwork.images.length > 1 ? `<div style="position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.8); padding: 4px 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px;">${artwork.images.length} Images</div>` : ''}
                         ${isAdminMode && isAuthenticated ? `
                             <div class="admin-controls">
@@ -1912,10 +2073,10 @@
                 </div>
             `).join('');
 
-            // Trigger animations after rendering
+            // Trigger animations after rendering with shorter delay for better UX
             setTimeout(() => {
                 animateArtworkCards();
-            }, 50);
+            }, 10);
         }
 
         // Modal functions
@@ -2087,7 +2248,12 @@
                     openZoom();
                 }
             }
-        });
+        }, { passive: false });
+
+        // Cleanup observers on page unload for better memory management
+        window.addEventListener('beforeunload', () => {
+            cleanupObservers();
+        }, { passive: true });
     </script>
 </body>
 </html>

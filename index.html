@@ -1024,7 +1024,101 @@
             letter-spacing: 1px;
         }
         
-        /* Mobile Responsive */
+        /* Drag & Drop Curation Styles */
+        .gallery-grid.admin-mode {
+            position: relative;
+        }
+        
+        .artwork-card.draggable {
+            cursor: move;
+            user-select: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .artwork-card.dragging {
+            transform: rotate(5deg) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            opacity: 0.8;
+        }
+        
+        .artwork-card.drag-over {
+            transform: translateX(10px);
+            transition: transform 0.2s ease;
+        }
+        
+        .drag-placeholder {
+            border: 2px dashed #333;
+            background: rgba(51, 51, 51, 0.1);
+            border-radius: 4px;
+            opacity: 0.7;
+        }
+        
+        .curation-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+            gap: 15px;
+            align-items: center;
+            z-index: 1001;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .curation-controls.show {
+            display: flex;
+        }
+        
+        .curation-btn {
+            padding: 8px 16px;
+            border: 1px solid #333;
+            background: #ffffff;
+            color: #333;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 20px;
+        }
+        
+        .curation-btn:hover {
+            background: #333;
+            color: #ffffff;
+        }
+        
+        .curation-btn.saving {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        
+        .curation-status {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Mobile drag feedback */
+        @media (max-width: 768px) {
+            .artwork-card.dragging {
+                transform: scale(1.1);
+                box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            }
+            
+            .curation-controls {
+                bottom: 10px;
+                padding: 12px 20px;
+                border-radius: 25px;
+            }
+        }
         @media (max-width: 768px) {
             .container {
                 padding: 0 20px;
@@ -1347,6 +1441,13 @@
             <div class="gallery-grid" id="galleryGrid">
                 <div class="loading">Loading collection...</div>
             </div>
+
+            <!-- Curation Controls (shown only in admin mode) -->
+            <div class="curation-controls" id="curationControls">
+                <span class="curation-status">Drag artworks to rearrange</span>
+                <button class="curation-btn" id="saveCuration">Save Arrangement</button>
+                <button class="curation-btn" id="resetCuration">Reset to Date Order</button>
+            </div>
         </div>
     </main>
 
@@ -1396,6 +1497,9 @@
         let aboutText = '';
         let animationObserver = null;
         let imageObserver = null;
+        let draggedElement = null;
+        let draggedArtworkId = null;
+        let hasUnsavedChanges = false;
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -1479,6 +1583,278 @@
                     imageObserver.observe(img);
                 }
             });
+        }
+
+        // Drag & Drop Curation Functions
+        function initializeDragAndDrop() {
+            if (!isAdminMode || !isAuthenticated) return;
+            
+            const grid = document.getElementById('galleryGrid');
+            const controls = document.getElementById('curationControls');
+            
+            grid.classList.add('admin-mode');
+            controls.classList.add('show');
+            
+            // Add drag and drop event listeners to artwork cards
+            setupArtworkDragAndDrop();
+            
+            // Setup curation control buttons
+            setupCurationControls();
+        }
+
+        function setupArtworkDragAndDrop() {
+            const cards = document.querySelectorAll('.artwork-card');
+            
+            cards.forEach(card => {
+                // Make cards draggable
+                card.draggable = true;
+                card.classList.add('draggable');
+                
+                // Desktop drag events
+                card.addEventListener('dragstart', handleDragStart, { passive: false });
+                card.addEventListener('dragover', handleDragOver, { passive: false });
+                card.addEventListener('drop', handleDrop, { passive: false });
+                card.addEventListener('dragend', handleDragEnd, { passive: false });
+                
+                // Mobile touch events
+                card.addEventListener('touchstart', handleTouchStart, { passive: false });
+                card.addEventListener('touchmove', handleTouchMove, { passive: false });
+                card.addEventListener('touchend', handleTouchEnd, { passive: false });
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedElement = e.target.closest('.artwork-card');
+            draggedArtworkId = getArtworkIdFromCard(draggedElement);
+            
+            draggedElement.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', draggedElement.outerHTML);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            
+            const card = e.target.closest('.artwork-card');
+            if (card && card !== draggedElement) {
+                card.classList.add('drag-over');
+                setTimeout(() => card.classList.remove('drag-over'), 300);
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const dropCard = e.target.closest('.artwork-card');
+            
+            if (dropCard && dropCard !== draggedElement) {
+                const grid = document.getElementById('galleryGrid');
+                const allCards = Array.from(grid.querySelectorAll('.artwork-card'));
+                const draggedIndex = allCards.indexOf(draggedElement);
+                const dropIndex = allCards.indexOf(dropCard);
+                
+                // Reorder the DOM elements
+                if (draggedIndex < dropIndex) {
+                    dropCard.parentNode.insertBefore(draggedElement, dropCard.nextSibling);
+                } else {
+                    dropCard.parentNode.insertBefore(draggedElement, dropCard);
+                }
+                
+                // Update the filtered artworks array to match new order
+                updateArtworkOrder();
+                hasUnsavedChanges = true;
+                updateCurationStatus();
+            }
+        }
+
+        function handleDragEnd(e) {
+            if (draggedElement) {
+                draggedElement.classList.remove('dragging');
+                draggedElement = null;
+                draggedArtworkId = null;
+            }
+            
+            // Clean up drag-over states
+            document.querySelectorAll('.drag-over').forEach(card => {
+                card.classList.remove('drag-over');
+            });
+        }
+
+        // Touch events for mobile
+        let touchStartY = 0;
+        let touchStartX = 0;
+        let touchElement = null;
+
+        function handleTouchStart(e) {
+            if (e.touches.length !== 1) return;
+            
+            touchElement = e.target.closest('.artwork-card');
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            
+            // Add a delay to distinguish between scroll and drag
+            setTimeout(() => {
+                if (touchElement) {
+                    draggedElement = touchElement;
+                    draggedArtworkId = getArtworkIdFromCard(draggedElement);
+                    draggedElement.classList.add('dragging');
+                }
+            }, 150);
+        }
+
+        function handleTouchMove(e) {
+            if (!draggedElement || e.touches.length !== 1) return;
+            
+            e.preventDefault();
+            const touch = e.touches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const cardBelow = elementBelow?.closest('.artwork-card');
+            
+            if (cardBelow && cardBelow !== draggedElement) {
+                cardBelow.classList.add('drag-over');
+                setTimeout(() => cardBelow.classList.remove('drag-over'), 300);
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (!draggedElement) return;
+            
+            const touch = e.changedTouches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const dropCard = elementBelow?.closest('.artwork-card');
+            
+            if (dropCard && dropCard !== draggedElement) {
+                const grid = document.getElementById('galleryGrid');
+                const allCards = Array.from(grid.querySelectorAll('.artwork-card'));
+                const draggedIndex = allCards.indexOf(draggedElement);
+                const dropIndex = allCards.indexOf(dropCard);
+                
+                if (draggedIndex < dropIndex) {
+                    dropCard.parentNode.insertBefore(draggedElement, dropCard.nextSibling);
+                } else {
+                    dropCard.parentNode.insertBefore(draggedElement, dropCard);
+                }
+                
+                updateArtworkOrder();
+                hasUnsavedChanges = true;
+                updateCurationStatus();
+            }
+            
+            handleDragEnd(e);
+            touchElement = null;
+        }
+
+        function getArtworkIdFromCard(card) {
+            const onclickAttr = card.getAttribute('onclick');
+            const match = onclickAttr.match(/openModal\('([^']+)'\)/);
+            return match ? match[1] : null;
+        }
+
+        function updateArtworkOrder() {
+            const grid = document.getElementById('galleryGrid');
+            const cards = Array.from(grid.querySelectorAll('.artwork-card'));
+            
+            // Create new order based on DOM position
+            const newOrder = cards.map((card, index) => {
+                const artworkId = getArtworkIdFromCard(card);
+                const artwork = filteredArtworks.find(a => a.id === artworkId);
+                return { ...artwork, display_order: index };
+            });
+            
+            filteredArtworks = newOrder;
+        }
+
+        function setupCurationControls() {
+            const saveBtn = document.getElementById('saveCuration');
+            const resetBtn = document.getElementById('resetCuration');
+            
+            saveBtn.addEventListener('click', saveCurationOrder);
+            resetBtn.addEventListener('click', resetCurationOrder);
+        }
+
+        async function saveCurationOrder() {
+            if (!hasUnsavedChanges) return;
+            
+            const saveBtn = document.getElementById('saveCuration');
+            const originalText = saveBtn.textContent;
+            
+            try {
+                saveBtn.textContent = 'Saving...';
+                saveBtn.classList.add('saving');
+                
+                // Update display_order for all artworks
+                for (let i = 0; i < filteredArtworks.length; i++) {
+                    const artwork = filteredArtworks[i];
+                    await supabase
+                        .from('artworks')
+                        .update({ display_order: i })
+                        .eq('id', artwork.id);
+                }
+                
+                hasUnsavedChanges = false;
+                updateCurationStatus();
+                
+                saveBtn.textContent = 'Saved!';
+                setTimeout(() => {
+                    saveBtn.textContent = originalText;
+                    saveBtn.classList.remove('saving');
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Error saving curation order:', error);
+                saveBtn.textContent = 'Error';
+                setTimeout(() => {
+                    saveBtn.textContent = originalText;
+                    saveBtn.classList.remove('saving');
+                }, 1500);
+            }
+        }
+
+        async function resetCurationOrder() {
+            if (!confirm('Reset to chronological order? This will undo your custom arrangement.')) return;
+            
+            try {
+                // Clear display_order for all artworks (will default to date order)
+                await supabase
+                    .from('artworks')
+                    .update({ display_order: null })
+                    .neq('id', '');
+                
+                // Reload artworks
+                await loadArtworks();
+                hasUnsavedChanges = false;
+                updateCurationStatus();
+                
+            } catch (error) {
+                console.error('Error resetting curation order:', error);
+            }
+        }
+
+        function updateCurationStatus() {
+            const status = document.querySelector('.curation-status');
+            if (hasUnsavedChanges) {
+                status.textContent = 'Arrangement changed - click Save';
+                status.style.color = '#ff6b35';
+            } else {
+                status.textContent = 'Drag artworks to rearrange';
+                status.style.color = '#666';
+            }
+        }
+
+        function cleanupDragAndDrop() {
+            const grid = document.getElementById('galleryGrid');
+            const controls = document.getElementById('curationControls');
+            
+            grid.classList.remove('admin-mode');
+            controls.classList.remove('show');
+            
+            // Remove draggable attributes and event listeners
+            document.querySelectorAll('.artwork-card').forEach(card => {
+                card.draggable = false;
+                card.classList.remove('draggable');
+            });
+            
+            hasUnsavedChanges = false;
         }
 
         // Search & Filter Functions with performance optimizations
@@ -1685,6 +2061,7 @@
 
                 isAuthenticated = false;
                 isAdminMode = false;
+                cleanupDragAndDrop(); // Clean up drag and drop
                 showLoginForm();
                 toggleAdmin(); // Close admin panel
                 renderGallery(); // Remove admin controls from gallery
@@ -1704,8 +2081,12 @@
             if (isAdminMode) {
                 document.getElementById('editAboutBtn').style.display = 'block';
                 document.getElementById('aboutText').value = aboutText;
+                // Enable drag and drop curation
+                setTimeout(() => initializeDragAndDrop(), 100);
             } else {
                 document.getElementById('editAboutBtn').style.display = 'none';
+                // Disable drag and drop curation
+                cleanupDragAndDrop();
             }
             
             renderGallery();
@@ -1717,6 +2098,7 @@
                 const { data, error } = await supabase
                     .from('artworks')
                     .select('*')
+                    .order('display_order', { ascending: true, nullsLast: true })
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
@@ -1742,9 +2124,19 @@
             }
 
             try {
+                // Get the highest display_order to append new artwork at the end
+                const { data: maxOrderData } = await supabase
+                    .from('artworks')
+                    .select('display_order')
+                    .order('display_order', { ascending: false, nullsLast: false })
+                    .limit(1);
+                
+                const maxOrder = maxOrderData && maxOrderData.length > 0 ? maxOrderData[0].display_order : null;
+                const newDisplayOrder = maxOrder !== null ? maxOrder + 1 : null;
+                
                 const { data, error } = await supabase
                     .from('artworks')
-                    .insert([artworkData])
+                    .insert([{ ...artworkData, display_order: newDisplayOrder }])
                     .select();
 
                 if (error) throw error;
@@ -2076,6 +2468,10 @@
             // Trigger animations after rendering with shorter delay for better UX
             setTimeout(() => {
                 animateArtworkCards();
+                // Initialize drag and drop if in admin mode
+                if (isAdminMode && isAuthenticated) {
+                    initializeDragAndDrop();
+                }
             }, 10);
         }
 

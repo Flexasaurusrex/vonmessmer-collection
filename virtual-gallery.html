@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VonMesser Virtual Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            overflow: hidden;
+        }
+
+        #galleryContainer {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            cursor: crosshair;
+        }
+
+        .gallery-ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .gallery-info {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 25px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #333;
+            max-width: 350px;
+            pointer-events: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-info h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            color: #666;
+        }
+
+        .artwork-label {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #333;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+        }
+
+        .artwork-label.visible {
+            opacity: 1;
+        }
+
+        .artwork-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .artwork-details {
+            color: #666;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            pointer-events: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .view-mode-toggle {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            color: #333;
+            pointer-events: auto;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .view-mode-toggle:hover {
+            background: rgba(51, 51, 51, 0.95);
+            color: white;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .gallery-entrance {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 11px;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            pointer-events: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .gallery-info,
+            .controls,
+            .view-mode-toggle,
+            .gallery-entrance {
+                font-size: 10px;
+                padding: 12px 15px;
+            }
+            
+            .gallery-info {
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="galleryContainer">
+        <div class="loading" id="loadingText">Loading Gallery...</div>
+        
+        <div class="gallery-ui">
+            <div class="gallery-info">
+                <h3>VonMesser Collection</h3>
+                <p>Walk through a curated selection of contemporary and classical works. Each piece is displayed at its actual size based on the collection's metadata.</p>
+            </div>
+            
+            <button class="view-mode-toggle" onclick="toggleView()">Aerial View</button>
+            
+            <div class="controls">
+                <div>WASD or Arrow Keys: Move</div>
+                <div>Drag Mouse: Look Around</div>
+                <div>Click Artwork: Focus View</div>
+            </div>
+            
+            <div class="gallery-entrance">
+                <div>Gallery Walk Mode</div>
+                <div style="margin-top: 4px; color: #999;">Real-scale display</div>
+            </div>
+        </div>
+        
+        <div class="artwork-label" id="artworkLabel">
+            <div class="artwork-title" id="labelTitle"></div>
+            <div class="artwork-details" id="labelDetails"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Initialize Supabase connection
+        const supabaseUrl = 'https://qqkshpkbfixeyusqpsou.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        let artworksData = [];
+
+        async function loadArtworksFromDatabase() {
+            try {
+                document.getElementById('loadingText').textContent = 'Loading your collection...';
+                
+                const { data, error } = await supabase
+                    .from('artworks')
+                    .select('*')
+                    .order('display_order', { ascending: true, nullsLast: true })
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                artworksData = data || [];
+                console.log('Loaded', artworksData.length, 'artworks from VonMesser Collection');
+                
+                if (artworksData.length === 0) {
+                    document.getElementById('loadingText').textContent = 'No artworks found in collection';
+                    return;
+                }
+                
+                return artworksData;
+            } catch (error) {
+                console.error('Error loading artworks:', error);
+                document.getElementById('loadingText').textContent = 'Error loading collection';
+                return [];
+            }
+        }
+        let artworkMeshes = [];
+        let raycaster, mouse;
+        let isAerialView = false;
+        let frameCount = 0;
+
+        // Movement controls
+        const keys = {};
+        const velocity = new THREE.Vector3();
+        const direction = new THREE.Vector3();
+        const moveSpeed = 0.15;
+        
+        // Mouse look controls
+        let yaw = 0;
+        let pitch = 0;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+        let isMouseDown = false;
+        const mouseSensitivity = 0.003;
+
+        // Gallery dimensions (in meters)
+        const galleryWidth = 40;
+        const galleryDepth = 60;
+        const galleryHeight = 6;
+        const wallThickness = 0.3;
+
+        async function init() {
+            // Load artwork data first
+            const artworks = await loadArtworksFromDatabase();
+            if (!artworks || artworks.length === 0) {
+                return; // Exit if no artworks to display
+            }
+
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x111111);
+
+            // Camera setup
+            camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 1.6, 15); // Human eye height
+            camera.rotation.order = 'YXZ'; // Set rotation order for proper mouse look
+            camera.lookAt(0, 1.6, 0);
+
+            // Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
+            document.getElementById('galleryContainer').appendChild(renderer.domElement);
+
+            // Raycaster for artwork interaction
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            // Create gallery space
+            createGallery();
+            
+            // Create lighting
+            createLighting();
+            
+            // Place artworks
+            placeArtworks();
+
+            // Event listeners
+            setupEventListeners();
+
+            // Hide loading
+            document.getElementById('loadingText').style.display = 'none';
+
+            // Start render loop
+            animate();
+        }
+
+        function createGallery() {
+            const galleryGroup = new THREE.Group();
+
+            // Floor
+            const floorGeometry = new THREE.PlaneGeometry(galleryWidth, galleryDepth);
+            const floorMaterial = new THREE.MeshLambertMaterial({ 
+                color: 0xf8f8f8,
+                transparent: true,
+                opacity: 0.9
+            });
+            const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+            floor.rotation.x = -Math.PI / 2;
+            floor.receiveShadow = true;
+            galleryGroup.add(floor);
+
+            // Ceiling
+            const ceiling = floor.clone();
+            ceiling.position.y = galleryHeight;
+            ceiling.rotation.x = Math.PI / 2;
+            galleryGroup.add(ceiling);
+
+            // Walls
+            const wallMaterial = new THREE.MeshLambertMaterial({ 
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.95
+            });
+
+            // Back wall
+            const backWallGeometry = new THREE.PlaneGeometry(galleryWidth, galleryHeight);
+            const backWall = new THREE.Mesh(backWallGeometry, wallMaterial);
+            backWall.position.set(0, galleryHeight / 2, -galleryDepth / 2);
+            backWall.receiveShadow = true;
+            galleryGroup.add(backWall);
+
+            // Left wall
+            const leftWallGeometry = new THREE.PlaneGeometry(galleryDepth, galleryHeight);
+            const leftWall = new THREE.Mesh(leftWallGeometry, wallMaterial);
+            leftWall.position.set(-galleryWidth / 2, galleryHeight / 2, 0);
+            leftWall.rotation.y = Math.PI / 2;
+            leftWall.receiveShadow = true;
+            galleryGroup.add(leftWall);
+
+            // Right wall
+            const rightWall = leftWall.clone();
+            rightWall.position.x = galleryWidth / 2;
+            rightWall.rotation.y = -Math.PI / 2;
+            galleryGroup.add(rightWall);
+
+            scene.add(galleryGroup);
+        }
+
+        function createLighting() {
+            // Ambient light for overall illumination
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+
+            // Main directional light (skylight effect)
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(0, galleryHeight - 1, 10);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048;
+            directionalLight.shadow.mapSize.height = 2048;
+            directionalLight.shadow.camera.near = 0.5;
+            directionalLight.shadow.camera.far = 50;
+            directionalLight.shadow.camera.left = -25;
+            directionalLight.shadow.camera.right = 25;
+            directionalLight.shadow.camera.top = 25;
+            directionalLight.shadow.camera.bottom = -25;
+            scene.add(directionalLight);
+
+            // Track lighting for artworks
+            const trackLights = [];
+            for (let i = 0; i < 6; i++) {
+                const spotLight = new THREE.SpotLight(0xffffff, 0.6, 15, Math.PI / 6, 0.3);
+                spotLight.position.set(
+                    (i % 3 - 1) * 8, 
+                    galleryHeight - 0.5, 
+                    Math.floor(i / 3) * 15 - 10
+                );
+                spotLight.castShadow = true;
+                spotLight.shadow.mapSize.width = 1024;
+                spotLight.shadow.mapSize.height = 1024;
+                scene.add(spotLight);
+                trackLights.push(spotLight);
+            }
+        }
+
+        function parseDimensions(dimensionString) {
+            // Parse dimensions like "24 × 36 in" or "61 × 91 cm"
+            const match = dimensionString.match(/([\d.]+)\s*[×x]\s*([\d.]+)\s*(in|cm)/i);
+            if (!match) return { width: 1, height: 1 };
+
+            let width = parseFloat(match[1]);
+            let height = parseFloat(match[2]);
+            const unit = match[3].toLowerCase();
+
+            // Convert to meters
+            if (unit === 'in') {
+                width *= 0.0254; // inches to meters
+                height *= 0.0254;
+            } else if (unit === 'cm') {
+                width *= 0.01; // cm to meters
+                height *= 0.01;
+            }
+
+            return { width, height };
+        }
+
+        function placeArtworks() {
+            const wallPositions = [
+                // Back wall
+                { x: -8, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
+                { x: 0, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
+                { x: 8, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
+                // Left wall
+                { x: -galleryWidth / 2 + 0.1, y: 2, z: -8, rotation: Math.PI / 2 },
+                { x: -galleryWidth / 2 + 0.1, y: 2, z: 8, rotation: Math.PI / 2 },
+                // Right wall  
+                { x: galleryWidth / 2 - 0.1, y: 2, z: 0, rotation: -Math.PI / 2 },
+                // Additional positions for more artworks
+                { x: -4, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
+                { x: 4, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
+                { x: -galleryWidth / 2 + 0.1, y: 2, z: -4, rotation: Math.PI / 2 },
+                { x: -galleryWidth / 2 + 0.1, y: 2, z: 4, rotation: Math.PI / 2 },
+                { x: galleryWidth / 2 - 0.1, y: 2, z: -8, rotation: -Math.PI / 2 },
+                { x: galleryWidth / 2 - 0.1, y: 2, z: 8, rotation: -Math.PI / 2 }
+            ];
+
+            // Use actual artwork data from your collection
+            artworksData.forEach((artwork, index) => {
+                if (index >= wallPositions.length) return;
+
+                const position = wallPositions[index];
+                const dimensions = parseDimensions(artwork.dimensions || '24 × 36 in');
+                
+                // Create artwork plane
+                const geometry = new THREE.PlaneGeometry(dimensions.width, dimensions.height);
+                
+                // Load texture from your artwork images
+                const textureLoader = new THREE.TextureLoader();
+                const imageUrl = artwork.images && artwork.images.length > 0 ? artwork.images[0] : null;
+                
+                let material;
+                if (imageUrl) {
+                    const texture = textureLoader.load(imageUrl, 
+                        // onLoad
+                        function(texture) {
+                            texture.minFilter = THREE.LinearFilter;
+                            texture.magFilter = THREE.LinearFilter;
+                        },
+                        // onProgress
+                        undefined,
+                        // onError
+                        function(error) {
+                            console.warn('Error loading texture for:', artwork.title, error);
+                        }
+                    );
+                    
+                    material = new THREE.MeshLambertMaterial({ 
+                        map: texture,
+                        transparent: true
+                    });
+                } else {
+                    // Fallback material if no image
+                    material = new THREE.MeshLambertMaterial({ 
+                        color: 0x666666,
+                        transparent: true
+                    });
+                }
+                
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(position.x, position.y, position.z);
+                mesh.rotation.y = position.rotation;
+                mesh.castShadow = true;
+                mesh.userData = artwork;
+                
+                scene.add(mesh);
+                artworkMeshes.push(mesh);
+
+                // Create simple frame
+                const frameGeometry = new THREE.PlaneGeometry(
+                    dimensions.width + 0.1, 
+                    dimensions.height + 0.1
+                );
+                const frameMaterial = new THREE.MeshLambertMaterial({ 
+                    color: 0x222222,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const frame = new THREE.Mesh(frameGeometry, frameMaterial);
+                frame.position.copy(mesh.position);
+                frame.rotation.copy(mesh.rotation);
+                frame.position.add(new THREE.Vector3(0, 0, -0.005)); // Slightly behind artwork
+                
+                scene.add(frame);
+            });
+        }
+
+        function setupEventListeners() {
+            // Mouse events
+            renderer.domElement.addEventListener('click', onMouseClick);
+            renderer.domElement.addEventListener('mousemove', onMouseMove);
+            renderer.domElement.addEventListener('mousedown', onMouseDown);
+            renderer.domElement.addEventListener('mouseup', onMouseUp);
+
+            // Keyboard events
+            document.addEventListener('keydown', onKeyDown);
+            document.addEventListener('keyup', onKeyUp);
+
+            // Window resize
+            window.addEventListener('resize', onWindowResize);
+
+            // Prevent context menu
+            renderer.domElement.addEventListener('contextmenu', (e) => e.preventDefault());
+        }
+
+        function onMouseDown(event) {
+            if (isAerialView) return;
+            isMouseDown = true;
+            lastMouseX = event.clientX;
+            lastMouseY = event.clientY;
+            renderer.domElement.style.cursor = 'grabbing';
+        }
+
+        function onMouseUp(event) {
+            isMouseDown = false;
+            renderer.domElement.style.cursor = 'crosshair';
+        }
+
+        function onMouseClick(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(artworkMeshes);
+
+            if (intersects.length > 0) {
+                const artwork = intersects[0].object.userData;
+                focusOnArtwork(intersects[0].object, artwork);
+            }
+        }
+
+        function onMouseMove(event) {
+            if (isAerialView) return;
+
+            const currentMouseX = event.clientX;
+            const currentMouseY = event.clientY;
+
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(artworkMeshes);
+
+            const label = document.getElementById('artworkLabel');
+            
+            if (intersects.length > 0) {
+                const artwork = intersects[0].object.userData;
+                showArtworkLabel(artwork, event.clientX, event.clientY);
+            } else {
+                label.classList.remove('visible');
+            }
+
+            // Mouse look - drag to look around
+            if (isMouseDown) {
+                const deltaX = currentMouseX - lastMouseX;
+                const deltaY = currentMouseY - lastMouseY;
+
+                // Update yaw and pitch
+                yaw -= deltaX * mouseSensitivity;
+                pitch -= deltaY * mouseSensitivity;
+                
+                // Clamp pitch to prevent over-rotation
+                pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitch));
+
+                // Apply rotations in the correct order
+                camera.rotation.order = 'YXZ';
+                camera.rotation.y = yaw;
+                camera.rotation.x = pitch;
+                camera.rotation.z = 0; // Prevent roll
+            }
+
+            lastMouseX = currentMouseX;
+            lastMouseY = currentMouseY;
+        }
+
+        function showArtworkLabel(artwork, x, y) {
+            const label = document.getElementById('artworkLabel');
+            document.getElementById('labelTitle').textContent = artwork.title;
+            document.getElementById('labelDetails').innerHTML = `
+                ${artwork.artist}, ${artwork.year}<br>
+                ${artwork.dimensions}<br>
+                <em style="color: #999;">${artwork.medium}</em>
+            `;
+            
+            label.style.left = (x + 15) + 'px';
+            label.style.top = (y - 60) + 'px';
+            label.classList.add('visible');
+        }
+
+        function focusOnArtwork(mesh, artwork) {
+            const targetPosition = mesh.position.clone();
+            
+            // Calculate optimal viewing distance based on artwork size
+            const box = new THREE.Box3().setFromObject(mesh);
+            const size = box.getSize(new THREE.Vector3());
+            const distance = Math.max(size.x, size.y) * 1.5 + 2;
+            
+            // Position camera in front of artwork
+            const normal = new THREE.Vector3(0, 0, 1);
+            normal.applyEuler(mesh.rotation);
+            const cameraPosition = targetPosition.clone().add(normal.multiplyScalar(distance));
+            cameraPosition.y = Math.max(1.6, targetPosition.y); // Keep at eye level or artwork level
+            
+            // Smooth transition
+            animateCamera(cameraPosition, targetPosition);
+        }
+
+        function animateCamera(targetPosition, lookAtPosition) {
+            const startPosition = camera.position.clone();
+            const startQuaternion = camera.quaternion.clone();
+            
+            // Create temporary camera for target rotation
+            const tempCamera = camera.clone();
+            tempCamera.position.copy(targetPosition);
+            tempCamera.lookAt(lookAtPosition);
+            const targetQuaternion = tempCamera.quaternion.clone();
+            
+            const duration = 1500; // ms
+            const startTime = Date.now();
+            
+            function animateStep() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3); // Ease out cubic
+                
+                camera.position.lerpVectors(startPosition, targetPosition, eased);
+                camera.quaternion.slerpQuaternions(startQuaternion, targetQuaternion, eased);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animateStep);
+                }
+            }
+            
+            animateStep();
+        }
+
+        function onKeyDown(event) {
+            keys[event.code] = true;
+        }
+
+        function onKeyUp(event) {
+            keys[event.code] = false;
+        }
+
+        function updateMovement() {
+            if (isAerialView) return;
+
+            // Reset velocity
+            velocity.x = 0;
+            velocity.z = 0;
+
+            // Calculate movement direction based on camera yaw (ignore pitch for movement)
+            const forward = new THREE.Vector3();
+            forward.x = Math.sin(yaw);
+            forward.z = Math.cos(yaw);
+            
+            const right = new THREE.Vector3();
+            right.x = Math.cos(yaw);
+            right.z = -Math.sin(yaw);
+
+            // Calculate movement
+            if (keys['KeyW'] || keys['ArrowUp']) {
+                velocity.add(forward.clone().multiplyScalar(-moveSpeed));
+            }
+            if (keys['KeyS'] || keys['ArrowDown']) {
+                velocity.add(forward.clone().multiplyScalar(moveSpeed));
+            }
+            if (keys['KeyA'] || keys['ArrowLeft']) {
+                velocity.add(right.clone().multiplyScalar(-moveSpeed));
+            }
+            if (keys['KeyD'] || keys['ArrowRight']) {
+                velocity.add(right.clone().multiplyScalar(moveSpeed));
+            }
+
+            // Apply movement with bounds checking
+            const newPosition = camera.position.clone().add(velocity);
+            
+            // Keep within gallery bounds
+            const margin = 2;
+            newPosition.x = Math.max(-galleryWidth/2 + margin, Math.min(galleryWidth/2 - margin, newPosition.x));
+            newPosition.z = Math.max(-galleryDepth/2 + margin, Math.min(galleryDepth/2 - margin, newPosition.z));
+            
+            camera.position.copy(newPosition);
+        }
+
+        function toggleView() {
+            isAerialView = !isAerialView;
+            const button = document.querySelector('.view-mode-toggle');
+            
+            if (isAerialView) {
+                // Switch to aerial view - position camera above gallery center
+                camera.position.set(0, galleryHeight + 15, 0);
+                camera.lookAt(0, 0, 0);
+                camera.rotation.order = 'XYZ';
+                camera.rotation.x = -Math.PI / 2;
+                camera.rotation.y = 0;
+                camera.rotation.z = 0;
+                button.textContent = 'Walk Mode';
+                isMouseDown = false; // Stop any dragging
+                renderer.domElement.style.cursor = 'default';
+            } else {
+                // Switch to walk mode
+                camera.position.set(0, 1.6, 15);
+                yaw = 0;
+                pitch = 0;
+                camera.rotation.order = 'YXZ';
+                camera.rotation.x = 0;
+                camera.rotation.y = 0;
+                camera.rotation.z = 0;
+                camera.lookAt(0, 1.6, 0);
+                button.textContent = 'Aerial View';
+                renderer.domElement.style.cursor = 'crosshair';
+            }
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            frameCount++;
+            
+            // Update movement (only in walk mode)
+            if (!isAerialView) {
+                updateMovement();
+            }
+            
+            // Render
+            renderer.render(scene, camera);
+        }
+
+        // Initialize gallery when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

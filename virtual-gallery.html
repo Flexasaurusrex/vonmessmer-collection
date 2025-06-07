@@ -356,13 +356,13 @@
             });
         }
 
-        function createSimpleTexture(width, height, color1, color2) {
+        function createSimpleTexture(width, height, color1, color2, text) {
             const canvas = document.createElement('canvas');
             canvas.width = width;
             canvas.height = height;
             const ctx = canvas.getContext('2d');
             
-            // Create gradient
+            // Create gradient background
             const gradient = ctx.createLinearGradient(0, 0, width, height);
             gradient.addColorStop(0, color1);
             gradient.addColorStop(1, color2);
@@ -370,37 +370,114 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, width, height);
             
-            // Add some texture
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-            for (let i = 0; i < 50; i++) {
-                ctx.fillRect(Math.random() * width, Math.random() * height, 2, 2);
-            }
+            // Add some geometric shapes for interest
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.fillRect(width * 0.1, height * 0.1, width * 0.3, height * 0.3);
+            
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.beginPath();
+            ctx.arc(width * 0.7, height * 0.3, width * 0.15, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Add text label
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.font = `${Math.min(width, height) * 0.08}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText(text, width / 2, height * 0.7);
             
             return canvas.toDataURL();
         }
 
+        // Load Supabase and try to get real artworks
         async function loadArtworks() {
-            updateStatus('Loading artworks...');
-            updateDebug('Loading artwork data');
+            updateStatus('Loading your collection...');
+            updateDebug('Attempting to load real artworks from database');
             
             try {
-                // For now, just use demo artworks with generated textures
-                artworksData = demoArtworks.map((artwork, index) => ({
-                    ...artwork,
-                    images: [createSimpleTexture(400, 300, 
-                        ['#334455', '#2c4054', '#394a5e', '#2d3748', '#48556f', '#556677'][index],
-                        ['#99aabb', '#87ceeb', '#c2b480', '#485563', '#758a9f', '#8fa3b3'][index]
-                    )]
-                }));
+                // First try to load Supabase
+                await loadSupabaseLibrary();
                 
-                updateDebug(`Loaded ${artworksData.length} artworks`);
-                updateStatus('Artworks loaded');
-                return artworksData;
+                if (window.supabase) {
+                    const supabaseUrl = 'https://qqkshpkbfixeyusqpsou.supabase.co';
+                    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
+                    
+                    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                    updateDebug('Supabase client created, querying artworks table');
+                    
+                    const { data, error } = await supabase
+                        .from('artworks')
+                        .select('*')
+                        .order('display_order', { ascending: true, nullsLast: true })
+                        .order('created_at', { ascending: false });
+
+                    if (error) {
+                        updateDebug('Supabase query error: ' + error.message);
+                        throw error;
+                    }
+
+                    if (data && data.length > 0) {
+                        updateDebug(`SUCCESS! Loaded ${data.length} real artworks from your collection`);
+                        updateStatus(`Loaded ${data.length} artworks from your collection`);
+                        artworksData = data;
+                        return artworksData;
+                    } else {
+                        updateDebug('Database query successful but no artworks found');
+                        updateStatus('No artworks in database - using demo');
+                    }
+                } else {
+                    updateDebug('Supabase library failed to load');
+                    updateStatus('Database unavailable - using demo');
+                }
             } catch (error) {
-                updateDebug('Error loading artworks: ' + error.message);
-                updateStatus('Using demo collection');
-                return demoArtworks;
+                updateDebug('Database connection failed: ' + error.message);
+                updateStatus('Database error - using demo collection');
+                console.error('Error loading real artworks:', error);
             }
+            
+            // Fallback to demo artworks
+            updateDebug('Falling back to demo collection');
+            const colors = [
+                ['#1a365d', '#4299e1'], // Blue
+                ['#276749', '#48bb78'], // Green  
+                ['#744210', '#ed8936'], // Orange
+                ['#553c9a', '#9f7aea'], // Purple
+                ['#822727', '#fc8181'], // Red
+                ['#2d3748', '#718096']  // Gray
+            ];
+            
+            artworksData = demoArtworks.map((artwork, index) => ({
+                ...artwork,
+                images: [createSimpleTexture(512, 384, 
+                    colors[index][0],
+                    colors[index][1], 
+                    artwork.title
+                )]
+            }));
+            
+            updateDebug(`Created ${artworksData.length} demo artworks`);
+            updateStatus('Demo collection loaded');
+            return artworksData;
+        }
+
+        function loadSupabaseLibrary() {
+            return new Promise((resolve, reject) => {
+                if (window.supabase) {
+                    resolve();
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+                script.onload = () => {
+                    updateDebug('Supabase library loaded successfully');
+                    resolve();
+                };
+                script.onerror = () => {
+                    updateDebug('Failed to load Supabase library');
+                    reject(new Error('Failed to load Supabase library'));
+                };
+                document.head.appendChild(script);
+            });
         }
 
         function parseDimensions(dimensionString) {
@@ -439,10 +516,10 @@
                 scene = new THREE.Scene();
                 scene.background = new THREE.Color(0x111111);
 
-                // Camera setup
+                // Camera setup - start closer to the back wall to see artworks
                 camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
-                camera.position.set(0, 1.6, 15);
-                camera.lookAt(0, 1.6, 0);
+                camera.position.set(0, 1.6, 10); // Closer to back wall
+                camera.lookAt(0, 2, -galleryDepth / 2); // Look at back wall where artworks are
 
                 updateDebug('Camera created');
 
@@ -556,37 +633,53 @@
         }
 
         function createLighting(THREE) {
-            // Ambient light
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            // Brighter ambient light
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
             scene.add(ambientLight);
 
-            // Main directional light
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            // Main directional light - brighter
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
             directionalLight.position.set(0, galleryHeight - 1, 10);
             directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 1024;
+            directionalLight.shadow.mapSize.height = 1024;
             scene.add(directionalLight);
 
-            // Track lighting
+            // Additional front lighting to illuminate artworks
+            const frontLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            frontLight.position.set(0, galleryHeight / 2, galleryDepth / 2);
+            frontLight.target.position.set(0, galleryHeight / 2, -galleryDepth / 2);
+            scene.add(frontLight);
+            scene.add(frontLight.target);
+
+            // Track lighting for artworks - brighter
             for (let i = 0; i < 6; i++) {
-                const spotLight = new THREE.SpotLight(0xffffff, 0.6, 15, Math.PI / 6, 0.3);
+                const spotLight = new THREE.SpotLight(0xffffff, 0.8, 20, Math.PI / 4, 0.2);
                 spotLight.position.set(
                     (i % 3 - 1) * 8, 
                     galleryHeight - 0.5, 
                     Math.floor(i / 3) * 15 - 10
                 );
                 spotLight.castShadow = true;
+                spotLight.shadow.mapSize.width = 512;
+                spotLight.shadow.mapSize.height = 512;
                 scene.add(spotLight);
             }
+            
+            updateDebug('Enhanced lighting created');
         }
 
         async function placeArtworks(THREE) {
             const wallPositions = [
-                { x: -8, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
-                { x: 0, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
-                { x: 8, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
-                { x: -galleryWidth / 2 + 0.1, y: 2, z: -8, rotation: Math.PI / 2 },
-                { x: -galleryWidth / 2 + 0.1, y: 2, z: 8, rotation: Math.PI / 2 },
-                { x: galleryWidth / 2 - 0.1, y: 2, z: 0, rotation: -Math.PI / 2 }
+                // Back wall - more spread out and visible
+                { x: -10, y: 2, z: -galleryDepth / 2 + 0.5, rotation: 0 },
+                { x: 0, y: 2, z: -galleryDepth / 2 + 0.5, rotation: 0 },
+                { x: 10, y: 2, z: -galleryDepth / 2 + 0.5, rotation: 0 },
+                // Left wall
+                { x: -galleryWidth / 2 + 0.5, y: 2, z: -10, rotation: Math.PI / 2 },
+                { x: -galleryWidth / 2 + 0.5, y: 2, z: 10, rotation: Math.PI / 2 },
+                // Right wall  
+                { x: galleryWidth / 2 - 0.5, y: 2, z: 0, rotation: -Math.PI / 2 }
             ];
 
             artworksData.forEach((artwork, index) => {
@@ -595,23 +688,62 @@
                 const position = wallPositions[index];
                 const dimensions = parseDimensions(artwork.dimensions || '24 × 36 in');
                 
-                const geometry = new THREE.PlaneGeometry(dimensions.width, dimensions.height);
+                updateDebug(`Placing artwork ${index + 1}: ${artwork.title} by ${artwork.artist}`);
+                
+                // Make sure dimensions are reasonable
+                const minSize = 0.5;
+                const maxSize = 3;
+                const width = Math.max(minSize, Math.min(maxSize, dimensions.width));
+                const height = Math.max(minSize, Math.min(maxSize, dimensions.height));
+                
+                const geometry = new THREE.PlaneGeometry(width, height);
                 
                 let material;
-                if (artwork.images && artwork.images.length > 0) {
-                    const textureLoader = new THREE.TextureLoader();
-                    const texture = textureLoader.load(artwork.images[0]);
-                    texture.minFilter = THREE.LinearFilter;
-                    texture.magFilter = THREE.LinearFilter;
-                    
-                    material = new THREE.MeshLambertMaterial({ 
-                        map: texture,
-                        transparent: true
-                    });
+                
+                // Try to use real artwork image first
+                if (artwork.images && artwork.images.length > 0 && artwork.images[0]) {
+                    try {
+                        updateDebug(`Loading real image for: ${artwork.title}`);
+                        const textureLoader = new THREE.TextureLoader();
+                        const texture = textureLoader.load(
+                            artwork.images[0],
+                            function(tex) {
+                                updateDebug(`✅ Real artwork texture loaded: ${artwork.title}`);
+                                tex.minFilter = THREE.LinearFilter;
+                                tex.magFilter = THREE.LinearFilter;
+                            },
+                            function(progress) {
+                                // Loading progress
+                            },
+                            function(error) {
+                                updateDebug(`❌ Failed to load real texture for ${artwork.title}: ${error}`);
+                            }
+                        );
+                        
+                        material = new THREE.MeshLambertMaterial({ 
+                            map: texture,
+                            transparent: false,
+                            side: THREE.FrontSide
+                        });
+                        
+                        updateDebug(`Created material with real image for: ${artwork.title}`);
+                        
+                    } catch (error) {
+                        updateDebug(`Error creating real texture material for ${artwork.title}: ${error.message}`);
+                        // Fallback to solid color
+                        const colors = [0x4299e1, 0x48bb78, 0xed8936, 0x9f7aea, 0xfc8181, 0x718096];
+                        material = new THREE.MeshLambertMaterial({ 
+                            color: colors[index % colors.length],
+                            transparent: false
+                        });
+                    }
                 } else {
+                    // Fallback material with bright color for demo artworks
+                    updateDebug(`No real image available for: ${artwork.title} - using fallback color`);
+                    const colors = [0x4299e1, 0x48bb78, 0xed8936, 0x9f7aea, 0xfc8181, 0x718096];
                     material = new THREE.MeshLambertMaterial({ 
-                        color: 0x666666,
-                        transparent: true
+                        color: colors[index % colors.length],
+                        transparent: false
                     });
                 }
                 
@@ -619,28 +751,35 @@
                 mesh.position.set(position.x, position.y, position.z);
                 mesh.rotation.y = position.rotation;
                 mesh.castShadow = true;
+                mesh.receiveShadow = true;
                 mesh.userData = artwork;
                 
                 scene.add(mesh);
                 artworkMeshes.push(mesh);
+                
+                updateDebug(`✅ Added artwork mesh: "${artwork.title}" by ${artwork.artist} at (${position.x}, ${position.y}, ${position.z})`);
 
-                // Frame
-                const frameGeometry = new THREE.PlaneGeometry(
-                    dimensions.width + 0.1, 
-                    dimensions.height + 0.1
-                );
+                // Create a more visible frame
+                const frameGeometry = new THREE.PlaneGeometry(width + 0.2, height + 0.2);
                 const frameMaterial = new THREE.MeshLambertMaterial({ 
-                    color: 0x222222,
-                    transparent: true,
-                    opacity: 0.8
+                    color: 0x1a202c,
+                    transparent: false
                 });
                 const frame = new THREE.Mesh(frameGeometry, frameMaterial);
-                frame.position.copy(mesh.position);
-                frame.rotation.copy(mesh.rotation);
-                frame.position.add(new THREE.Vector3(0, 0, -0.005));
+                frame.position.set(position.x, position.y, position.z - 0.01);
+                frame.rotation.y = position.rotation;
+                frame.receiveShadow = true;
                 
                 scene.add(frame);
             });
+            
+            updateDebug(`🎨 Gallery complete! Total artworks placed: ${artworkMeshes.length}`);
+            
+            // Summary of what was loaded
+            const realArtworks = artworksData.filter(a => a.images && a.images.length > 0 && !a.id.includes('demo'));
+            const demoArtworks = artworksData.filter(a => a.id.includes('demo'));
+            
+            updateDebug(`📊 Collection summary: ${realArtworks.length} real artworks, ${demoArtworks.length} demo pieces`);
         }
 
         function setupEventListeners() {

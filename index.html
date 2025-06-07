@@ -389,7 +389,7 @@
             margin-bottom: 50px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 30px;
             padding: 20px 30px;
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
@@ -402,6 +402,7 @@
             display: flex;
             gap: 20px;
             align-items: center;
+            flex: 1;
         }
         
         .search-box {
@@ -469,6 +470,12 @@
             box-shadow: 0 0 0 3px rgba(31,41,55,0.1);
         }
         
+        .controls-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
         .results-count {
             font-size: 11px;
             color: #6b7280;
@@ -476,6 +483,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 1px;
+            white-space: nowrap;
         }
         
         .clear-filters {
@@ -491,6 +499,7 @@
             color: #6b7280;
             transition: all 0.3s ease;
             border-radius: 8px;
+            white-space: nowrap;
         }
         
         .clear-filters:hover {
@@ -1184,8 +1193,15 @@
                 min-width: auto;
             }
             
-            .results-count {
+            .controls-right {
+                width: 100%;
+                flex-direction: column;
+                gap: 15px;
                 text-align: center;
+            }
+            
+            .results-count,
+            .clear-filters {
                 width: 100%;
             }
             
@@ -1406,11 +1422,13 @@
                     </div>
                 </div>
                 
-                <div class="results-count" id="resultsCount">
-                    <span id="resultNumber">0</span> pieces
+                <div class="controls-right">
+                    <div class="results-count" id="resultsCount">
+                        <span id="resultNumber">0</span> pieces
+                    </div>
+                    
+                    <button class="clear-filters" id="clearFilters">Clear All</button>
                 </div>
-                
-                <button class="clear-filters" id="clearFilters">Clear All</button>
             </div>
 
             <div class="gallery-grid" id="galleryGrid">

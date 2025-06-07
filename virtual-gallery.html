@@ -138,6 +138,7 @@
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            text-align: center;
         }
 
         .gallery-entrance {
@@ -156,35 +157,18 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
-        .error-message {
+        .debug-info {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            max-width: 400px;
-            color: #333;
-        }
-
-        .error-message h3 {
-            margin-bottom: 15px;
-            color: #e74c3c;
-        }
-
-        .retry-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #333;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
             color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 11px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            border-radius: 5px;
+            max-width: 300px;
+            word-wrap: break-word;
         }
 
         @media (max-width: 768px) {
@@ -204,7 +188,12 @@
 </head>
 <body>
     <div id="galleryContainer">
-        <div class="loading" id="loadingText">Loading Gallery...</div>
+        <div class="loading" id="loadingText">
+            LOADING GALLERY...<br>
+            <small id="loadingStatus">Initializing...</small>
+        </div>
+        
+        <div class="debug-info" id="debugInfo">Starting...</div>
         
         <div class="gallery-ui">
             <div class="gallery-info">
@@ -232,9 +221,29 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // Debug logging
+        console.log('🎨 VonMesser Virtual Gallery - Script Starting...');
+        
+        function updateDebug(message) {
+            console.log('DEBUG:', message);
+            const debugEl = document.getElementById('debugInfo');
+            if (debugEl) {
+                debugEl.textContent = message;
+            }
+        }
+
+        function updateStatus(message) {
+            console.log('STATUS:', message);
+            const statusEl = document.getElementById('loadingStatus');
+            if (statusEl) {
+                statusEl.textContent = message;
+            }
+        }
+
+        updateDebug('Script loaded');
+        updateStatus('Script loaded');
+
         // Global variables
         let scene, camera, renderer;
         let artworksData = [];
@@ -245,8 +254,7 @@
 
         // Movement controls
         const keys = {};
-        const velocity = new THREE.Vector3();
-        const direction = new THREE.Vector3();
+        const velocity = { x: 0, y: 0, z: 0 };
         const moveSpeed = 0.15;
         
         // Mouse look controls
@@ -261,10 +269,9 @@
         const galleryWidth = 40;
         const galleryDepth = 60;
         const galleryHeight = 6;
-        const wallThickness = 0.3;
 
-        // Fallback artworks data in case database fails
-        const fallbackArtworks = [
+        // Demo artworks - always available
+        const demoArtworks = [
             {
                 id: 'demo-1',
                 title: 'Abstract Composition',
@@ -272,7 +279,7 @@
                 year: '2024',
                 dimensions: '24 × 36 in',
                 medium: 'Oil on canvas',
-                images: ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzMzNDQ1NSIvPjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxOCI+QWJzdHJhY3QgQ29tcG9zaXRpb248L3RleHQ+PC9zdmc+']
+                orientation: 'landscape'
             },
             {
                 id: 'demo-2',
@@ -281,7 +288,7 @@
                 year: '2023',
                 dimensions: '30 × 40 in',
                 medium: 'Acrylic on canvas',
-                images: ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzJjNDA1NCIvPjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxOCI+TW9kZXJuIExhbmRzY2FwZTwvdGV4dD48L3N2Zz4=']
+                orientation: 'landscape'
             },
             {
                 id: 'demo-3',
@@ -290,41 +297,635 @@
                 year: '2024',
                 dimensions: '18 × 24 in',
                 medium: 'Mixed media',
-                images: ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzM5NDk1ZSIvPjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxOCI+U3RpbGwgTGlmZSBTdHVkeTwvdGV4dD48L3N2Zz4=']
+                orientation: 'portrait'
+            },
+            {
+                id: 'demo-4',
+                title: 'Urban Portrait',
+                artist: 'City Artist',
+                year: '2023',
+                dimensions: '20 × 30 in',
+                medium: 'Digital print',
+                orientation: 'portrait'
+            },
+            {
+                id: 'demo-5',
+                title: 'Geometric Study',
+                artist: 'Modern Artist',
+                year: '2024',
+                dimensions: '36 × 36 in',
+                medium: 'Acrylic on canvas',
+                orientation: 'square'
+            },
+            {
+                id: 'demo-6',
+                title: 'Nature Abstract',
+                artist: 'Landscape Artist',
+                year: '2023',
+                dimensions: '40 × 30 in',
+                medium: 'Oil on canvas',
+                orientation: 'landscape'
             }
         ];
 
-        // Initialize Supabase connection
-        const supabaseUrl = 'https://qqkshpkbfixeyusqpsou.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
-        
-        let supabase;
-        try {
-            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-        } catch (error) {
-            console.warn('Supabase not available, using fallback data');
-        }
-
-        async function loadArtworksFromDatabase() {
-            try {
-                document.getElementById('loadingText').textContent = 'Loading your collection...';
-                
-                if (!supabase) {
-                    throw new Error('Supabase not available');
+        // Load Three.js and initialize
+        function loadThreeJS() {
+            updateStatus('Loading Three.js...');
+            updateDebug('Loading Three.js library');
+            
+            return new Promise((resolve, reject) => {
+                if (window.THREE) {
+                    updateDebug('Three.js already loaded');
+                    resolve();
+                    return;
                 }
 
-                const { data, error } = await supabase
-                    .from('artworks')
-                    .select('*')
-                    .order('display_order', { ascending: true, nullsLast: true })
-                    .order('created_at', { ascending: false });
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+                script.onload = () => {
+                    updateDebug('Three.js loaded successfully');
+                    updateStatus('Three.js loaded');
+                    resolve();
+                };
+                script.onerror = () => {
+                    updateDebug('Failed to load Three.js');
+                    updateStatus('Failed to load Three.js');
+                    reject(new Error('Failed to load Three.js'));
+                };
+                document.head.appendChild(script);
+            });
+        }
 
-                if (error) throw error;
+        function createSimpleTexture(width, height, color1, color2) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            
+            // Create gradient
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, color1);
+            gradient.addColorStop(1, color2);
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            // Add some texture
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            for (let i = 0; i < 50; i++) {
+                ctx.fillRect(Math.random() * width, Math.random() * height, 2, 2);
+            }
+            
+            return canvas.toDataURL();
+        }
 
-                artworksData = data && data.length > 0 ? data : fallbackArtworks;
-                console.log('Loaded', artworksData.length, 'artworks');
+        async function loadArtworks() {
+            updateStatus('Loading artworks...');
+            updateDebug('Loading artwork data');
+            
+            try {
+                // For now, just use demo artworks with generated textures
+                artworksData = demoArtworks.map((artwork, index) => ({
+                    ...artwork,
+                    images: [createSimpleTexture(400, 300, 
+                        ['#334455', '#2c4054', '#394a5e', '#2d3748', '#48556f', '#556677'][index],
+                        ['#99aabb', '#87ceeb', '#c2b480', '#485563', '#758a9f', '#8fa3b3'][index]
+                    )]
+                }));
                 
+                updateDebug(`Loaded ${artworksData.length} artworks`);
+                updateStatus('Artworks loaded');
                 return artworksData;
             } catch (error) {
-                console.warn('Error loading from database, using fallback:', error);
-                document.getElementById('loadingText').textContent = 'Using demo collection...
+                updateDebug('Error loading artworks: ' + error.message);
+                updateStatus('Using demo collection');
+                return demoArtworks;
+            }
+        }
+
+        function parseDimensions(dimensionString) {
+            const match = dimensionString.match(/([\d.]+)\s*[×x]\s*([\d.]+)\s*(in|cm)/i);
+            if (!match) return { width: 1, height: 1 };
+
+            let width = parseFloat(match[1]);
+            let height = parseFloat(match[2]);
+            const unit = match[3].toLowerCase();
+
+            if (unit === 'in') {
+                width *= 0.0254;
+                height *= 0.0254;
+            } else if (unit === 'cm') {
+                width *= 0.01;
+                height *= 0.01;
+            }
+
+            return { width, height };
+        }
+
+        async function initGallery() {
+            try {
+                updateStatus('Initializing gallery...');
+                updateDebug('Starting gallery initialization');
+
+                // Check if Three.js is available
+                if (!window.THREE) {
+                    throw new Error('Three.js not available');
+                }
+
+                const THREE = window.THREE;
+                updateDebug('Three.js available, creating scene');
+
+                // Scene setup
+                scene = new THREE.Scene();
+                scene.background = new THREE.Color(0x111111);
+
+                // Camera setup
+                camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+                camera.position.set(0, 1.6, 15);
+                camera.lookAt(0, 1.6, 0);
+
+                updateDebug('Camera created');
+
+                // Renderer setup
+                renderer = new THREE.WebGLRenderer({ antialias: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.shadowMap.enabled = true;
+                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                
+                const container = document.getElementById('galleryContainer');
+                container.appendChild(renderer.domElement);
+
+                updateDebug('Renderer created and added to DOM');
+
+                // Raycaster for interaction
+                raycaster = new THREE.Raycaster();
+                mouse = new THREE.Vector2();
+
+                updateDebug('Raycaster created');
+
+                // Create gallery space
+                createGallery(THREE);
+                updateDebug('Gallery space created');
+
+                // Create lighting
+                createLighting(THREE);
+                updateDebug('Lighting created');
+
+                // Place artworks
+                await placeArtworks(THREE);
+                updateDebug('Artworks placed');
+
+                // Setup event listeners
+                setupEventListeners();
+                updateDebug('Event listeners setup');
+
+                // Hide loading screen
+                document.getElementById('loadingText').style.display = 'none';
+                document.getElementById('debugInfo').style.display = 'none';
+                
+                updateStatus('Gallery ready!');
+                updateDebug('Gallery initialization complete');
+
+                // Start render loop
+                animate();
+
+            } catch (error) {
+                updateDebug('Error in initGallery: ' + error.message);
+                updateStatus('Error: ' + error.message);
+                console.error('Gallery initialization error:', error);
+                
+                // Show fallback message
+                document.getElementById('loadingText').innerHTML = `
+                    <div style="color: #ff6b6b;">Gallery failed to load</div>
+                    <small>Error: ${error.message}</small><br>
+                    <small>Please refresh the page</small>
+                `;
+            }
+        }
+
+        function createGallery(THREE) {
+            const galleryGroup = new THREE.Group();
+
+            // Floor
+            const floorGeometry = new THREE.PlaneGeometry(galleryWidth, galleryDepth);
+            const floorMaterial = new THREE.MeshLambertMaterial({ 
+                color: 0xf8f8f8,
+                transparent: true,
+                opacity: 0.9
+            });
+            const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+            floor.rotation.x = -Math.PI / 2;
+            floor.receiveShadow = true;
+            galleryGroup.add(floor);
+
+            // Ceiling
+            const ceiling = floor.clone();
+            ceiling.position.y = galleryHeight;
+            ceiling.rotation.x = Math.PI / 2;
+            galleryGroup.add(ceiling);
+
+            // Walls
+            const wallMaterial = new THREE.MeshLambertMaterial({ 
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.95
+            });
+
+            // Back wall
+            const backWallGeometry = new THREE.PlaneGeometry(galleryWidth, galleryHeight);
+            const backWall = new THREE.Mesh(backWallGeometry, wallMaterial);
+            backWall.position.set(0, galleryHeight / 2, -galleryDepth / 2);
+            backWall.receiveShadow = true;
+            galleryGroup.add(backWall);
+
+            // Left wall
+            const leftWallGeometry = new THREE.PlaneGeometry(galleryDepth, galleryHeight);
+            const leftWall = new THREE.Mesh(leftWallGeometry, wallMaterial);
+            leftWall.position.set(-galleryWidth / 2, galleryHeight / 2, 0);
+            leftWall.rotation.y = Math.PI / 2;
+            leftWall.receiveShadow = true;
+            galleryGroup.add(leftWall);
+
+            // Right wall
+            const rightWall = leftWall.clone();
+            rightWall.position.x = galleryWidth / 2;
+            rightWall.rotation.y = -Math.PI / 2;
+            galleryGroup.add(rightWall);
+
+            scene.add(galleryGroup);
+        }
+
+        function createLighting(THREE) {
+            // Ambient light
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+
+            // Main directional light
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(0, galleryHeight - 1, 10);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            // Track lighting
+            for (let i = 0; i < 6; i++) {
+                const spotLight = new THREE.SpotLight(0xffffff, 0.6, 15, Math.PI / 6, 0.3);
+                spotLight.position.set(
+                    (i % 3 - 1) * 8, 
+                    galleryHeight - 0.5, 
+                    Math.floor(i / 3) * 15 - 10
+                );
+                spotLight.castShadow = true;
+                scene.add(spotLight);
+            }
+        }
+
+        async function placeArtworks(THREE) {
+            const wallPositions = [
+                { x: -8, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
+                { x: 0, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
+                { x: 8, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
+                { x: -galleryWidth / 2 + 0.1, y: 2, z: -8, rotation: Math.PI / 2 },
+                { x: -galleryWidth / 2 + 0.1, y: 2, z: 8, rotation: Math.PI / 2 },
+                { x: galleryWidth / 2 - 0.1, y: 2, z: 0, rotation: -Math.PI / 2 }
+            ];
+
+            artworksData.forEach((artwork, index) => {
+                if (index >= wallPositions.length) return;
+
+                const position = wallPositions[index];
+                const dimensions = parseDimensions(artwork.dimensions || '24 × 36 in');
+                
+                const geometry = new THREE.PlaneGeometry(dimensions.width, dimensions.height);
+                
+                let material;
+                if (artwork.images && artwork.images.length > 0) {
+                    const textureLoader = new THREE.TextureLoader();
+                    const texture = textureLoader.load(artwork.images[0]);
+                    texture.minFilter = THREE.LinearFilter;
+                    texture.magFilter = THREE.LinearFilter;
+                    
+                    material = new THREE.MeshLambertMaterial({ 
+                        map: texture,
+                        transparent: true
+                    });
+                } else {
+                    material = new THREE.MeshLambertMaterial({ 
+                        color: 0x666666,
+                        transparent: true
+                    });
+                }
+                
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(position.x, position.y, position.z);
+                mesh.rotation.y = position.rotation;
+                mesh.castShadow = true;
+                mesh.userData = artwork;
+                
+                scene.add(mesh);
+                artworkMeshes.push(mesh);
+
+                // Frame
+                const frameGeometry = new THREE.PlaneGeometry(
+                    dimensions.width + 0.1, 
+                    dimensions.height + 0.1
+                );
+                const frameMaterial = new THREE.MeshLambertMaterial({ 
+                    color: 0x222222,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const frame = new THREE.Mesh(frameGeometry, frameMaterial);
+                frame.position.copy(mesh.position);
+                frame.rotation.copy(mesh.rotation);
+                frame.position.add(new THREE.Vector3(0, 0, -0.005));
+                
+                scene.add(frame);
+            });
+        }
+
+        function setupEventListeners() {
+            // Mouse events
+            renderer.domElement.addEventListener('click', onMouseClick);
+            renderer.domElement.addEventListener('mousemove', onMouseMove);
+            renderer.domElement.addEventListener('mousedown', onMouseDown);
+            renderer.domElement.addEventListener('mouseup', onMouseUp);
+
+            // Keyboard events
+            document.addEventListener('keydown', onKeyDown);
+            document.addEventListener('keyup', onKeyUp);
+
+            // Window resize
+            window.addEventListener('resize', onWindowResize);
+
+            // Prevent context menu
+            renderer.domElement.addEventListener('contextmenu', (e) => e.preventDefault());
+        }
+
+        function onMouseDown(event) {
+            if (isAerialView) return;
+            isMouseDown = true;
+            lastMouseX = event.clientX;
+            lastMouseY = event.clientY;
+            renderer.domElement.style.cursor = 'grabbing';
+        }
+
+        function onMouseUp(event) {
+            isMouseDown = false;
+            renderer.domElement.style.cursor = 'crosshair';
+        }
+
+        function onMouseClick(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(artworkMeshes);
+
+            if (intersects.length > 0) {
+                const artwork = intersects[0].object.userData;
+                focusOnArtwork(intersects[0].object, artwork);
+            }
+        }
+
+        function onMouseMove(event) {
+            if (isAerialView) return;
+
+            const currentMouseX = event.clientX;
+            const currentMouseY = event.clientY;
+
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(artworkMeshes);
+
+            const label = document.getElementById('artworkLabel');
+            
+            if (intersects.length > 0) {
+                const artwork = intersects[0].object.userData;
+                showArtworkLabel(artwork, event.clientX, event.clientY);
+            } else {
+                label.classList.remove('visible');
+            }
+
+            if (isMouseDown) {
+                const deltaX = currentMouseX - lastMouseX;
+                const deltaY = currentMouseY - lastMouseY;
+
+                yaw -= deltaX * mouseSensitivity;
+                pitch -= deltaY * mouseSensitivity;
+                
+                pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitch));
+
+                camera.rotation.order = 'YXZ';
+                camera.rotation.y = yaw;
+                camera.rotation.x = pitch;
+                camera.rotation.z = 0;
+            }
+
+            lastMouseX = currentMouseX;
+            lastMouseY = currentMouseY;
+        }
+
+        function showArtworkLabel(artwork, x, y) {
+            const label = document.getElementById('artworkLabel');
+            document.getElementById('labelTitle').textContent = artwork.title;
+            document.getElementById('labelDetails').innerHTML = `
+                ${artwork.artist}, ${artwork.year}<br>
+                ${artwork.dimensions}<br>
+                <em style="color: #999;">${artwork.medium}</em>
+            `;
+            
+            label.style.left = (x + 15) + 'px';
+            label.style.top = (y - 60) + 'px';
+            label.classList.add('visible');
+        }
+
+        function focusOnArtwork(mesh, artwork) {
+            const targetPosition = mesh.position.clone();
+            const box = new (window.THREE.Box3)().setFromObject(mesh);
+            const size = box.getSize(new window.THREE.Vector3());
+            const distance = Math.max(size.x, size.y) * 1.5 + 2;
+            
+            const normal = new window.THREE.Vector3(0, 0, 1);
+            normal.applyEuler(mesh.rotation);
+            const cameraPosition = targetPosition.clone().add(normal.multiplyScalar(distance));
+            cameraPosition.y = Math.max(1.6, targetPosition.y);
+            
+            animateCamera(cameraPosition, targetPosition);
+        }
+
+        function animateCamera(targetPosition, lookAtPosition) {
+            const startPosition = camera.position.clone();
+            const startQuaternion = camera.quaternion.clone();
+            
+            const tempCamera = camera.clone();
+            tempCamera.position.copy(targetPosition);
+            tempCamera.lookAt(lookAtPosition);
+            const targetQuaternion = tempCamera.quaternion.clone();
+            
+            const duration = 1500;
+            const startTime = Date.now();
+            
+            function animateStep() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                
+                camera.position.lerpVectors(startPosition, targetPosition, eased);
+                camera.quaternion.slerpQuaternions(startQuaternion, targetQuaternion, eased);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animateStep);
+                }
+            }
+            
+            animateStep();
+        }
+
+        function onKeyDown(event) {
+            keys[event.code] = true;
+        }
+
+        function onKeyUp(event) {
+            keys[event.code] = false;
+        }
+
+        function updateMovement() {
+            if (isAerialView) return;
+
+            velocity.x = 0;
+            velocity.z = 0;
+
+            const forward = { x: Math.sin(yaw), z: Math.cos(yaw) };
+            const right = { x: Math.cos(yaw), z: -Math.sin(yaw) };
+
+            if (keys['KeyW'] || keys['ArrowUp']) {
+                velocity.x += forward.x * -moveSpeed;
+                velocity.z += forward.z * -moveSpeed;
+            }
+            if (keys['KeyS'] || keys['ArrowDown']) {
+                velocity.x += forward.x * moveSpeed;
+                velocity.z += forward.z * moveSpeed;
+            }
+            if (keys['KeyA'] || keys['ArrowLeft']) {
+                velocity.x += right.x * -moveSpeed;
+                velocity.z += right.z * -moveSpeed;
+            }
+            if (keys['KeyD'] || keys['ArrowRight']) {
+                velocity.x += right.x * moveSpeed;
+                velocity.z += right.z * moveSpeed;
+            }
+
+            const newPosition = {
+                x: camera.position.x + velocity.x,
+                y: camera.position.y,
+                z: camera.position.z + velocity.z
+            };
+            
+            const margin = 2;
+            newPosition.x = Math.max(-galleryWidth/2 + margin, Math.min(galleryWidth/2 - margin, newPosition.x));
+            newPosition.z = Math.max(-galleryDepth/2 + margin, Math.min(galleryDepth/2 - margin, newPosition.z));
+            
+            camera.position.set(newPosition.x, newPosition.y, newPosition.z);
+        }
+
+        function toggleView() {
+            isAerialView = !isAerialView;
+            const button = document.querySelector('.view-mode-toggle');
+            
+            if (isAerialView) {
+                camera.position.set(0, galleryHeight + 15, 0);
+                camera.lookAt(0, 0, 0);
+                camera.rotation.order = 'XYZ';
+                camera.rotation.x = -Math.PI / 2;
+                camera.rotation.y = 0;
+                camera.rotation.z = 0;
+                button.textContent = 'Walk Mode';
+                isMouseDown = false;
+                renderer.domElement.style.cursor = 'default';
+            } else {
+                camera.position.set(0, 1.6, 15);
+                yaw = 0;
+                pitch = 0;
+                camera.rotation.order = 'YXZ';
+                camera.rotation.x = 0;
+                camera.rotation.y = 0;
+                camera.rotation.z = 0;
+                camera.lookAt(0, 1.6, 0);
+                button.textContent = 'Aerial View';
+                renderer.domElement.style.cursor = 'crosshair';
+            }
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            frameCount++;
+            updateMovement();
+            renderer.render(scene, camera);
+        }
+
+        // Main initialization function
+        async function startGallery() {
+            try {
+                updateDebug('Starting gallery initialization');
+                
+                // Load Three.js
+                await loadThreeJS();
+                updateDebug('Three.js loaded');
+                
+                // Load artworks
+                await loadArtworks();
+                updateDebug('Artworks loaded');
+                
+                // Initialize gallery
+                await initGallery();
+                updateDebug('Gallery initialized');
+                
+            } catch (error) {
+                updateDebug('Failed to start gallery: ' + error.message);
+                updateStatus('Gallery failed to start');
+                console.error('Gallery startup error:', error);
+                
+                document.getElementById('loadingText').innerHTML = `
+                    <div style="color: #ff6b6b;">Gallery Error</div>
+                    <small>${error.message}</small><br>
+                    <button onclick="location.reload()" style="margin-top: 10px; padding: 8px 16px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Reload Page
+                    </button>
+                `;
+            }
+        }
+
+        // Start when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', startGallery);
+        } else {
+            startGallery();
+        }
+
+        // Fallback timer
+        setTimeout(() => {
+            if (!renderer) {
+                updateDebug('Timeout reached, gallery not loaded');
+                updateStatus('Timeout - please reload');
+                document.getElementById('loadingText').innerHTML = `
+                    <div style="color: #ff6b6b;">Gallery Timeout</div>
+                    <small>Please refresh the page</small><br>
+                    <button onclick="location.reload()" style="margin-top: 10px; padding: 8px 16px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Reload Page
+                    </button>
+                `;
+            }
+        }, 15000);
+
+        console.log('🎨 Gallery script setup complete');
+    </script>
+</body>
+</html>

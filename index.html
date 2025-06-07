@@ -1916,7 +1916,11 @@
                     .eq('id', curatorId)
                     .single();
 
-                if (curatorError) throw curatorError;
+                if (curatorError) {
+                    console.error('Error loading curator:', curatorError);
+                    alert('Failed to load curator information');
+                    return;
+                }
 
                 // Load collection info
                 const { data: collection, error: collectionError } = await supabase
@@ -1925,9 +1929,13 @@
                     .eq('id', collectionId)
                     .single();
 
-                if (collectionError) throw collectionError;
+                if (collectionError) {
+                    console.error('Error loading collection:', collectionError);
+                    alert('Failed to load collection information');
+                    return;
+                }
 
-                // Load collection artworks
+                // Load collection artworks (this might be empty, which is fine)
                 const { data: collectionArtworks, error: artworksError } = await supabase
                     .from('curator_artworks')
                     .select('*')
@@ -1935,38 +1943,68 @@
                     .order('display_order', { ascending: true, nullsLast: true })
                     .order('created_at', { ascending: false });
 
-                if (artworksError) throw artworksError;
+                // Don't throw error if no artworks found, just log it
+                if (artworksError) {
+                    console.error('Error loading artworks (non-critical):', artworksError);
+                }
 
                 // Update page content
                 artworks = collectionArtworks || [];
                 filteredArtworks = [...artworks];
                 
                 // Update header tagline to show curator info
-                document.querySelector('.tagline').innerHTML = `
-                    <div style="display: flex; flex-direction: column; align-items: center;">
-                        <div style="font-size: 0.3em; font-weight: 400; margin-bottom: 10px; color: #6b7280;">${curator.name}</div>
-                        <div>${collection.name}</div>
-                        <div style="font-size: 0.4em; font-weight: 400; margin-top: 10px; color: #6b7280;">${collection.type.toUpperCase()} COLLECTION</div>
-                    </div>
-                `;
+                try {
+                    document.querySelector('.tagline').innerHTML = `
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="font-size: 0.3em; font-weight: 400; margin-bottom: 10px; color: #6b7280;">${curator.name}</div>
+                            <div>${collection.name}</div>
+                            <div style="font-size: 0.4em; font-weight: 400; margin-top: 10px; color: #6b7280;">${collection.type.toUpperCase()} COLLECTION</div>
+                        </div>
+                    `;
+                } catch (taglineError) {
+                    console.error('Error updating tagline (non-critical):', taglineError);
+                }
                 
-                populateFilterDropdowns();
-                renderGallery();
+                // These functions might have minor errors but shouldn't block page load
+                try {
+                    populateFilterDropdowns();
+                } catch (filterError) {
+                    console.error('Error populating filters (non-critical):', filterError);
+                }
+                
+                try {
+                    renderGallery();
+                } catch (renderError) {
+                    console.error('Error rendering gallery (non-critical):', renderError);
+                }
                 
                 // Show admin controls if this is the current curator's collection
-                if (currentCurator && currentCurator.id === curatorId) {
-                    // Enable curator admin mode
-                    isAdminMode = true;
-                    isAuthenticated = true;
-                    renderGallery();
+                try {
+                    if (currentCurator && currentCurator.id === curatorId) {
+                        // Enable curator admin mode
+                        isAdminMode = true;
+                        isAuthenticated = true;
+                        renderGallery();
+                    }
+                } catch (adminError) {
+                    console.error('Error setting admin mode (non-critical):', adminError);
                 }
                 
                 // Add back to main navigation
-                addBackToMainButton();
+                try {
+                    addBackToMainButton();
+                } catch (buttonError) {
+                    console.error('Error adding back button (non-critical):', buttonError);
+                }
                 
             } catch (error) {
-                console.error('Error loading curator page:', error);
-                alert('Failed to load curator page');
+                console.error('Critical error loading curator page:', error);
+                // Only show alert for truly critical errors
+                if (error.message && error.message.includes('Failed to fetch')) {
+                    alert('Network error - please check your connection and try again');
+                } else {
+                    alert('Failed to load curator page');
+                }
             }
         }
 

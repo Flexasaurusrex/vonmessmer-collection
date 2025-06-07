@@ -369,21 +369,11 @@
         
         /* Main Content */
         main {
-            padding: 60px 0 120px;
+            padding: 40px 0 120px;
         }
         
         .page-title {
-            margin-bottom: 60px;
-        }
-        
-        .page-title h1 {
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            color: #6b7280;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 40px;
+            display: none;
         }
         
         /* Gallery Grid */
@@ -396,19 +386,22 @@
         
         /* Search & Filter Controls */
         .gallery-controls {
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
             align-items: center;
             justify-content: space-between;
+            padding: 20px 30px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(240, 240, 240, 0.8);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.04);
         }
         
         .search-filter-group {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             align-items: center;
-            flex-wrap: wrap;
         }
         
         .search-box {
@@ -417,21 +410,26 @@
         
         .search-input {
             padding: 12px 16px 12px 40px;
-            border: 1px solid #e0e0e0;
-            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
             font-size: 13px;
-            font-family: inherit;
+            font-family: 'Inter', sans-serif;
             text-transform: uppercase;
             letter-spacing: 1px;
-            width: 250px;
+            width: 280px;
             transition: all 0.3s ease;
+            border-radius: 8px;
+            font-weight: 400;
         }
         
         .search-input:focus {
             outline: none;
-            border-color: #333;
-            background: #ffffff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-color: #1f2937;
+            box-shadow: 0 0 0 3px rgba(31,41,55,0.1);
+        }
+        
+        .search-input::placeholder {
+            color: #9ca3af;
         }
         
         .search-icon {
@@ -439,58 +437,65 @@
             left: 14px;
             top: 50%;
             transform: translateY(-50%);
-            color: #999;
+            color: #9ca3af;
             font-size: 14px;
         }
         
         .filter-group {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             align-items: center;
         }
         
         .filter-select {
             padding: 12px 16px;
-            border: 1px solid #e0e0e0;
-            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
             font-size: 11px;
-            font-family: inherit;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 1px;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 120px;
+            min-width: 140px;
+            border-radius: 8px;
+            color: #4b5563;
         }
         
         .filter-select:focus {
             outline: none;
-            border-color: #333;
-            background: #ffffff;
+            border-color: #1f2937;
+            box-shadow: 0 0 0 3px rgba(31,41,55,0.1);
         }
         
         .results-count {
             font-size: 11px;
-            color: #999;
+            color: #6b7280;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-left: auto;
         }
         
         .clear-filters {
             background: none;
-            border: 1px solid #e0e0e0;
-            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            padding: 12px 20px;
             font-size: 10px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 1px;
             cursor: pointer;
-            color: #999;
+            color: #6b7280;
             transition: all 0.3s ease;
+            border-radius: 8px;
         }
         
         .clear-filters:hover {
-            border-color: #333;
-            color: #333;
+            border-color: #1f2937;
+            color: #1f2937;
         }
         
         /* Artwork Cards */
@@ -1153,13 +1158,15 @@
             
             .gallery-controls {
                 flex-direction: column;
-                align-items: stretch;
-                gap: 15px;
+                gap: 20px;
+                padding: 20px;
+                margin-bottom: 40px;
             }
             
             .search-filter-group {
+                width: 100%;
                 flex-direction: column;
-                gap: 12px;
+                gap: 15px;
             }
             
             .search-input {
@@ -1167,7 +1174,9 @@
             }
             
             .filter-group {
+                width: 100%;
                 justify-content: space-between;
+                gap: 10px;
             }
             
             .filter-select {
@@ -1176,8 +1185,8 @@
             }
             
             .results-count {
-                margin-left: 0;
                 text-align: center;
+                width: 100%;
             }
             
             .artwork-card {
@@ -1374,10 +1383,6 @@
 
     <main>
         <div class="container">
-            <div class="page-title">
-                <h1 id="physical">Current</h1>
-            </div>
-
             <!-- Search & Filter Controls -->
             <div class="gallery-controls" id="galleryControls" style="display: none;">
                 <div class="search-filter-group">

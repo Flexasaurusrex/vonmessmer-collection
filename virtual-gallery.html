@@ -156,6 +156,37 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            color: #333;
+        }
+
+        .error-message h3 {
+            margin-bottom: 15px;
+            color: #e74c3c;
+        }
+
+        .retry-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 11px;
+        }
+
         @media (max-width: 768px) {
             .gallery-info,
             .controls,
@@ -202,41 +233,11 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Initialize Supabase connection
-        const supabaseUrl = 'https://qqkshpkbfixeyusqpsou.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-        
+        // Global variables
+        let scene, camera, renderer;
         let artworksData = [];
-
-        async function loadArtworksFromDatabase() {
-            try {
-                document.getElementById('loadingText').textContent = 'Loading your collection...';
-                
-                const { data, error } = await supabase
-                    .from('artworks')
-                    .select('*')
-                    .order('display_order', { ascending: true, nullsLast: true })
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                artworksData = data || [];
-                console.log('Loaded', artworksData.length, 'artworks from VonMesser Collection');
-                
-                if (artworksData.length === 0) {
-                    document.getElementById('loadingText').textContent = 'No artworks found in collection';
-                    return;
-                }
-                
-                return artworksData;
-            } catch (error) {
-                console.error('Error loading artworks:', error);
-                document.getElementById('loadingText').textContent = 'Error loading collection';
-                return [];
-            }
-        }
         let artworkMeshes = [];
         let raycaster, mouse;
         let isAerialView = false;
@@ -262,504 +263,68 @@
         const galleryHeight = 6;
         const wallThickness = 0.3;
 
-        async function init() {
-            // Load artwork data first
-            const artworks = await loadArtworksFromDatabase();
-            if (!artworks || artworks.length === 0) {
-                return; // Exit if no artworks to display
+        // Fallback artworks data in case database fails
+        const fallbackArtworks = [
+            {
+                id: 'demo-1',
+                title: 'Abstract Composition',
+                artist: 'Contemporary Artist',
+                year: '2024',
+                dimensions: '24 × 36 in',
+                medium: 'Oil on canvas',
+                images: ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzMzNDQ1NSIvPjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxOCI+QWJzdHJhY3QgQ29tcG9zaXRpb248L3RleHQ+PC9zdmc+']
+            },
+            {
+                id: 'demo-2',
+                title: 'Modern Landscape',
+                artist: 'Gallery Artist',
+                year: '2023',
+                dimensions: '30 × 40 in',
+                medium: 'Acrylic on canvas',
+                images: ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzJjNDA1NCIvPjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxOCI+TW9kZXJuIExhbmRzY2FwZTwvdGV4dD48L3N2Zz4=']
+            },
+            {
+                id: 'demo-3',
+                title: 'Still Life Study',
+                artist: 'Studio Artist',
+                year: '2024',
+                dimensions: '18 × 24 in',
+                medium: 'Mixed media',
+                images: ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iIzM5NDk1ZSIvPjx0ZXh0IHg9IjIwMCIgeT0iMTUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxOCI+U3RpbGwgTGlmZSBTdHVkeTwvdGV4dD48L3N2Zz4=']
             }
+        ];
 
-            // Scene setup
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x111111);
-
-            // Camera setup
-            camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 1.6, 15); // Human eye height
-            camera.rotation.order = 'YXZ'; // Set rotation order for proper mouse look
-            camera.lookAt(0, 1.6, 0);
-
-            // Renderer setup
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.2;
-            document.getElementById('galleryContainer').appendChild(renderer.domElement);
-
-            // Raycaster for artwork interaction
-            raycaster = new THREE.Raycaster();
-            mouse = new THREE.Vector2();
-
-            // Create gallery space
-            createGallery();
-            
-            // Create lighting
-            createLighting();
-            
-            // Place artworks
-            placeArtworks();
-
-            // Event listeners
-            setupEventListeners();
-
-            // Hide loading
-            document.getElementById('loadingText').style.display = 'none';
-
-            // Start render loop
-            animate();
+        // Initialize Supabase connection
+        const supabaseUrl = 'https://qqkshpkbfixeyusqpsou.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
+        
+        let supabase;
+        try {
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        } catch (error) {
+            console.warn('Supabase not available, using fallback data');
         }
 
-        function createGallery() {
-            const galleryGroup = new THREE.Group();
-
-            // Floor
-            const floorGeometry = new THREE.PlaneGeometry(galleryWidth, galleryDepth);
-            const floorMaterial = new THREE.MeshLambertMaterial({ 
-                color: 0xf8f8f8,
-                transparent: true,
-                opacity: 0.9
-            });
-            const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-            floor.rotation.x = -Math.PI / 2;
-            floor.receiveShadow = true;
-            galleryGroup.add(floor);
-
-            // Ceiling
-            const ceiling = floor.clone();
-            ceiling.position.y = galleryHeight;
-            ceiling.rotation.x = Math.PI / 2;
-            galleryGroup.add(ceiling);
-
-            // Walls
-            const wallMaterial = new THREE.MeshLambertMaterial({ 
-                color: 0xffffff,
-                transparent: true,
-                opacity: 0.95
-            });
-
-            // Back wall
-            const backWallGeometry = new THREE.PlaneGeometry(galleryWidth, galleryHeight);
-            const backWall = new THREE.Mesh(backWallGeometry, wallMaterial);
-            backWall.position.set(0, galleryHeight / 2, -galleryDepth / 2);
-            backWall.receiveShadow = true;
-            galleryGroup.add(backWall);
-
-            // Left wall
-            const leftWallGeometry = new THREE.PlaneGeometry(galleryDepth, galleryHeight);
-            const leftWall = new THREE.Mesh(leftWallGeometry, wallMaterial);
-            leftWall.position.set(-galleryWidth / 2, galleryHeight / 2, 0);
-            leftWall.rotation.y = Math.PI / 2;
-            leftWall.receiveShadow = true;
-            galleryGroup.add(leftWall);
-
-            // Right wall
-            const rightWall = leftWall.clone();
-            rightWall.position.x = galleryWidth / 2;
-            rightWall.rotation.y = -Math.PI / 2;
-            galleryGroup.add(rightWall);
-
-            scene.add(galleryGroup);
-        }
-
-        function createLighting() {
-            // Ambient light for overall illumination
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-            scene.add(ambientLight);
-
-            // Main directional light (skylight effect)
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            directionalLight.position.set(0, galleryHeight - 1, 10);
-            directionalLight.castShadow = true;
-            directionalLight.shadow.mapSize.width = 2048;
-            directionalLight.shadow.mapSize.height = 2048;
-            directionalLight.shadow.camera.near = 0.5;
-            directionalLight.shadow.camera.far = 50;
-            directionalLight.shadow.camera.left = -25;
-            directionalLight.shadow.camera.right = 25;
-            directionalLight.shadow.camera.top = 25;
-            directionalLight.shadow.camera.bottom = -25;
-            scene.add(directionalLight);
-
-            // Track lighting for artworks
-            const trackLights = [];
-            for (let i = 0; i < 6; i++) {
-                const spotLight = new THREE.SpotLight(0xffffff, 0.6, 15, Math.PI / 6, 0.3);
-                spotLight.position.set(
-                    (i % 3 - 1) * 8, 
-                    galleryHeight - 0.5, 
-                    Math.floor(i / 3) * 15 - 10
-                );
-                spotLight.castShadow = true;
-                spotLight.shadow.mapSize.width = 1024;
-                spotLight.shadow.mapSize.height = 1024;
-                scene.add(spotLight);
-                trackLights.push(spotLight);
-            }
-        }
-
-        function parseDimensions(dimensionString) {
-            // Parse dimensions like "24 × 36 in" or "61 × 91 cm"
-            const match = dimensionString.match(/([\d.]+)\s*[×x]\s*([\d.]+)\s*(in|cm)/i);
-            if (!match) return { width: 1, height: 1 };
-
-            let width = parseFloat(match[1]);
-            let height = parseFloat(match[2]);
-            const unit = match[3].toLowerCase();
-
-            // Convert to meters
-            if (unit === 'in') {
-                width *= 0.0254; // inches to meters
-                height *= 0.0254;
-            } else if (unit === 'cm') {
-                width *= 0.01; // cm to meters
-                height *= 0.01;
-            }
-
-            return { width, height };
-        }
-
-        function placeArtworks() {
-            const wallPositions = [
-                // Back wall
-                { x: -8, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
-                { x: 0, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
-                { x: 8, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
-                // Left wall
-                { x: -galleryWidth / 2 + 0.1, y: 2, z: -8, rotation: Math.PI / 2 },
-                { x: -galleryWidth / 2 + 0.1, y: 2, z: 8, rotation: Math.PI / 2 },
-                // Right wall  
-                { x: galleryWidth / 2 - 0.1, y: 2, z: 0, rotation: -Math.PI / 2 },
-                // Additional positions for more artworks
-                { x: -4, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
-                { x: 4, y: 2, z: -galleryDepth / 2 + 0.1, rotation: 0 },
-                { x: -galleryWidth / 2 + 0.1, y: 2, z: -4, rotation: Math.PI / 2 },
-                { x: -galleryWidth / 2 + 0.1, y: 2, z: 4, rotation: Math.PI / 2 },
-                { x: galleryWidth / 2 - 0.1, y: 2, z: -8, rotation: -Math.PI / 2 },
-                { x: galleryWidth / 2 - 0.1, y: 2, z: 8, rotation: -Math.PI / 2 }
-            ];
-
-            // Use actual artwork data from your collection
-            artworksData.forEach((artwork, index) => {
-                if (index >= wallPositions.length) return;
-
-                const position = wallPositions[index];
-                const dimensions = parseDimensions(artwork.dimensions || '24 × 36 in');
+        async function loadArtworksFromDatabase() {
+            try {
+                document.getElementById('loadingText').textContent = 'Loading your collection...';
                 
-                // Create artwork plane
-                const geometry = new THREE.PlaneGeometry(dimensions.width, dimensions.height);
-                
-                // Load texture from your artwork images
-                const textureLoader = new THREE.TextureLoader();
-                const imageUrl = artwork.images && artwork.images.length > 0 ? artwork.images[0] : null;
-                
-                let material;
-                if (imageUrl) {
-                    const texture = textureLoader.load(imageUrl, 
-                        // onLoad
-                        function(texture) {
-                            texture.minFilter = THREE.LinearFilter;
-                            texture.magFilter = THREE.LinearFilter;
-                        },
-                        // onProgress
-                        undefined,
-                        // onError
-                        function(error) {
-                            console.warn('Error loading texture for:', artwork.title, error);
-                        }
-                    );
-                    
-                    material = new THREE.MeshLambertMaterial({ 
-                        map: texture,
-                        transparent: true
-                    });
-                } else {
-                    // Fallback material if no image
-                    material = new THREE.MeshLambertMaterial({ 
-                        color: 0x666666,
-                        transparent: true
-                    });
+                if (!supabase) {
+                    throw new Error('Supabase not available');
                 }
+
+                const { data, error } = await supabase
+                    .from('artworks')
+                    .select('*')
+                    .order('display_order', { ascending: true, nullsLast: true })
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                artworksData = data && data.length > 0 ? data : fallbackArtworks;
+                console.log('Loaded', artworksData.length, 'artworks');
                 
-                const mesh = new THREE.Mesh(geometry, material);
-                mesh.position.set(position.x, position.y, position.z);
-                mesh.rotation.y = position.rotation;
-                mesh.castShadow = true;
-                mesh.userData = artwork;
-                
-                scene.add(mesh);
-                artworkMeshes.push(mesh);
-
-                // Create simple frame
-                const frameGeometry = new THREE.PlaneGeometry(
-                    dimensions.width + 0.1, 
-                    dimensions.height + 0.1
-                );
-                const frameMaterial = new THREE.MeshLambertMaterial({ 
-                    color: 0x222222,
-                    transparent: true,
-                    opacity: 0.8
-                });
-                const frame = new THREE.Mesh(frameGeometry, frameMaterial);
-                frame.position.copy(mesh.position);
-                frame.rotation.copy(mesh.rotation);
-                frame.position.add(new THREE.Vector3(0, 0, -0.005)); // Slightly behind artwork
-                
-                scene.add(frame);
-            });
-        }
-
-        function setupEventListeners() {
-            // Mouse events
-            renderer.domElement.addEventListener('click', onMouseClick);
-            renderer.domElement.addEventListener('mousemove', onMouseMove);
-            renderer.domElement.addEventListener('mousedown', onMouseDown);
-            renderer.domElement.addEventListener('mouseup', onMouseUp);
-
-            // Keyboard events
-            document.addEventListener('keydown', onKeyDown);
-            document.addEventListener('keyup', onKeyUp);
-
-            // Window resize
-            window.addEventListener('resize', onWindowResize);
-
-            // Prevent context menu
-            renderer.domElement.addEventListener('contextmenu', (e) => e.preventDefault());
-        }
-
-        function onMouseDown(event) {
-            if (isAerialView) return;
-            isMouseDown = true;
-            lastMouseX = event.clientX;
-            lastMouseY = event.clientY;
-            renderer.domElement.style.cursor = 'grabbing';
-        }
-
-        function onMouseUp(event) {
-            isMouseDown = false;
-            renderer.domElement.style.cursor = 'crosshair';
-        }
-
-        function onMouseClick(event) {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(artworkMeshes);
-
-            if (intersects.length > 0) {
-                const artwork = intersects[0].object.userData;
-                focusOnArtwork(intersects[0].object, artwork);
-            }
-        }
-
-        function onMouseMove(event) {
-            if (isAerialView) return;
-
-            const currentMouseX = event.clientX;
-            const currentMouseY = event.clientY;
-
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(artworkMeshes);
-
-            const label = document.getElementById('artworkLabel');
-            
-            if (intersects.length > 0) {
-                const artwork = intersects[0].object.userData;
-                showArtworkLabel(artwork, event.clientX, event.clientY);
-            } else {
-                label.classList.remove('visible');
-            }
-
-            // Mouse look - drag to look around
-            if (isMouseDown) {
-                const deltaX = currentMouseX - lastMouseX;
-                const deltaY = currentMouseY - lastMouseY;
-
-                // Update yaw and pitch
-                yaw -= deltaX * mouseSensitivity;
-                pitch -= deltaY * mouseSensitivity;
-                
-                // Clamp pitch to prevent over-rotation
-                pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitch));
-
-                // Apply rotations in the correct order
-                camera.rotation.order = 'YXZ';
-                camera.rotation.y = yaw;
-                camera.rotation.x = pitch;
-                camera.rotation.z = 0; // Prevent roll
-            }
-
-            lastMouseX = currentMouseX;
-            lastMouseY = currentMouseY;
-        }
-
-        function showArtworkLabel(artwork, x, y) {
-            const label = document.getElementById('artworkLabel');
-            document.getElementById('labelTitle').textContent = artwork.title;
-            document.getElementById('labelDetails').innerHTML = `
-                ${artwork.artist}, ${artwork.year}<br>
-                ${artwork.dimensions}<br>
-                <em style="color: #999;">${artwork.medium}</em>
-            `;
-            
-            label.style.left = (x + 15) + 'px';
-            label.style.top = (y - 60) + 'px';
-            label.classList.add('visible');
-        }
-
-        function focusOnArtwork(mesh, artwork) {
-            const targetPosition = mesh.position.clone();
-            
-            // Calculate optimal viewing distance based on artwork size
-            const box = new THREE.Box3().setFromObject(mesh);
-            const size = box.getSize(new THREE.Vector3());
-            const distance = Math.max(size.x, size.y) * 1.5 + 2;
-            
-            // Position camera in front of artwork
-            const normal = new THREE.Vector3(0, 0, 1);
-            normal.applyEuler(mesh.rotation);
-            const cameraPosition = targetPosition.clone().add(normal.multiplyScalar(distance));
-            cameraPosition.y = Math.max(1.6, targetPosition.y); // Keep at eye level or artwork level
-            
-            // Smooth transition
-            animateCamera(cameraPosition, targetPosition);
-        }
-
-        function animateCamera(targetPosition, lookAtPosition) {
-            const startPosition = camera.position.clone();
-            const startQuaternion = camera.quaternion.clone();
-            
-            // Create temporary camera for target rotation
-            const tempCamera = camera.clone();
-            tempCamera.position.copy(targetPosition);
-            tempCamera.lookAt(lookAtPosition);
-            const targetQuaternion = tempCamera.quaternion.clone();
-            
-            const duration = 1500; // ms
-            const startTime = Date.now();
-            
-            function animateStep() {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const eased = 1 - Math.pow(1 - progress, 3); // Ease out cubic
-                
-                camera.position.lerpVectors(startPosition, targetPosition, eased);
-                camera.quaternion.slerpQuaternions(startQuaternion, targetQuaternion, eased);
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animateStep);
-                }
-            }
-            
-            animateStep();
-        }
-
-        function onKeyDown(event) {
-            keys[event.code] = true;
-        }
-
-        function onKeyUp(event) {
-            keys[event.code] = false;
-        }
-
-        function updateMovement() {
-            if (isAerialView) return;
-
-            // Reset velocity
-            velocity.x = 0;
-            velocity.z = 0;
-
-            // Calculate movement direction based on camera yaw (ignore pitch for movement)
-            const forward = new THREE.Vector3();
-            forward.x = Math.sin(yaw);
-            forward.z = Math.cos(yaw);
-            
-            const right = new THREE.Vector3();
-            right.x = Math.cos(yaw);
-            right.z = -Math.sin(yaw);
-
-            // Calculate movement
-            if (keys['KeyW'] || keys['ArrowUp']) {
-                velocity.add(forward.clone().multiplyScalar(-moveSpeed));
-            }
-            if (keys['KeyS'] || keys['ArrowDown']) {
-                velocity.add(forward.clone().multiplyScalar(moveSpeed));
-            }
-            if (keys['KeyA'] || keys['ArrowLeft']) {
-                velocity.add(right.clone().multiplyScalar(-moveSpeed));
-            }
-            if (keys['KeyD'] || keys['ArrowRight']) {
-                velocity.add(right.clone().multiplyScalar(moveSpeed));
-            }
-
-            // Apply movement with bounds checking
-            const newPosition = camera.position.clone().add(velocity);
-            
-            // Keep within gallery bounds
-            const margin = 2;
-            newPosition.x = Math.max(-galleryWidth/2 + margin, Math.min(galleryWidth/2 - margin, newPosition.x));
-            newPosition.z = Math.max(-galleryDepth/2 + margin, Math.min(galleryDepth/2 - margin, newPosition.z));
-            
-            camera.position.copy(newPosition);
-        }
-
-        function toggleView() {
-            isAerialView = !isAerialView;
-            const button = document.querySelector('.view-mode-toggle');
-            
-            if (isAerialView) {
-                // Switch to aerial view - position camera above gallery center
-                camera.position.set(0, galleryHeight + 15, 0);
-                camera.lookAt(0, 0, 0);
-                camera.rotation.order = 'XYZ';
-                camera.rotation.x = -Math.PI / 2;
-                camera.rotation.y = 0;
-                camera.rotation.z = 0;
-                button.textContent = 'Walk Mode';
-                isMouseDown = false; // Stop any dragging
-                renderer.domElement.style.cursor = 'default';
-            } else {
-                // Switch to walk mode
-                camera.position.set(0, 1.6, 15);
-                yaw = 0;
-                pitch = 0;
-                camera.rotation.order = 'YXZ';
-                camera.rotation.x = 0;
-                camera.rotation.y = 0;
-                camera.rotation.z = 0;
-                camera.lookAt(0, 1.6, 0);
-                button.textContent = 'Aerial View';
-                renderer.domElement.style.cursor = 'crosshair';
-            }
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            frameCount++;
-            
-            // Update movement (only in walk mode)
-            if (!isAerialView) {
-                updateMovement();
-            }
-            
-            // Render
-            renderer.render(scene, camera);
-        }
-
-        // Initialize gallery when page loads
-        window.addEventListener('load', init);
-    </script>
-</body>
-</html>
+                return artworksData;
+            } catch (error) {
+                console.warn('Error loading from database, using fallback:', error);
+                document.getElementById('loadingText').textContent = 'Using demo collection...

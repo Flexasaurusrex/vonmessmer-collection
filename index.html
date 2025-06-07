@@ -1859,7 +1859,16 @@
             const name = prompt('Collection Name:');
             if (!name) return;
             
-            const type = confirm('Is this a Physical collection? (Cancel for Digital)') ? 'physical' : 'digital';
+            // Better way to ask for collection type
+            let type = prompt('Collection Type: Enter "physical" or "digital":', 'physical');
+            if (!type) return;
+            
+            type = type.toLowerCase();
+            if (type !== 'physical' && type !== 'digital') {
+                alert('Please enter either "physical" or "digital"');
+                return;
+            }
+            
             const description = prompt('Collection Description (optional):') || '';
             
             try {
@@ -1877,7 +1886,7 @@
                 if (error) throw error;
 
                 alert('Collection created successfully!');
-                loadCuratorCollections();
+                await loadCuratorCollections();
             } catch (error) {
                 console.error('Error creating collection:', error);
                 alert('Failed to create collection: ' + error.message);

@@ -3,998 +3,2653 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VonMesser Virtual Gallery</title>
+    <title>VonMesser Collection - Art Leads Culture</title>
+    
+    <!-- Meta tags for SEO and social sharing -->
+    <meta name="description" content="A carefully curated assembly of contemporary and classical works exploring the intersection of traditional artistry and modern expression.">
+    <meta name="keywords" content="art collection, contemporary art, classical art, curated collection, VonMesser, art gallery">
+    <meta name="author" content="VonMesser Collection">
+    
+    <!-- Open Graph / Facebook / Instagram -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vonmesser.xyz/">
+    <meta property="og:title" content="VonMesser Collection - Art Leads Culture">
+    <meta property="og:description" content="A carefully curated assembly of contemporary and classical works exploring the intersection of traditional artistry and modern expression.">
+    <meta property="og:image" content="https://vonmesser.xyz/social-preview-square.png">
+    <meta property="og:image:width" content="1080">
+    <meta property="og:image:height" content="1080">
+    
+    <!-- Twitter (keeps your perfect rectangular image) -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://vonmesser.xyz/">
+    <meta property="twitter:title" content="VonMesser Collection - Art Leads Culture">
+    <meta property="twitter:description" content="A carefully curated assembly of contemporary and classical works exploring the intersection of traditional artistry and modern expression.">
+    <meta property="twitter:image" content="https://vonmesser.xyz/social-preview.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNmZmZmZmYiLz4KICA8ZyBmaWxsPSIjMzMzIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iOCwyIDEwLDIgMTMsOSAxNiwyIDE4LDIgMTQsMTIgMTEsMTIiLz4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTksMiAyMSwyIDIzLDcgMjUsMiAyNywyIDI3LDEyIDI1LDEyIDI1LDUgMjMsOSAyMSw5IDIwLDUgMjAsMTIgMTksMTIiLz4KICA8L2c+CiAgPHRleHQgeD0iMTYiIHk9IjI3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiBzdHlsZT0iZm9udC1mYW1pbHk6IHNhbnMtc2VyaWY7IGZvbnQtc2l6ZTogNXB4OyBmb250LXdlaWdodDogNDAwOyBsZXR0ZXItc3BhY2luZzogMC41cHg7Ij5WTTwvdGV4dD4KPC9zdmc+Cg==">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNmZmZmZmYiLz4KICA8ZyBmaWxsPSIjMzMzIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iOCwyIDEwLDIgMTMsOSAxNiwyIDE4LDIgMTQsMTIgMTEsMTIiLz4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTksMiAyMSwyIDIzLDcgMjUsMiAyNywyIDI3LDEyIDI1LDEyIDI1LDUgMjMsOSAyMSw5IDIwLDUgMjAsMTIgMTksMTIiLz4KICA8L2c+CiAgPHRleHQgeD0iMTYiIHk9IjI3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiBzdHlsZT0iZm9udC1mYW1pbHk6IHNhbnMtc2VyaWY7IGZvbnQtc2l6ZTogNXB4OyBmb250LXdlaWdodDogNDAwOyBsZXR0ZXItc3BhY2luZzogMC41cHg7Ij5WTTwvdGV4dD4KPC9zdmc+Cg==">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIGZpbGw9IiNmZmZmZmYiLz4KICA8ZyBmaWxsPSIjMzMzIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iNDUsMTAgNTUsMTAgNzAsNTAgODUsMTAgOTUsMTAgNzgsNzAgNjMsNzAiLz4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTAwLDEwIDExMCwxMCAxMjAsMzUgMTMwLDEwIDE0MCwxMCAxNDAsNzAgMTMwLDcwIDEzMCwyNSAxMjAsNDUgMTEwLDQ1IDEwNSwyNSAxMDUsNzAgMTAwLDcwIi8+CiAgPC9nPgogIDx0ZXh0IHg9IjkwIiB5PSIxNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMzMzMiIHN0eWxlPSJmb250LWZhbWlseTogc2Fucy1zZXJpZjsgZm9udC1zaXplOiAyMHB4OyBmb250LXdlaWdodDogNDAwOyBsZXR0ZXItc3BhY2luZzogMnB4OyI+Vk08L3RleHQ+Cjwvc3ZnPgo=">
+    <meta name="theme-color" content="#333333">
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #000;
-            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #ffffff;
+            color: #333;
+            line-height: 1.6;
+            font-weight: 300;
+            overflow-x: hidden;
         }
-
-        #galleryContainer {
-            width: 100vw;
-            height: 100vh;
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        /* Header */
+        header {
+            background: #ffffff;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .logo:hover {
+            opacity: 0.8;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 50px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #999;
+            font-weight: 300;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #333;
+        }
+        
+        /* Hero Tagline Section */
+        .hero-tagline {
+            margin-top: 120px;
+            padding: 40px 0 30px;
+            text-align: center;
             position: relative;
-            cursor: crosshair;
         }
-
-        .gallery-ui {
+        
+        .tagline {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            line-height: 0.9;
+            font-family: Impact, 'Arial Black', 'Helvetica Neue', Helvetica, sans-serif;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tagline::before {
+            content: '';
             position: absolute;
+            top: 50%;
+            left: -60px;
+            width: 40px;
+            height: 2px;
+            background: #333;
+            transform: translateY(-50%);
+        }
+        
+        .tagline::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -60px;
+            width: 40px;
+            height: 2px;
+            background: #333;
+            transform: translateY(-50%);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-tagline {
+                padding: 30px 0 20px;
+            }
+            
+            .tagline::before,
+            .tagline::after {
+                display: none;
+            }
+        }
+        
+        /* Admin Trigger Diamond */
+        .admin-trigger {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            z-index: 999;
+            opacity: 0.3;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-trigger:hover {
+            opacity: 0.8;
+            transform: scale(1.2);
+        }
+        
+        .admin-trigger svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Admin Panel */
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 400px;
+            height: 100vh;
+            background: #ffffff;
+            border-left: 1px solid #e0e0e0;
+            z-index: 2000;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        }
+        
+        .admin-panel.open {
+            right: 0;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .admin-title {
+            font-size: 16px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .close-admin {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .admin-form {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            background: #fafafa;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #333;
+            background: #ffffff;
+        }
+        
+        .file-upload {
+            border: 2px dashed #e0e0e0;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        
+        .file-upload:hover {
+            border-color: #333;
+        }
+        
+        .file-upload.dragover {
+            border-color: #333;
+            background: #f8f8f8;
+        }
+        
+        .upload-text {
+            font-size: 13px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: 1px solid #333;
+            background: #ffffff;
+            color: #333;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background: #333;
+            color: #ffffff;
+        }
+        
+        .btn-danger {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background: #e74c3c;
+            color: #ffffff;
+        }
+        
+        /* Login Form */
+        .login-form {
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .login-form h3 {
+            font-size: 14px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            color: #666;
+        }
+        
+        .logout-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+            background: #f8f8f8;
+        }
+        
+        .user-email {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .logout-btn {
+            padding: 6px 12px;
+            font-size: 10px;
+        }
+        
+        /* Main Content */
+        main {
+            padding: 60px 0 120px;
+        }
+        
+        .page-title {
+            margin-bottom: 60px;
+        }
+        
+        .page-title h1 {
+            font-size: 13px;
+            font-weight: 400;
+            color: #999;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+        
+        /* Gallery Grid Layout */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 1200px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 25px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+        
+        /* Search & Filter Controls */
+        .gallery-controls {
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .search-filter-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-input {
+            padding: 12px 16px 12px 40px;
+            border: 1px solid #e0e0e0;
+            background: #fafafa;
+            font-size: 13px;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #333;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .filter-select {
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            background: #fafafa;
+            font-size: 11px;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #333;
+            background: #ffffff;
+        }
+        
+        .results-count {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-left: auto;
+        }
+        
+        .clear-filters {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 12px 16px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            color: #999;
+            transition: all 0.3s ease;
+        }
+        
+        .clear-filters:hover {
+            border-color: #333;
+            color: #333;
+        }
+        
+        /* Performance Optimizations */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Optimize animations for performance */
+        .artwork-card {
+            break-inside: avoid;
+            margin-bottom: 40px;
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            will-change: transform, opacity;
+        }
+        
+        .artwork-card.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .artwork-card.filter-out {
+            opacity: 0;
+            transform: scale(0.8) translateY(-20px);
+            pointer-events: none;
+        }
+        
+        .artwork-image {
+            width: 100%;
+            background: #fafafa;
+            margin-bottom: 15px;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s ease;
+            will-change: transform;
+        }
+        
+        .artwork-card:hover .artwork-image {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        /* Optimize image loading */
+        .artwork-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+            background: #f5f5f5;
+        }
+        
+        .artwork-image img[data-lazy] {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .artwork-image img.loaded {
+            opacity: 1;
+        }
+        
+        /* Loading state for images */
+        .artwork-image::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #f0f0f0;
+            border-top: 2px solid #ccc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .artwork-image:has(img[data-lazy])::before,
+        .artwork-image:has(img:not(.loaded))::before {
+            opacity: 1;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Reduce animations on mobile for better performance */
+        @media (max-width: 768px) {
+            .artwork-card {
+                transition: opacity 0.3s ease, transform 0.3s ease;
+            }
+            
+            .artwork-card:hover .artwork-image {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            .artwork-image {
+                transition: none;
+            }
+        }
+        
+        .artwork-image.landscape {
+            aspect-ratio: 4/3;
+        }
+        
+        .artwork-image.portrait {
+            aspect-ratio: 3/4;
+        }
+        
+        .artwork-image.square {
+            aspect-ratio: 1/1;
+        }
+        
+        .artwork-image.panoramic {
+            aspect-ratio: 16/9;
+        }
+        
+        .artwork-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+        
+        .artwork-card:hover .artwork-image img {
+            opacity: 0.9;
+        }
+        
+        .artwork-info {
+            text-align: left;
+        }
+        
+        .artwork-title {
+            font-size: 13px;
+            font-weight: 400;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        
+        .artwork-details {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.4;
+        }
+        
+        .artwork-artist {
+            margin-bottom: 3px;
+        }
+        
+        .artwork-price {
+            margin-top: 5px;
+            color: #666;
+        }
+        
+        .admin-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .artwork-card:hover .admin-controls {
+            opacity: 1;
+        }
+        
+        .admin-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 8px;
+            margin-left: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 2px;
+        }
+        
+        /* Modal */
+        .modal {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: 100;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
         }
-
-        .gallery-info {
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #ffffff;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-image-container {
+            position: relative;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 450px;
+            max-height: 70vh;
+            padding: 40px;
+        }
+        
+        .modal-image {
+            max-width: 100%;
+            max-height: calc(70vh - 80px);
+            object-fit: contain;
+            background: transparent;
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .modal-image:hover {
+            transform: scale(1.01);
+        }
+        
+        .modal-image-container::after {
+            content: '🔍';
             position: absolute;
-            top: 30px;
-            left: 30px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 20px 25px;
-            border-radius: 12px;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
             font-size: 14px;
-            color: #333;
-            max-width: 350px;
-            pointer-events: auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .gallery-info h3 {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            color: #666;
-        }
-
-        .artwork-label {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #333;
             opacity: 0;
             transition: opacity 0.3s ease;
             pointer-events: none;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-            min-width: 200px;
         }
-
-        .artwork-label.visible {
+        
+        .modal-image-container:hover::after {
             opacity: 1;
         }
-
-        .artwork-title {
-            font-weight: 500;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .artwork-details {
-            color: #666;
-            font-size: 11px;
-            line-height: 1.4;
-        }
-
-        .controls {
+        
+        .image-nav {
             position: absolute;
-            bottom: 30px;
-            left: 30px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
             padding: 15px 20px;
-            border-radius: 12px;
-            font-size: 11px;
-            color: #666;
+            cursor: pointer;
+            font-size: 18px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        .image-nav:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+        
+        .image-nav.prev {
+            left: 20px;
+        }
+        
+        .image-nav.next {
+            right: 20px;
+        }
+        
+        .image-nav:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .image-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dot.active {
+            background: rgba(255, 255, 255, 1);
+        }
+        
+        .modal-info {
+            padding: 30px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 400;
+            margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            pointer-events: auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
-
-        .view-mode-toggle {
+        
+        .modal-artist {
+            font-size: 16px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+        
+        .modal-details {
+            font-size: 14px;
+            color: #999;
+            line-height: 1.6;
+        }
+        
+        .modal-price {
+            font-size: 16px;
+            color: #333;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+        
+        /* Zoom Modal */
+        .zoom-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 4000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .zoom-modal.show {
+            display: flex;
+        }
+        
+        .zoom-image {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            cursor: zoom-out;
+        }
+        
+        .zoom-close {
             position: absolute;
             top: 30px;
             right: 30px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
             border: none;
-            padding: 12px 18px;
-            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* About Section */
+        .about-section {
+            border-top: 1px solid #f0f0f0;
+            padding: 60px 0;
+        }
+        
+        .about-content {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .about-content h2 {
+            font-size: 13px;
+            font-weight: 400;
+            color: #999;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .about-text {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+            text-align: left;
+        }
+        
+        .about-text p {
+            margin-bottom: 20px;
+        }
+        
+        .about-text p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .edit-about {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .edit-about-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 10px 20px;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 1px;
             cursor: pointer;
-            color: #333;
-            pointer-events: auto;
+            color: #999;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
         }
-
-        .view-mode-toggle:hover {
-            background: rgba(51, 51, 51, 0.95);
-            color: white;
+        
+        .edit-about-btn:hover {
+            border-color: #333;
+            color: #333;
         }
-
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        
+        /* Contact Section */
+        .contact-section {
+            border-top: 1px solid #f0f0f0;
+            padding: 80px 0;
             text-align: center;
         }
-
-        .gallery-entrance {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 15px 20px;
-            border-radius: 12px;
-            font-size: 11px;
+        
+        .contact-content h2 {
+            font-size: 13px;
+            font-weight: 400;
+            color: #999;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .contact-content p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .contact-email {
             color: #333;
+            text-decoration: none;
+            font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            pointer-events: auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+            display: inline-block;
+            transition: all 0.3s ease;
         }
-
-        .debug-info {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.8);
+        
+        .contact-email:hover {
+            opacity: 0.6;
+        }
+        
+        /* Footer */
+        footer {
+            border-top: 1px solid #f0f0f0;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        footer p {
+            font-size: 10px;
+            color: #ccc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Drag & Drop Curation Styles */
+        .gallery-grid.admin-mode {
+            position: relative;
+        }
+        
+        .artwork-card.draggable {
+            cursor: move;
+            user-select: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .artwork-card.dragging {
+            transform: rotate(5deg) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            opacity: 0.8;
+        }
+        
+        .artwork-card.drag-over {
+            transform: translateX(10px);
+            transition: transform 0.2s ease;
+        }
+        
+        .drag-placeholder {
+            border: 2px dashed #333;
+            background: rgba(51, 51, 51, 0.1);
+            border-radius: 4px;
+            opacity: 0.7;
+        }
+        
+        .curation-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+            gap: 15px;
+            align-items: center;
+            z-index: 1001;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .curation-controls.show {
+            display: flex;
+        }
+        
+        .curation-btn {
+            padding: 8px 16px;
+            border: 1px solid #333;
+            background: #ffffff;
+            color: #333;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 20px;
+        }
+        
+        .curation-btn:hover {
+            background: #333;
+            color: #ffffff;
+        }
+        
+        .curation-btn.saving {
+            background: #28a745;
+            border-color: #28a745;
             color: white;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 12px;
-            border-radius: 5px;
-            max-width: 300px;
-            word-wrap: break-word;
         }
-
+        
+        .curation-status {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Mobile drag feedback */
         @media (max-width: 768px) {
-            .gallery-info,
-            .controls,
-            .view-mode-toggle,
-            .gallery-entrance {
-                font-size: 10px;
-                padding: 12px 15px;
+            .artwork-card.dragging {
+                transform: scale(1.1);
+                box-shadow: 0 15px 30px rgba(0,0,0,0.3);
             }
             
-            .gallery-info {
-                max-width: 280px;
+            .curation-controls {
+                bottom: 10px;
+                padding: 12px 20px;
+                border-radius: 25px;
             }
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            .nav-links {
+                gap: 25px;
+            }
+            
+            .nav-links a {
+                font-size: 13px;
+            }
+            
+            nav {
+                padding: 25px 0;
+            }
+            
+            .admin-panel {
+                width: 100%;
+                right: -100%;
+            }
+            
+            .modal {
+                padding: 10px;
+            }
+            
+            .modal-info {
+                padding: 20px;
+            }
+            
+            .modal-image-container {
+                min-height: 250px;
+                max-height: 50vh;
+            }
+            
+            .artwork-card {
+                margin-bottom: 30px;
+            }
+            
+            .zoom-close {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            .close-modal {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            /* Mobile search/filter styles */
+            .gallery-controls {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+            
+            .search-filter-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .search-input {
+                width: 100%;
+            }
+            
+            .filter-group {
+                justify-content: space-between;
+            }
+            
+            .filter-select {
+                flex: 1;
+                min-width: auto;
+            }
+            
+            .results-count {
+                margin-left: 0;
+                text-align: center;
+            }
+        }
+        
+        /* Empty state */
+        .empty-gallery {
+            text-align: center;
+            padding: 100px 20px;
+            color: #999;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .empty-gallery h3 {
+            font-size: 16px;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        
+        .empty-gallery p {
+            font-size: 14px;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
-    <div id="galleryContainer">
-        <div class="loading" id="loadingText">
-            LOADING GALLERY...<br>
-            <small id="loadingStatus">Initializing...</small>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <svg width="102" height="38" viewBox="0 0 85 32" xmlns="http://www.w3.org/2000/svg">
+                    <!-- VM monogram -->
+                    <g fill="#333" style="font-weight: 400;">
+                        <!-- V -->
+                        <polygon points="24,3 27,3 32,17 35,3 38,3 31.5,19 28.5,19"/>
+                        <!-- M -->
+                        <polygon points="40,3 43,3 46,14 49,3 52,3 52,19 49.5,19 49.5,7 47.5,16 44.5,16 42.5,7 42.5,19 40,19"/>
+                    </g>
+                    
+                    <!-- VONMESSER text -->
+                    <text x="42.5" y="29" 
+                          text-anchor="middle" 
+                          fill="#333" 
+                          style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
+                                 font-size: 6px; 
+                                 font-weight: 400; 
+                                 letter-spacing: 1.8px;">
+                        VONMESSER
+                    </text>
+                </svg>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#physical">Physical Collection</a></li>
+                <li><a href="https://linktr.ee/flexasaurusrex" target="_blank" rel="noopener noreferrer">Digital Collection</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Tagline Section -->
+    <section class="hero-tagline">
+        <div class="container">
+            <h1 class="tagline">Art Leads Culture</h1>
+        </div>
+    </section>
+
+    <!-- Admin Trigger Diamond -->
+    <div class="admin-trigger" onclick="toggleAdmin()">
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="10,2 18,10 10,18 2,10" 
+                     fill="#333" 
+                     stroke="none"/>
+        </svg>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h3 class="admin-title">Admin Panel</h3>
+            <button class="close-admin" onclick="toggleAdmin()">×</button>
         </div>
         
-        <div class="debug-info" id="debugInfo">Starting...</div>
-        
-        <div class="gallery-ui">
-            <div class="gallery-info">
-                <h3>VonMesser Collection</h3>
-                <p>Walk through a curated selection of contemporary and classical works. Each piece is displayed at its actual size based on the collection's metadata.</p>
+        <!-- Login Form (shows when not authenticated) -->
+        <div class="login-form" id="loginForm">
+            <h3>Admin Login</h3>
+            <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" required>
             </div>
-            
-            <button class="view-mode-toggle" onclick="toggleView()">Aerial View</button>
-            
-            <div class="controls">
-                <div>WASD or Arrow Keys: Move</div>
-                <div>Drag Mouse: Look Around</div>
-                <div>Click Artwork: Focus View</div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" required>
             </div>
-            
-            <div class="gallery-entrance">
-                <div>Gallery Walk Mode</div>
-                <div style="margin-top: 4px; color: #999;">Real-scale display</div>
-            </div>
+            <button class="btn" onclick="login()">Login</button>
         </div>
-        
-        <div class="artwork-label" id="artworkLabel">
-            <div class="artwork-title" id="labelTitle"></div>
-            <div class="artwork-details" id="labelDetails"></div>
+
+        <!-- Admin Content (shows when authenticated) -->
+        <div id="adminContent" style="display: none;">
+            <div class="logout-section">
+                <span class="user-email" id="userEmail"></span>
+                <button class="btn logout-btn" onclick="logout()">Logout</button>
+            </div>
+            
+            <form class="admin-form" id="artworkForm">
+                <input type="hidden" id="editingId" value="">
+                
+                <div class="form-group">
+                    <label for="artworkTitle">Artwork Title</label>
+                    <input type="text" id="artworkTitle" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="artistName">Artist Name</label>
+                    <input type="text" id="artistName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="artworkYear">Year</label>
+                    <input type="text" id="artworkYear" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="artworkDimensions">Dimensions</label>
+                    <input type="text" id="artworkDimensions" placeholder="e.g., 24 × 36 in or 61 × 91 cm">
+                </div>
+                
+                <div class="form-group">
+                    <label for="artworkMedium">Medium</label>
+                    <input type="text" id="artworkMedium" placeholder="e.g., Oil on canvas, Archival pigment print on Hahnemühle Photo Rag 308, Mixed media">
+                </div>
+                
+                <div class="form-group">
+                    <label for="artworkPrice">Price (Optional)</label>
+                    <input type="text" id="artworkPrice" placeholder="e.g., $5,000 or Price on Request">
+                </div>
+                
+                <div class="form-group">
+                    <label for="orientation">Orientation</label>
+                    <select id="orientation" required>
+                        <option value="landscape">Landscape (4:3)</option>
+                        <option value="portrait">Portrait (3:4)</option>
+                        <option value="square">Square (1:1)</option>
+                        <option value="panoramic">Panoramic (16:9)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Artwork Images</label>
+                    <div class="file-upload" onclick="document.getElementById('imageUpload').click()">
+                        <input type="file" id="imageUpload" style="display: none;" accept="image/*" multiple>
+                        <div class="upload-text">Click to upload images (multiple allowed)</div>
+                        <div style="font-size: 10px; color: #999; margin-top: 8px; text-transform: none; letter-spacing: 0;">
+                            Tip: For best performance, use images under 2MB each
+                        </div>
+                    </div>
+                    <div id="imagePreview" style="margin-top: 15px;"></div>
+                </div>
+                
+                <button type="submit" class="btn">Add Artwork</button>
+                <button type="button" class="btn" onclick="resetForm()" style="margin-top: 10px;">Clear Form</button>
+            </form>
+            
+            <div class="admin-form" style="border-top: 1px solid #f0f0f0; padding-top: 30px; margin-top: 30px;">
+                <h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 20px;">About Section</h4>
+                
+                <div class="form-group">
+                    <label for="aboutText">About Text</label>
+                    <textarea id="aboutText" rows="8" placeholder="Write about yourself as a collector and curator..."></textarea>
+                </div>
+                
+                <button type="button" class="btn" onclick="saveAbout()">Update About</button>
+            </div>
         </div>
     </div>
 
-    <script>
-        // Debug logging
-        console.log('🎨 VonMesser Virtual Gallery - Script Starting...');
-        
-        function updateDebug(message) {
-            console.log('DEBUG:', message);
-            const debugEl = document.getElementById('debugInfo');
-            if (debugEl) {
-                debugEl.textContent = message;
-            }
-        }
+    <!-- Artwork Modal -->
+    <div class="modal" id="artworkModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            <div class="modal-image-container">
+                <img class="modal-image" id="modalImage" src="" alt="" onclick="openZoom()">
+                <button class="image-nav prev" id="prevBtn" onclick="changeImage(-1)">‹</button>
+                <button class="image-nav next" id="nextBtn" onclick="changeImage(1)">›</button>
+                <div class="image-dots" id="imageDots"></div>
+            </div>
+            <div class="modal-info">
+                <h3 class="modal-title" id="modalTitle"></h3>
+                <div class="modal-artist" id="modalArtist"></div>
+                <div class="modal-details" id="modalDetails"></div>
+                <div class="modal-price" id="modalPrice" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
 
-        function updateStatus(message) {
-            console.log('STATUS:', message);
-            const statusEl = document.getElementById('loadingStatus');
-            if (statusEl) {
-                statusEl.textContent = message;
-            }
-        }
+    <!-- Zoom Modal -->
+    <div class="zoom-modal" id="zoomModal">
+        <button class="zoom-close" onclick="closeZoom()">×</button>
+        <img class="zoom-image" id="zoomImage" src="" alt="" onclick="closeZoom()">
+    </div>
 
-        updateDebug('Script loaded');
-        updateStatus('Script loaded');
+    <main>
+        <div class="container">
+            <div class="page-title">
+                <h1 id="physical">Current</h1>
+            </div>
 
-        // Global variables
-        let scene, camera, renderer;
-        let artworksData = [];
-        let artworkMeshes = [];
-        let raycaster, mouse;
-        let isAerialView = false;
-        let frameCount = 0;
-
-        // Movement controls
-        const keys = {};
-        const velocity = { x: 0, y: 0, z: 0 };
-        const moveSpeed = 0.15;
-        
-        // Mouse look controls
-        let yaw = 0;
-        let pitch = 0;
-        let lastMouseX = 0;
-        let lastMouseY = 0;
-        let isMouseDown = false;
-        const mouseSensitivity = 0.003;
-
-        // Gallery dimensions (in meters)
-        const galleryWidth = 40;
-        const galleryDepth = 60;
-        const galleryHeight = 6;
-
-        // Demo artworks - always available
-        const demoArtworks = [
-            {
-                id: 'demo-1',
-                title: 'Abstract Composition',
-                artist: 'Contemporary Artist',
-                year: '2024',
-                dimensions: '24 × 36 in',
-                medium: 'Oil on canvas',
-                orientation: 'landscape'
-            },
-            {
-                id: 'demo-2',
-                title: 'Modern Landscape',
-                artist: 'Gallery Artist',
-                year: '2023',
-                dimensions: '30 × 40 in',
-                medium: 'Acrylic on canvas',
-                orientation: 'landscape'
-            },
-            {
-                id: 'demo-3',
-                title: 'Still Life Study',
-                artist: 'Studio Artist',
-                year: '2024',
-                dimensions: '18 × 24 in',
-                medium: 'Mixed media',
-                orientation: 'portrait'
-            },
-            {
-                id: 'demo-4',
-                title: 'Urban Portrait',
-                artist: 'City Artist',
-                year: '2023',
-                dimensions: '20 × 30 in',
-                medium: 'Digital print',
-                orientation: 'portrait'
-            },
-            {
-                id: 'demo-5',
-                title: 'Geometric Study',
-                artist: 'Modern Artist',
-                year: '2024',
-                dimensions: '36 × 36 in',
-                medium: 'Acrylic on canvas',
-                orientation: 'square'
-            },
-            {
-                id: 'demo-6',
-                title: 'Nature Abstract',
-                artist: 'Landscape Artist',
-                year: '2023',
-                dimensions: '40 × 30 in',
-                medium: 'Oil on canvas',
-                orientation: 'landscape'
-            }
-        ];
-
-        // Load Three.js and initialize
-        function loadThreeJS() {
-            updateStatus('Loading Three.js...');
-            updateDebug('Loading Three.js library');
-            
-            return new Promise((resolve, reject) => {
-                if (window.THREE) {
-                    updateDebug('Three.js already loaded');
-                    resolve();
-                    return;
-                }
-
-                const script = document.createElement('script');
-                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-                script.onload = () => {
-                    updateDebug('Three.js loaded successfully');
-                    updateStatus('Three.js loaded');
-                    resolve();
-                };
-                script.onerror = () => {
-                    updateDebug('Failed to load Three.js');
-                    updateStatus('Failed to load Three.js');
-                    reject(new Error('Failed to load Three.js'));
-                };
-                document.head.appendChild(script);
-            });
-        }
-
-        function createSimpleTexture(width, height, color1, color2, text) {
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            
-            // Create gradient background
-            const gradient = ctx.createLinearGradient(0, 0, width, height);
-            gradient.addColorStop(0, color1);
-            gradient.addColorStop(1, color2);
-            
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, width, height);
-            
-            // Add some geometric shapes for interest
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-            ctx.fillRect(width * 0.1, height * 0.1, width * 0.3, height * 0.3);
-            
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.beginPath();
-            ctx.arc(width * 0.7, height * 0.3, width * 0.15, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Add text label
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-            ctx.font = `${Math.min(width, height) * 0.08}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.fillText(text, width / 2, height * 0.7);
-            
-            return canvas.toDataURL();
-        }
-
-        async function loadArtworks() {
-            updateStatus('Loading artworks...');
-            updateDebug('Loading artwork data');
-            
-            try {
-                // Create demo artworks with better textures and clear labels
-                const colors = [
-                    ['#1a365d', '#4299e1'], // Blue
-                    ['#276749', '#48bb78'], // Green  
-                    ['#744210', '#ed8936'], // Orange
-                    ['#553c9a', '#9f7aea'], // Purple
-                    ['#822727', '#fc8181'], // Red
-                    ['#2d3748', '#718096']  // Gray
-                ];
-                
-                artworksData = demoArtworks.map((artwork, index) => ({
-                    ...artwork,
-                    images: [createSimpleTexture(512, 384, 
-                        colors[index][0],
-                        colors[index][1], 
-                        artwork.title
-                    )]
-                }));
-                
-                updateDebug(`Created ${artworksData.length} artworks with textures`);
-                updateStatus('Artworks created');
-                return artworksData;
-            } catch (error) {
-                updateDebug('Error creating artworks: ' + error.message);
-                updateStatus('Using basic collection');
-                return demoArtworks;
-            }
-        }
-
-        function parseDimensions(dimensionString) {
-            const match = dimensionString.match(/([\d.]+)\s*[×x]\s*([\d.]+)\s*(in|cm)/i);
-            if (!match) return { width: 1, height: 1 };
-
-            let width = parseFloat(match[1]);
-            let height = parseFloat(match[2]);
-            const unit = match[3].toLowerCase();
-
-            if (unit === 'in') {
-                width *= 0.0254;
-                height *= 0.0254;
-            } else if (unit === 'cm') {
-                width *= 0.01;
-                height *= 0.01;
-            }
-
-            return { width, height };
-        }
-
-        async function initGallery() {
-            try {
-                updateStatus('Initializing gallery...');
-                updateDebug('Starting gallery initialization');
-
-                // Check if Three.js is available
-                if (!window.THREE) {
-                    throw new Error('Three.js not available');
-                }
-
-                const THREE = window.THREE;
-                updateDebug('Three.js available, creating scene');
-
-                // Scene setup
-                scene = new THREE.Scene();
-                scene.background = new THREE.Color(0x111111);
-
-                // Camera setup - start closer to the back wall to see artworks
-                camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
-                camera.position.set(0, 1.6, 10); // Closer to back wall
-                camera.lookAt(0, 2, -galleryDepth / 2); // Look at back wall where artworks are
-
-                updateDebug('Camera created');
-
-                // Renderer setup
-                renderer = new THREE.WebGLRenderer({ antialias: true });
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.shadowMap.enabled = true;
-                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-                
-                const container = document.getElementById('galleryContainer');
-                container.appendChild(renderer.domElement);
-
-                updateDebug('Renderer created and added to DOM');
-
-                // Raycaster for interaction
-                raycaster = new THREE.Raycaster();
-                mouse = new THREE.Vector2();
-
-                updateDebug('Raycaster created');
-
-                // Create gallery space
-                createGallery(THREE);
-                updateDebug('Gallery space created');
-
-                // Create lighting
-                createLighting(THREE);
-                updateDebug('Lighting created');
-
-                // Place artworks
-                await placeArtworks(THREE);
-                updateDebug('Artworks placed');
-
-                // Setup event listeners
-                setupEventListeners();
-                updateDebug('Event listeners setup');
-
-                // Hide loading screen
-                document.getElementById('loadingText').style.display = 'none';
-                document.getElementById('debugInfo').style.display = 'none';
-                
-                updateStatus('Gallery ready!');
-                updateDebug('Gallery initialization complete');
-
-                // Start render loop
-                animate();
-
-            } catch (error) {
-                updateDebug('Error in initGallery: ' + error.message);
-                updateStatus('Error: ' + error.message);
-                console.error('Gallery initialization error:', error);
-                
-                // Show fallback message
-                document.getElementById('loadingText').innerHTML = `
-                    <div style="color: #ff6b6b;">Gallery failed to load</div>
-                    <small>Error: ${error.message}</small><br>
-                    <small>Please refresh the page</small>
-                `;
-            }
-        }
-
-        function createGallery(THREE) {
-            const galleryGroup = new THREE.Group();
-
-            // Floor
-            const floorGeometry = new THREE.PlaneGeometry(galleryWidth, galleryDepth);
-            const floorMaterial = new THREE.MeshLambertMaterial({ 
-                color: 0xf8f8f8,
-                transparent: true,
-                opacity: 0.9
-            });
-            const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-            floor.rotation.x = -Math.PI / 2;
-            floor.receiveShadow = true;
-            galleryGroup.add(floor);
-
-            // Ceiling
-            const ceiling = floor.clone();
-            ceiling.position.y = galleryHeight;
-            ceiling.rotation.x = Math.PI / 2;
-            galleryGroup.add(ceiling);
-
-            // Walls
-            const wallMaterial = new THREE.MeshLambertMaterial({ 
-                color: 0xffffff,
-                transparent: true,
-                opacity: 0.95
-            });
-
-            // Back wall
-            const backWallGeometry = new THREE.PlaneGeometry(galleryWidth, galleryHeight);
-            const backWall = new THREE.Mesh(backWallGeometry, wallMaterial);
-            backWall.position.set(0, galleryHeight / 2, -galleryDepth / 2);
-            backWall.receiveShadow = true;
-            galleryGroup.add(backWall);
-
-            // Left wall
-            const leftWallGeometry = new THREE.PlaneGeometry(galleryDepth, galleryHeight);
-            const leftWall = new THREE.Mesh(leftWallGeometry, wallMaterial);
-            leftWall.position.set(-galleryWidth / 2, galleryHeight / 2, 0);
-            leftWall.rotation.y = Math.PI / 2;
-            leftWall.receiveShadow = true;
-            galleryGroup.add(leftWall);
-
-            // Right wall
-            const rightWall = leftWall.clone();
-            rightWall.position.x = galleryWidth / 2;
-            rightWall.rotation.y = -Math.PI / 2;
-            galleryGroup.add(rightWall);
-
-            scene.add(galleryGroup);
-        }
-
-        function createLighting(THREE) {
-            // Brighter ambient light
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-            scene.add(ambientLight);
-
-            // Main directional light - brighter
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-            directionalLight.position.set(0, galleryHeight - 1, 10);
-            directionalLight.castShadow = true;
-            directionalLight.shadow.mapSize.width = 1024;
-            directionalLight.shadow.mapSize.height = 1024;
-            scene.add(directionalLight);
-
-            // Additional front lighting to illuminate artworks
-            const frontLight = new THREE.DirectionalLight(0xffffff, 0.5);
-            frontLight.position.set(0, galleryHeight / 2, galleryDepth / 2);
-            frontLight.target.position.set(0, galleryHeight / 2, -galleryDepth / 2);
-            scene.add(frontLight);
-            scene.add(frontLight.target);
-
-            // Track lighting for artworks - brighter
-            for (let i = 0; i < 6; i++) {
-                const spotLight = new THREE.SpotLight(0xffffff, 0.8, 20, Math.PI / 4, 0.2);
-                spotLight.position.set(
-                    (i % 3 - 1) * 8, 
-                    galleryHeight - 0.5, 
-                    Math.floor(i / 3) * 15 - 10
-                );
-                spotLight.castShadow = true;
-                spotLight.shadow.mapSize.width = 512;
-                spotLight.shadow.mapSize.height = 512;
-                scene.add(spotLight);
-            }
-            
-            updateDebug('Enhanced lighting created');
-        }
-
-        async function placeArtworks(THREE) {
-            const wallPositions = [
-                // Back wall - more spread out and visible
-                { x: -10, y: 2, z: -galleryDepth / 2 + 0.5, rotation: 0 },
-                { x: 0, y: 2, z: -galleryDepth / 2 + 0.5, rotation: 0 },
-                { x: 10, y: 2, z: -galleryDepth / 2 + 0.5, rotation: 0 },
-                // Left wall
-                { x: -galleryWidth / 2 + 0.5, y: 2, z: -10, rotation: Math.PI / 2 },
-                { x: -galleryWidth / 2 + 0.5, y: 2, z: 10, rotation: Math.PI / 2 },
-                // Right wall  
-                { x: galleryWidth / 2 - 0.5, y: 2, z: 0, rotation: -Math.PI / 2 }
-            ];
-
-            artworksData.forEach((artwork, index) => {
-                if (index >= wallPositions.length) return;
-
-                const position = wallPositions[index];
-                const dimensions = parseDimensions(artwork.dimensions || '24 × 36 in');
-                
-                updateDebug(`Placing artwork ${index + 1}: ${artwork.title}`);
-                
-                // Make sure dimensions are reasonable
-                const minSize = 0.5;
-                const maxSize = 3;
-                const width = Math.max(minSize, Math.min(maxSize, dimensions.width));
-                const height = Math.max(minSize, Math.min(maxSize, dimensions.height));
-                
-                const geometry = new THREE.PlaneGeometry(width, height);
-                
-                let material;
-                if (artwork.images && artwork.images.length > 0) {
-                    try {
-                        const textureLoader = new THREE.TextureLoader();
-                        const texture = textureLoader.load(
-                            artwork.images[0],
-                            function(tex) {
-                                updateDebug(`Texture loaded for ${artwork.title}`);
-                                tex.minFilter = THREE.LinearFilter;
-                                tex.magFilter = THREE.LinearFilter;
-                            },
-                            function(progress) {
-                                // Loading progress
-                            },
-                            function(error) {
-                                updateDebug(`Texture error for ${artwork.title}: ${error}`);
-                            }
-                        );
+            <!-- Search & Filter Controls -->
+            <div class="gallery-controls" id="galleryControls" style="display: none;">
+                <div class="search-filter-group">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" id="searchInput" placeholder="Search artworks or artists...">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <select class="filter-select" id="artistFilter">
+                            <option value="">All Artists</option>
+                        </select>
                         
-                        material = new THREE.MeshLambertMaterial({ 
-                            map: texture,
-                            transparent: false,
-                            side: THREE.FrontSide
-                        });
-                    } catch (error) {
-                        updateDebug(`Error creating texture material: ${error.message}`);
-                        // Fallback to solid color
-                        material = new THREE.MeshLambertMaterial({ 
-                            color: 0x4299e1,
-                            transparent: false
-                        });
+                        <select class="filter-select" id="yearFilter">
+                            <option value="">All Years</option>
+                        </select>
+                        
+                        <select class="filter-select" id="mediumFilter">
+                            <option value="">All Mediums</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="results-count" id="resultsCount">
+                    <span id="resultNumber">0</span> pieces
+                </div>
+                
+                <button class="clear-filters" id="clearFilters">Clear All</button>
+            </div>
+
+            <div class="gallery-grid" id="galleryGrid">
+                <div class="loading">Loading collection...</div>
+            </div>
+
+            <!-- Curation Controls (shown only in admin mode) -->
+            <div class="curation-controls" id="curationControls">
+                <span class="curation-status">Drag artworks to rearrange</span>
+                <button class="curation-btn" id="saveCuration">Save Arrangement</button>
+                <button class="curation-btn" id="resetCuration">Reset to Date Order</button>
+            </div>
+        </div>
+    </main>
+
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <h2>About</h2>
+                <div class="about-text" id="aboutContent">
+                    <p>Welcome to the VonMesser Collection, a carefully curated assembly of contemporary and classical works that explore the intersection of traditional artistry and modern expression.</p>
+                    <p>As a collector and curator, I am drawn to pieces that challenge conventional boundaries while honoring the fundamental principles of artistic excellence. Each work in this collection has been selected for its unique voice, technical mastery, and ability to engage in dialogue with both historical precedent and contemporary discourse.</p>
+                </div>
+                <div class="edit-about" id="editAboutBtn" style="display: none;">
+                    <button class="edit-about-btn" onclick="editAbout()">Edit About</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="contact-content">
+                <h2>Contact</h2>
+                <p>Interested in learning more about the VonMesser Collection or inquiring about specific pieces? We welcome correspondence from collectors, curators, and art enthusiasts.</p>
+                <a href="mailto:flex@vonmesser.xyz" class="contact-email">flex@vonmesser.xyz</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 VonMesser Collection</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://qqkshpkbfixeyusqpsou.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let artworks = [];
+        let filteredArtworks = [];
+        let isAdminMode = false;
+        let isAuthenticated = false;
+        let currentModalImages = [];
+        let currentImageIndex = 0;
+        let aboutText = '';
+        let animationObserver = null;
+        let imageObserver = null;
+        let draggedElement = null;
+        let draggedArtworkId = null;
+        let hasUnsavedChanges = false;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthState();
+            loadArtworks();
+            loadAbout();
+            initializeAnimations();
+            initializeLazyLoading();
+            setupSearchAndFilters();
+        });
+
+        // Performance Optimizations
+        function initializeLazyLoading() {
+            // Lazy loading for images
+            imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        const src = img.getAttribute('data-lazy');
+                        if (src) {
+                            img.src = src;
+                            img.onload = () => {
+                                img.classList.add('loaded');
+                                img.removeAttribute('data-lazy');
+                            };
+                            imageObserver.unobserve(img);
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '50px 0px'
+            });
+        }
+
+        // Animation Functions
+        function initializeAnimations() {
+            // Optimized intersection observer for scroll animations
+            animationObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '30px 0px' // Reduced margin for better performance
+            });
+        }
+
+        function animateArtworkCards() {
+            // Remove existing observers
+            if (animationObserver) {
+                document.querySelectorAll('.artwork-card').forEach(card => {
+                    animationObserver.unobserve(card);
+                });
+            }
+
+            // Animate cards with optimized delays
+            const cards = document.querySelectorAll('.artwork-card');
+            cards.forEach((card, index) => {
+                // Reduce delay for better perceived performance
+                card.style.transitionDelay = `${Math.min(index * 0.05, 0.3)}s`;
+                card.classList.remove('animate-in');
+                
+                // Start observing for scroll animation
+                if (animationObserver) {
+                    animationObserver.observe(card);
+                }
+            });
+            
+            // Initialize lazy loading for new images
+            initializeImageLazyLoading();
+        }
+
+        function initializeImageLazyLoading() {
+            // Set up lazy loading for all images
+            const images = document.querySelectorAll('.artwork-image img[data-lazy]');
+            images.forEach(img => {
+                if (imageObserver) {
+                    imageObserver.observe(img);
+                }
+            });
+        }
+
+        // Drag & Drop Curation Functions
+        function initializeDragAndDrop() {
+            if (!isAdminMode || !isAuthenticated) return;
+            
+            const grid = document.getElementById('galleryGrid');
+            const controls = document.getElementById('curationControls');
+            
+            grid.classList.add('admin-mode');
+            controls.classList.add('show');
+            
+            // Add drag and drop event listeners to artwork cards
+            setupArtworkDragAndDrop();
+            
+            // Setup curation control buttons
+            setupCurationControls();
+        }
+
+        function setupArtworkDragAndDrop() {
+            const cards = document.querySelectorAll('.artwork-card');
+            
+            cards.forEach(card => {
+                // Make cards draggable
+                card.draggable = true;
+                card.classList.add('draggable');
+                
+                // Desktop drag events
+                card.addEventListener('dragstart', handleDragStart, { passive: false });
+                card.addEventListener('dragover', handleDragOver, { passive: false });
+                card.addEventListener('drop', handleDrop, { passive: false });
+                card.addEventListener('dragend', handleDragEnd, { passive: false });
+                
+                // Mobile touch events
+                card.addEventListener('touchstart', handleTouchStart, { passive: false });
+                card.addEventListener('touchmove', handleTouchMove, { passive: false });
+                card.addEventListener('touchend', handleTouchEnd, { passive: false });
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedElement = e.target.closest('.artwork-card');
+            draggedArtworkId = getArtworkIdFromCard(draggedElement);
+            
+            draggedElement.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', draggedElement.outerHTML);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            
+            const card = e.target.closest('.artwork-card');
+            if (card && card !== draggedElement) {
+                card.classList.add('drag-over');
+                setTimeout(() => card.classList.remove('drag-over'), 300);
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const dropCard = e.target.closest('.artwork-card');
+            
+            if (dropCard && dropCard !== draggedElement) {
+                const grid = document.getElementById('galleryGrid');
+                const allCards = Array.from(grid.querySelectorAll('.artwork-card'));
+                const draggedIndex = allCards.indexOf(draggedElement);
+                const dropIndex = allCards.indexOf(dropCard);
+                
+                // Reorder the DOM elements
+                if (draggedIndex < dropIndex) {
+                    dropCard.parentNode.insertBefore(draggedElement, dropCard.nextSibling);
+                } else {
+                    dropCard.parentNode.insertBefore(draggedElement, dropCard);
+                }
+                
+                // Update the filtered artworks array to match new order
+                updateArtworkOrder();
+                hasUnsavedChanges = true;
+                updateCurationStatus();
+            }
+        }
+
+        function handleDragEnd(e) {
+            if (draggedElement) {
+                draggedElement.classList.remove('dragging');
+                draggedElement = null;
+                draggedArtworkId = null;
+            }
+            
+            // Clean up drag-over states
+            document.querySelectorAll('.drag-over').forEach(card => {
+                card.classList.remove('drag-over');
+            });
+        }
+
+        // Touch events for mobile
+        let touchStartY = 0;
+        let touchStartX = 0;
+        let touchElement = null;
+
+        function handleTouchStart(e) {
+            if (e.touches.length !== 1) return;
+            
+            touchElement = e.target.closest('.artwork-card');
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            
+            // Add a delay to distinguish between scroll and drag
+            setTimeout(() => {
+                if (touchElement) {
+                    draggedElement = touchElement;
+                    draggedArtworkId = getArtworkIdFromCard(draggedElement);
+                    draggedElement.classList.add('dragging');
+                }
+            }, 150);
+        }
+
+        function handleTouchMove(e) {
+            if (!draggedElement || e.touches.length !== 1) return;
+            
+            e.preventDefault();
+            const touch = e.touches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const cardBelow = elementBelow?.closest('.artwork-card');
+            
+            if (cardBelow && cardBelow !== draggedElement) {
+                cardBelow.classList.add('drag-over');
+                setTimeout(() => cardBelow.classList.remove('drag-over'), 300);
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (!draggedElement) return;
+            
+            const touch = e.changedTouches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const dropCard = elementBelow?.closest('.artwork-card');
+            
+            if (dropCard && dropCard !== draggedElement) {
+                const grid = document.getElementById('galleryGrid');
+                const allCards = Array.from(grid.querySelectorAll('.artwork-card'));
+                const draggedIndex = allCards.indexOf(draggedElement);
+                const dropIndex = allCards.indexOf(dropCard);
+                
+                if (draggedIndex < dropIndex) {
+                    dropCard.parentNode.insertBefore(draggedElement, dropCard.nextSibling);
+                } else {
+                    dropCard.parentNode.insertBefore(draggedElement, dropCard);
+                }
+                
+                updateArtworkOrder();
+                hasUnsavedChanges = true;
+                updateCurationStatus();
+            }
+            
+            handleDragEnd(e);
+            touchElement = null;
+        }
+
+        function getArtworkIdFromCard(card) {
+            const onclickAttr = card.getAttribute('onclick');
+            const match = onclickAttr.match(/openModal\('([^']+)'\)/);
+            return match ? match[1] : null;
+        }
+
+        function updateArtworkOrder() {
+            const grid = document.getElementById('galleryGrid');
+            const cards = Array.from(grid.querySelectorAll('.artwork-card'));
+            
+            // Create new order based on DOM position
+            const newOrder = cards.map((card, index) => {
+                const artworkId = getArtworkIdFromCard(card);
+                const artwork = filteredArtworks.find(a => a.id === artworkId);
+                return { ...artwork, display_order: index };
+            });
+            
+            filteredArtworks = newOrder;
+        }
+
+        function setupCurationControls() {
+            const saveBtn = document.getElementById('saveCuration');
+            const resetBtn = document.getElementById('resetCuration');
+            
+            saveBtn.addEventListener('click', saveCurationOrder);
+            resetBtn.addEventListener('click', resetCurationOrder);
+        }
+
+        async function saveCurationOrder() {
+            if (!hasUnsavedChanges) return;
+            
+            const saveBtn = document.getElementById('saveCuration');
+            const originalText = saveBtn.textContent;
+            
+            try {
+                saveBtn.textContent = 'Saving...';
+                saveBtn.classList.add('saving');
+                
+                // Update display_order for all artworks
+                for (let i = 0; i < filteredArtworks.length; i++) {
+                    const artwork = filteredArtworks[i];
+                    await supabase
+                        .from('artworks')
+                        .update({ display_order: i })
+                        .eq('id', artwork.id);
+                }
+                
+                hasUnsavedChanges = false;
+                updateCurationStatus();
+                
+                saveBtn.textContent = 'Saved!';
+                setTimeout(() => {
+                    saveBtn.textContent = originalText;
+                    saveBtn.classList.remove('saving');
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Error saving curation order:', error);
+                saveBtn.textContent = 'Error';
+                setTimeout(() => {
+                    saveBtn.textContent = originalText;
+                    saveBtn.classList.remove('saving');
+                }, 1500);
+            }
+        }
+
+        async function resetCurationOrder() {
+            if (!confirm('Reset to chronological order? This will undo your custom arrangement.')) return;
+            
+            try {
+                // Clear display_order for all artworks (will default to date order)
+                await supabase
+                    .from('artworks')
+                    .update({ display_order: null })
+                    .neq('id', '');
+                
+                // Reload artworks
+                await loadArtworks();
+                hasUnsavedChanges = false;
+                updateCurationStatus();
+                
+            } catch (error) {
+                console.error('Error resetting curation order:', error);
+            }
+        }
+
+        function updateCurationStatus() {
+            const status = document.querySelector('.curation-status');
+            if (hasUnsavedChanges) {
+                status.textContent = 'Arrangement changed - click Save';
+                status.style.color = '#ff6b35';
+            } else {
+                status.textContent = 'Drag artworks to rearrange';
+                status.style.color = '#666';
+            }
+        }
+
+        function cleanupDragAndDrop() {
+            const grid = document.getElementById('galleryGrid');
+            const controls = document.getElementById('curationControls');
+            
+            grid.classList.remove('admin-mode');
+            controls.classList.remove('show');
+            
+            // Remove draggable attributes and event listeners
+            document.querySelectorAll('.artwork-card').forEach(card => {
+                card.draggable = false;
+                card.classList.remove('draggable');
+            });
+            
+            hasUnsavedChanges = false;
+        }
+
+        // Search & Filter Functions with performance optimizations
+        function setupSearchAndFilters() {
+            const searchInput = document.getElementById('searchInput');
+            const artistFilter = document.getElementById('artistFilter');
+            const yearFilter = document.getElementById('yearFilter');
+            const mediumFilter = document.getElementById('mediumFilter');
+            const clearFilters = document.getElementById('clearFilters');
+
+            // Optimized debounced search input
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    filterAndRenderGallery();
+                }, 150); // Reduced from 300ms for more responsive feel
+            });
+
+            // Filter dropdowns with immediate response
+            artistFilter.addEventListener('change', filterAndRenderGallery);
+            yearFilter.addEventListener('change', filterAndRenderGallery);
+            mediumFilter.addEventListener('change', filterAndRenderGallery);
+
+            // Clear filters button
+            clearFilters.addEventListener('click', function() {
+                searchInput.value = '';
+                artistFilter.value = '';
+                yearFilter.value = '';
+                mediumFilter.value = '';
+                filterAndRenderGallery();
+            });
+        }
+
+        function populateFilterDropdowns() {
+            if (artworks.length === 0) return;
+
+            const artists = [...new Set(artworks.map(a => a.artist))].sort();
+            const years = [...new Set(artworks.map(a => a.year))].sort().reverse();
+            const mediums = [...new Set(artworks.map(a => a.medium).filter(m => m))].sort();
+
+            populateSelect('artistFilter', artists);
+            populateSelect('yearFilter', years);
+            populateSelect('mediumFilter', mediums);
+
+            // Show controls once we have artworks
+            document.getElementById('galleryControls').style.display = artworks.length > 0 ? 'flex' : 'none';
+        }
+
+        function populateSelect(selectId, options) {
+            const select = document.getElementById(selectId);
+            const currentValue = select.value;
+            
+            // Clear existing options except the first one
+            select.innerHTML = select.querySelector('option').outerHTML;
+            
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                select.appendChild(optionElement);
+            });
+            
+            // Restore previous selection if it still exists
+            if (options.includes(currentValue)) {
+                select.value = currentValue;
+            }
+        }
+
+        function filterArtworks() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const artistFilter = document.getElementById('artistFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
+            const mediumFilter = document.getElementById('mediumFilter').value;
+
+            filteredArtworks = artworks.filter(artwork => {
+                const matchesSearch = !searchTerm || 
+                    artwork.title.toLowerCase().includes(searchTerm) ||
+                    artwork.artist.toLowerCase().includes(searchTerm);
+                
+                const matchesArtist = !artistFilter || artwork.artist === artistFilter;
+                const matchesYear = !yearFilter || artwork.year === yearFilter;
+                const matchesMedium = !mediumFilter || artwork.medium === mediumFilter;
+
+                return matchesSearch && matchesArtist && matchesYear && matchesMedium;
+            });
+
+            updateResultsCount();
+            return filteredArtworks;
+        }
+
+        function updateResultsCount() {
+            const count = filteredArtworks.length;
+            document.getElementById('resultNumber').textContent = count;
+        }
+
+        function filterAndRenderGallery() {
+            // Use requestAnimationFrame for smoother rendering
+            requestAnimationFrame(() => {
+                filterArtworks();
+                renderGallery();
+            });
+        }
+
+        // Optimized memory cleanup
+        function cleanupObservers() {
+            if (animationObserver) {
+                document.querySelectorAll('.artwork-card').forEach(card => {
+                    animationObserver.unobserve(card);
+                });
+            }
+            if (imageObserver) {
+                document.querySelectorAll('img[data-lazy]').forEach(img => {
+                    imageObserver.unobserve(img);
+                });
+            }
+        }
+
+        // Performance monitoring
+        let performanceMode = window.innerWidth <= 768 ? 'mobile' : 'desktop';
+        
+        window.addEventListener('resize', debounce(() => {
+            const newMode = window.innerWidth <= 768 ? 'mobile' : 'desktop';
+            if (newMode !== performanceMode) {
+                performanceMode = newMode;
+                // Re-render with optimized settings for current device
+                renderGallery();
+            }
+        }, 250));
+
+        // Utility function for debouncing
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Authentication functions
+        async function checkAuthState() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                isAuthenticated = true;
+                document.getElementById('userEmail').textContent = session.user.email;
+                showAdminContent();
+            } else {
+                isAuthenticated = false;
+                showLoginForm();
+            }
+        }
+
+        function showAdminContent() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+            document.getElementById('editAboutBtn').style.display = isAdminMode ? 'block' : 'none';
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminContent').style.display = 'none';
+            document.getElementById('editAboutBtn').style.display = 'none';
+        }
+
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                isAuthenticated = true;
+                document.getElementById('userEmail').textContent = data.user.email;
+                showAdminContent();
+                alert('Login successful!');
+                
+                // Clear login form
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed: ' + error.message);
+            }
+        }
+
+        async function logout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+
+                isAuthenticated = false;
+                isAdminMode = false;
+                cleanupDragAndDrop(); // Clean up drag and drop
+                showLoginForm();
+                toggleAdmin(); // Close admin panel
+                renderGallery(); // Remove admin controls from gallery
+                alert('Logged out successfully');
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout failed: ' + error.message);
+            }
+        }
+
+        // Admin functions
+        function toggleAdmin() {
+            const panel = document.getElementById('adminPanel');
+            panel.classList.toggle('open');
+            isAdminMode = panel.classList.contains('open') && isAuthenticated;
+            
+            if (isAdminMode) {
+                document.getElementById('editAboutBtn').style.display = 'block';
+                document.getElementById('aboutText').value = aboutText;
+                // Enable drag and drop curation
+                setTimeout(() => initializeDragAndDrop(), 100);
+            } else {
+                document.getElementById('editAboutBtn').style.display = 'none';
+                // Disable drag and drop curation
+                cleanupDragAndDrop();
+            }
+            
+            renderGallery();
+        }
+
+        // Artwork functions
+        async function loadArtworks() {
+            try {
+                const { data, error } = await supabase
+                    .from('artworks')
+                    .select('*')
+                    .order('display_order', { ascending: true, nullsLast: true })
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                artworks = data || [];
+                filteredArtworks = [...artworks];
+                console.log('Loaded', artworks.length, 'artworks from database');
+                
+                populateFilterDropdowns();
+                renderGallery();
+            } catch (error) {
+                console.error('Error loading artworks:', error);
+                artworks = [];
+                filteredArtworks = [];
+                renderGallery();
+            }
+        }
+
+        async function saveArtwork(artworkData) {
+            if (!isAuthenticated) {
+                alert('Please login to save artworks');
+                return;
+            }
+
+            try {
+                // Get the highest display_order to append new artwork at the end
+                const { data: maxOrderData } = await supabase
+                    .from('artworks')
+                    .select('display_order')
+                    .order('display_order', { ascending: false, nullsLast: false })
+                    .limit(1);
+                
+                const maxOrder = maxOrderData && maxOrderData.length > 0 ? maxOrderData[0].display_order : null;
+                const newDisplayOrder = maxOrder !== null ? maxOrder + 1 : null;
+                
+                const { data, error } = await supabase
+                    .from('artworks')
+                    .insert([{ ...artworkData, display_order: newDisplayOrder }])
+                    .select();
+
+                if (error) throw error;
+
+                console.log('Artwork saved:', data[0]);
+                await loadArtworks(); // This will refresh filters and gallery
+                return data[0];
+            } catch (error) {
+                console.error('Error saving artwork:', error);
+                alert('Failed to save artwork: ' + error.message);
+                throw error;
+            }
+        }
+
+        async function updateArtwork(id, artworkData) {
+            if (!isAuthenticated) {
+                alert('Please login to update artworks');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('artworks')
+                    .update(artworkData)
+                    .eq('id', id)
+                    .select();
+
+                if (error) throw error;
+
+                console.log('Artwork updated:', data[0]);
+                await loadArtworks(); // This will refresh filters and gallery
+                return data[0];
+            } catch (error) {
+                console.error('Error updating artwork:', error);
+                alert('Failed to update artwork: ' + error.message);
+                throw error;
+            }
+        }
+
+        async function deleteArtwork(id) {
+            if (!isAuthenticated) {
+                alert('Please login to delete artworks');
+                return;
+            }
+
+            const artwork = artworks.find(a => a.id === id);
+            if (!artwork) return;
+            
+            const confirmMessage = `Are you sure you want to delete "${artwork.title}" by ${artwork.artist}?\n\nThis action cannot be undone.`;
+            
+            if (!confirm(confirmMessage)) return;
+
+            try {
+                const { error } = await supabase
+                    .from('artworks')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                console.log('Artwork deleted:', artwork.title);
+                await loadArtworks(); // This will refresh filters and gallery
+                
+                // Show success message
+                alert(`"${artwork.title}" has been deleted from your collection.`);
+            } catch (error) {
+                console.error('Error deleting artwork:', error);
+                alert('Failed to delete artwork: ' + error.message);
+            }
+        }
+
+        // About section functions
+        async function loadAbout() {
+            try {
+                const { data, error } = await supabase
+                    .from('about')
+                    .select('content')
+                    .order('updated_at', { ascending: false })
+                    .limit(1);
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    aboutText = data[0].content;
+                    document.getElementById('aboutContent').innerHTML = aboutText.split('\n').map(p => `<p>${p}</p>`).join('');
+                }
+            } catch (error) {
+                console.error('Error loading about:', error);
+            }
+        }
+
+        async function saveAbout() {
+            if (!isAuthenticated) {
+                alert('Please login to update about section');
+                return;
+            }
+
+            aboutText = document.getElementById('aboutText').value;
+
+            try {
+                // First, try to update existing record
+                const { data: existingData } = await supabase
+                    .from('about')
+                    .select('id')
+                    .limit(1);
+
+                if (existingData && existingData.length > 0) {
+                    // Update existing
+                    const { error } = await supabase
+                        .from('about')
+                        .update({ content: aboutText, updated_at: new Date().toISOString() })
+                        .eq('id', existingData[0].id);
+
+                    if (error) throw error;
+                } else {
+                    // Insert new
+                    const { error } = await supabase
+                        .from('about')
+                        .insert([{ content: aboutText }]);
+
+                    if (error) throw error;
+                }
+
+                // Update the display
+                document.getElementById('aboutContent').innerHTML = aboutText.split('\n').map(p => `<p>${p}</p>`).join('');
+                alert('About section updated successfully!');
+            } catch (error) {
+                console.error('Error saving about:', error);
+                alert('Failed to save about section: ' + error.message);
+            }
+        }
+
+        function editAbout() {
+            document.getElementById('aboutText').value = aboutText;
+            document.getElementById('aboutText').focus();
+        }
+
+        // Optimized image compression function
+        function compressImage(file, maxWidth = 600, quality = 0.85) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = function() {
+                    let { width, height } = img;
+                    
+                    // More aggressive compression for mobile
+                    const isMobile = window.innerWidth <= 768;
+                    const targetMaxWidth = isMobile ? 400 : maxWidth;
+                    
+                    if (width > targetMaxWidth) {
+                        height = (height * targetMaxWidth) / width;
+                        width = targetMaxWidth;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    
+                    console.log('Compressed image from', file.size, 'bytes to', Math.round(compressedDataUrl.length * 0.75), 'bytes');
+                    resolve(compressedDataUrl);
+                };
+                
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        // Form handling
+        document.getElementById('artworkForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!isAuthenticated) {
+                alert('Please login to add artworks');
+                return;
+            }
+
+            const formData = {
+                title: document.getElementById('artworkTitle').value,
+                artist: document.getElementById('artistName').value,
+                year: document.getElementById('artworkYear').value,
+                dimensions: document.getElementById('artworkDimensions').value,
+                medium: document.getElementById('artworkMedium').value,
+                price: document.getElementById('artworkPrice').value,
+                orientation: document.getElementById('orientation').value,
+                images: []
+            };
+
+            const imageFiles = document.getElementById('imageUpload').files;
+            const submitBtn = document.querySelector('.btn[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                if (imageFiles.length > 0) {
+                    submitBtn.textContent = 'Processing images...';
+                    submitBtn.disabled = true;
+                    
+                    for (let i = 0; i < imageFiles.length; i++) {
+                        const file = imageFiles[i];
+                        const fileSizeMB = file.size / (1024 * 1024);
+                        
+                        if (fileSizeMB > 2) {
+                            const compressedDataUrl = await compressImage(file, 800, 0.7);
+                            formData.images.push(compressedDataUrl);
+                        } else {
+                            const dataUrl = await new Promise((resolve) => {
+                                const reader = new FileReader();
+                                reader.onload = (e) => resolve(e.target.result);
+                                reader.readAsDataURL(file);
+                            });
+                            formData.images.push(dataUrl);
+                        }
                     }
                 } else {
-                    // Fallback material with bright color
-                    const colors = [0x4299e1, 0x48bb78, 0xed8936, 0x9f7aea, 0xfc8181, 0x718096];
-                    material = new THREE.MeshLambertMaterial({ 
-                        color: colors[index % colors.length],
-                        transparent: false
+                    const editingId = document.getElementById('editingId').value;
+                    if (editingId) {
+                        const existing = artworks.find(a => a.id === editingId);
+                        if (existing) {
+                            formData.images = existing.images;
+                        }
+                    } else {
+                        alert('Please select at least one image for the artwork.');
+                        return;
+                    }
+                }
+
+                submitBtn.textContent = 'Saving...';
+
+                const editingId = document.getElementById('editingId').value;
+                if (editingId) {
+                    await updateArtwork(editingId, formData);
+                } else {
+                    await saveArtwork(formData);
+                }
+
+                resetForm();
+                alert('Artwork saved successfully!');
+            } catch (error) {
+                console.error('Error saving artwork:', error);
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        function resetForm() {
+            document.getElementById('artworkForm').reset();
+            document.getElementById('editingId').value = '';
+            document.querySelector('.btn[type="submit"]').textContent = 'Add Artwork';
+            document.querySelector('.upload-text').textContent = 'Click to upload images (multiple allowed)';
+            document.getElementById('imagePreview').innerHTML = '';
+        }
+
+        function editArtworkForm(id) {
+            const artwork = artworks.find(a => a.id === id);
+            if (artwork) {
+                document.getElementById('editingId').value = id;
+                document.getElementById('artworkTitle').value = artwork.title;
+                document.getElementById('artistName').value = artwork.artist;
+                document.getElementById('artworkYear').value = artwork.year;
+                document.getElementById('artworkDimensions').value = artwork.dimensions || '';
+                document.getElementById('artworkMedium').value = artwork.medium || '';
+                document.getElementById('artworkPrice').value = artwork.price || '';
+                document.getElementById('orientation').value = artwork.orientation;
+                document.querySelector('.btn[type="submit"]').textContent = 'Update Artwork';
+                document.querySelector('.upload-text').textContent = 'Current images will be kept if none selected';
+                
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = artwork.images.map((img, index) => 
+                    `<img src="${img}" style="width: 80px; height: 60px; object-fit: cover; margin-right: 10px; border: 1px solid #e0e0e0;">`
+                ).join('');
+            }
+        }
+
+        // Gallery rendering with lazy loading
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            
+            if (artworks.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-gallery">
+                        <h3>No Artworks Yet</h3>
+                        <p>Add your first artwork using the admin panel.<br>Click the diamond in the bottom-right corner to get started.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (filteredArtworks.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-gallery">
+                        <h3>No Results Found</h3>
+                        <p>Try adjusting your search terms or filters to find what you're looking for.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredArtworks.map((artwork, index) => `
+                <div class="artwork-card" onclick="openModal('${artwork.id}')">
+                    <div class="artwork-image ${artwork.orientation}">
+                        ${artwork.images && artwork.images.length > 0 ? 
+                            `<img ${index < 6 ? `src="${artwork.images[0]}"` : `data-lazy="${artwork.images[0]}"`} alt="${artwork.title}" ${index >= 6 ? 'loading="lazy"' : ''}>` 
+                            : ''
+                        }
+                        ${artwork.images && artwork.images.length > 1 ? `<div style="position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.8); padding: 4px 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px;">${artwork.images.length} Images</div>` : ''}
+                        ${isAdminMode && isAuthenticated ? `
+                            <div class="admin-controls">
+                                <button class="admin-btn" onclick="event.stopPropagation(); editArtworkForm('${artwork.id}')">✎</button>
+                                <button class="admin-btn btn-danger" onclick="event.stopPropagation(); deleteArtwork('${artwork.id}')">×</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="artwork-info">
+                        <div class="artwork-title">${artwork.title}</div>
+                        <div class="artwork-details">
+                            <div class="artwork-artist">${artwork.artist}</div>
+                            <div>${artwork.year}</div>
+                            ${artwork.dimensions ? `<div style="margin-top: 3px;">${artwork.dimensions}</div>` : ''}
+                            ${artwork.medium ? `<div style="margin-top: 3px; font-style: italic;">${artwork.medium}</div>` : ''}
+                            ${artwork.price ? `<div class="artwork-price">${artwork.price}</div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Trigger animations after rendering with shorter delay for better UX
+            setTimeout(() => {
+                animateArtworkCards();
+                // Initialize drag and drop if in admin mode
+                if (isAdminMode && isAuthenticated) {
+                    initializeDragAndDrop();
+                }
+            }, 10);
+        }
+
+        // Modal functions
+        function openModal(id) {
+            const artwork = artworks.find(a => a.id === id);
+            if (artwork) {
+                currentModalImages = artwork.images || [];
+                currentImageIndex = 0;
+                
+                updateModalImage();
+                
+                document.getElementById('modalTitle').textContent = artwork.title;
+                document.getElementById('modalArtist').textContent = artwork.artist;
+                
+                let details = artwork.year;
+                if (artwork.dimensions) {
+                    details += ` • ${artwork.dimensions}`;
+                }
+                if (artwork.medium) {
+                    details += `\n${artwork.medium}`;
+                }
+                document.getElementById('modalDetails').innerHTML = details.replace('\n', '<br><em style="font-style: italic; color: #999;">') + (artwork.medium ? '</em>' : '');
+                
+                const priceElement = document.getElementById('modalPrice');
+                if (artwork.price) {
+                    priceElement.textContent = artwork.price;
+                    priceElement.style.display = 'block';
+                } else {
+                    priceElement.style.display = 'none';
+                }
+                
+                setupImageNavigation();
+                document.getElementById('artworkModal').classList.add('show');
+            }
+        }
+
+        function updateModalImage() {
+            if (currentModalImages.length > 0) {
+                document.getElementById('modalImage').src = currentModalImages[currentImageIndex];
+            }
+        }
+
+        function setupImageNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const dotsContainer = document.getElementById('imageDots');
+            
+            if (currentModalImages.length <= 1) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                dotsContainer.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'block';
+                nextBtn.style.display = 'block';
+                dotsContainer.style.display = 'flex';
+                
+                dotsContainer.innerHTML = currentModalImages.map((_, index) => 
+                    `<div class="dot ${index === currentImageIndex ? 'active' : ''}" onclick="goToImage(${index})"></div>`
+                ).join('');
+                
+                prevBtn.disabled = currentImageIndex === 0;
+                nextBtn.disabled = currentImageIndex === currentModalImages.length - 1;
+            }
+        }
+
+        function changeImage(direction) {
+            currentImageIndex += direction;
+            if (currentImageIndex < 0) currentImageIndex = 0;
+            if (currentImageIndex >= currentModalImages.length) currentImageIndex = currentModalImages.length - 1;
+            
+            updateModalImage();
+            setupImageNavigation();
+        }
+
+        function goToImage(index) {
+            currentImageIndex = index;
+            updateModalImage();
+            setupImageNavigation();
+        }
+
+        function closeModal() {
+            document.getElementById('artworkModal').classList.remove('show');
+        }
+
+        function openZoom() {
+            const currentImage = document.getElementById('modalImage').src;
+            document.getElementById('zoomImage').src = currentImage;
+            document.getElementById('zoomModal').classList.add('show');
+        }
+
+        function closeZoom() {
+            document.getElementById('zoomModal').classList.remove('show');
+        }
+
+        // Event listeners
+        document.getElementById('artworkModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.getElementById('zoomModal').addEventListener('click', function(e) {
+            if (e.target === this) closeZoom();
+        });
+
+        document.addEventListener('click', function(e) {
+            const adminPanel = document.getElementById('adminPanel');
+            const adminTrigger = document.querySelector('.admin-trigger');
+            
+            if (adminPanel.classList.contains('open') && 
+                !adminPanel.contains(e.target) && 
+                !adminTrigger.contains(e.target)) {
+                toggleAdmin();
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
                     });
                 }
-                
-                const mesh = new THREE.Mesh(geometry, material);
-                mesh.position.set(position.x, position.y, position.z);
-                mesh.rotation.y = position.rotation;
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
-                mesh.userData = artwork;
-                
-                scene.add(mesh);
-                artworkMeshes.push(mesh);
-                
-                updateDebug(`Added artwork mesh ${index + 1} at position (${position.x}, ${position.y}, ${position.z})`);
-
-                // Create a more visible frame
-                const frameGeometry = new THREE.PlaneGeometry(width + 0.2, height + 0.2);
-                const frameMaterial = new THREE.MeshLambertMaterial({ 
-                    color: 0x1a202c,
-                    transparent: false
-                });
-                const frame = new THREE.Mesh(frameGeometry, frameMaterial);
-                frame.position.set(position.x, position.y, position.z - 0.01);
-                frame.rotation.y = position.rotation;
-                frame.receiveShadow = true;
-                
-                scene.add(frame);
-                
-                updateDebug(`Added frame for artwork ${index + 1}`);
             });
+        });
+
+        const fileInput = document.getElementById('imageUpload');
+        fileInput.addEventListener('change', function() {
+            const files = this.files;
+            const preview = document.getElementById('imagePreview');
             
-            updateDebug(`Total artworks placed: ${artworkMeshes.length}`);
-        }
-
-        function setupEventListeners() {
-            // Mouse events
-            renderer.domElement.addEventListener('click', onMouseClick);
-            renderer.domElement.addEventListener('mousemove', onMouseMove);
-            renderer.domElement.addEventListener('mousedown', onMouseDown);
-            renderer.domElement.addEventListener('mouseup', onMouseUp);
-
-            // Keyboard events
-            document.addEventListener('keydown', onKeyDown);
-            document.addEventListener('keyup', onKeyUp);
-
-            // Window resize
-            window.addEventListener('resize', onWindowResize);
-
-            // Prevent context menu
-            renderer.domElement.addEventListener('contextmenu', (e) => e.preventDefault());
-        }
-
-        function onMouseDown(event) {
-            if (isAerialView) return;
-            isMouseDown = true;
-            lastMouseX = event.clientX;
-            lastMouseY = event.clientY;
-            renderer.domElement.style.cursor = 'grabbing';
-        }
-
-        function onMouseUp(event) {
-            isMouseDown = false;
-            renderer.domElement.style.cursor = 'crosshair';
-        }
-
-        function onMouseClick(event) {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(artworkMeshes);
-
-            if (intersects.length > 0) {
-                const artwork = intersects[0].object.userData;
-                focusOnArtwork(intersects[0].object, artwork);
-            }
-        }
-
-        function onMouseMove(event) {
-            if (isAerialView) return;
-
-            const currentMouseX = event.clientX;
-            const currentMouseY = event.clientY;
-
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(artworkMeshes);
-
-            const label = document.getElementById('artworkLabel');
-            
-            if (intersects.length > 0) {
-                const artwork = intersects[0].object.userData;
-                showArtworkLabel(artwork, event.clientX, event.clientY);
-            } else {
-                label.classList.remove('visible');
-            }
-
-            if (isMouseDown) {
-                const deltaX = currentMouseX - lastMouseX;
-                const deltaY = currentMouseY - lastMouseY;
-
-                yaw -= deltaX * mouseSensitivity;
-                pitch -= deltaY * mouseSensitivity;
+            if (files.length > 0) {
+                document.querySelector('.upload-text').textContent = `${files.length} image(s) selected`;
                 
-                pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitch));
-
-                camera.rotation.order = 'YXZ';
-                camera.rotation.y = yaw;
-                camera.rotation.x = pitch;
-                camera.rotation.z = 0;
-            }
-
-            lastMouseX = currentMouseX;
-            lastMouseY = currentMouseY;
-        }
-
-        function showArtworkLabel(artwork, x, y) {
-            const label = document.getElementById('artworkLabel');
-            document.getElementById('labelTitle').textContent = artwork.title;
-            document.getElementById('labelDetails').innerHTML = `
-                ${artwork.artist}, ${artwork.year}<br>
-                ${artwork.dimensions}<br>
-                <em style="color: #999;">${artwork.medium}</em>
-            `;
-            
-            label.style.left = (x + 15) + 'px';
-            label.style.top = (y - 60) + 'px';
-            label.classList.add('visible');
-        }
-
-        function focusOnArtwork(mesh, artwork) {
-            const targetPosition = mesh.position.clone();
-            const box = new (window.THREE.Box3)().setFromObject(mesh);
-            const size = box.getSize(new window.THREE.Vector3());
-            const distance = Math.max(size.x, size.y) * 1.5 + 2;
-            
-            const normal = new window.THREE.Vector3(0, 0, 1);
-            normal.applyEuler(mesh.rotation);
-            const cameraPosition = targetPosition.clone().add(normal.multiplyScalar(distance));
-            cameraPosition.y = Math.max(1.6, targetPosition.y);
-            
-            animateCamera(cameraPosition, targetPosition);
-        }
-
-        function animateCamera(targetPosition, lookAtPosition) {
-            const startPosition = camera.position.clone();
-            const startQuaternion = camera.quaternion.clone();
-            
-            const tempCamera = camera.clone();
-            tempCamera.position.copy(targetPosition);
-            tempCamera.lookAt(lookAtPosition);
-            const targetQuaternion = tempCamera.quaternion.clone();
-            
-            const duration = 1500;
-            const startTime = Date.now();
-            
-            function animateStep() {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const eased = 1 - Math.pow(1 - progress, 3);
+                preview.innerHTML = '';
+                for (let i = 0; i < Math.min(files.length, 5); i++) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.cssText = 'width: 80px; height: 60px; object-fit: cover; margin-right: 10px; border: 1px solid #e0e0e0;';
+                        preview.appendChild(img);
+                    };
+                    reader.readAsDataURL(files[i]);
+                }
                 
-                camera.position.lerpVectors(startPosition, targetPosition, eased);
-                camera.quaternion.slerpQuaternions(startQuaternion, targetQuaternion, eased);
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animateStep);
+                if (files.length > 5) {
+                    const moreText = document.createElement('span');
+                    moreText.textContent = `+${files.length - 5} more`;
+                    moreText.style.cssText = 'font-size: 12px; color: #999; margin-left: 10px;';
+                    preview.appendChild(moreText);
                 }
             }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('artworkModal');
+            const zoomModal = document.getElementById('zoomModal');
             
-            animateStep();
-        }
-
-        function onKeyDown(event) {
-            keys[event.code] = true;
-        }
-
-        function onKeyUp(event) {
-            keys[event.code] = false;
-        }
-
-        function updateMovement() {
-            if (isAerialView) return;
-
-            velocity.x = 0;
-            velocity.z = 0;
-
-            const forward = { x: Math.sin(yaw), z: Math.cos(yaw) };
-            const right = { x: Math.cos(yaw), z: -Math.sin(yaw) };
-
-            if (keys['KeyW'] || keys['ArrowUp']) {
-                velocity.x += forward.x * -moveSpeed;
-                velocity.z += forward.z * -moveSpeed;
+            if (zoomModal.classList.contains('show')) {
+                if (e.key === 'Escape') closeZoom();
+            } else if (modal.classList.contains('show')) {
+                if (e.key === 'ArrowLeft') changeImage(-1);
+                else if (e.key === 'ArrowRight') changeImage(1);
+                else if (e.key === 'Escape') closeModal();
+                else if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openZoom();
+                }
             }
-            if (keys['KeyS'] || keys['ArrowDown']) {
-                velocity.x += forward.x * moveSpeed;
-                velocity.z += forward.z * moveSpeed;
-            }
-            if (keys['KeyA'] || keys['ArrowLeft']) {
-                velocity.x += right.x * -moveSpeed;
-                velocity.z += right.z * -moveSpeed;
-            }
-            if (keys['KeyD'] || keys['ArrowRight']) {
-                velocity.x += right.x * moveSpeed;
-                velocity.z += right.z * moveSpeed;
-            }
+        }, { passive: false });
 
-            const newPosition = {
-                x: camera.position.x + velocity.x,
-                y: camera.position.y,
-                z: camera.position.z + velocity.z
-            };
-            
-            const margin = 2;
-            newPosition.x = Math.max(-galleryWidth/2 + margin, Math.min(galleryWidth/2 - margin, newPosition.x));
-            newPosition.z = Math.max(-galleryDepth/2 + margin, Math.min(galleryDepth/2 - margin, newPosition.z));
-            
-            camera.position.set(newPosition.x, newPosition.y, newPosition.z);
-        }
-
-        function toggleView() {
-            isAerialView = !isAerialView;
-            const button = document.querySelector('.view-mode-toggle');
-            
-            if (isAerialView) {
-                camera.position.set(0, galleryHeight + 15, 0);
-                camera.lookAt(0, 0, 0);
-                camera.rotation.order = 'XYZ';
-                camera.rotation.x = -Math.PI / 2;
-                camera.rotation.y = 0;
-                camera.rotation.z = 0;
-                button.textContent = 'Walk Mode';
-                isMouseDown = false;
-                renderer.domElement.style.cursor = 'default';
-            } else {
-                camera.position.set(0, 1.6, 15);
-                yaw = 0;
-                pitch = 0;
-                camera.rotation.order = 'YXZ';
-                camera.rotation.x = 0;
-                camera.rotation.y = 0;
-                camera.rotation.z = 0;
-                camera.lookAt(0, 1.6, 0);
-                button.textContent = 'Aerial View';
-                renderer.domElement.style.cursor = 'crosshair';
-            }
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            frameCount++;
-            updateMovement();
-            renderer.render(scene, camera);
-        }
-
-        // Main initialization function
-        async function startGallery() {
-            try {
-                updateDebug('Starting gallery initialization');
-                
-                // Load Three.js
-                await loadThreeJS();
-                updateDebug('Three.js loaded');
-                
-                // Load artworks
-                await loadArtworks();
-                updateDebug('Artworks loaded');
-                
-                // Initialize gallery
-                await initGallery();
-                updateDebug('Gallery initialized');
-                
-            } catch (error) {
-                updateDebug('Failed to start gallery: ' + error.message);
-                updateStatus('Gallery failed to start');
-                console.error('Gallery startup error:', error);
-                
-                document.getElementById('loadingText').innerHTML = `
-                    <div style="color: #ff6b6b;">Gallery Error</div>
-                    <small>${error.message}</small><br>
-                    <button onclick="location.reload()" style="margin-top: 10px; padding: 8px 16px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                        Reload Page
-                    </button>
-                `;
-            }
-        }
-
-        // Start when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', startGallery);
-        } else {
-            startGallery();
-        }
-
-        // Fallback timer
-        setTimeout(() => {
-            if (!renderer) {
-                updateDebug('Timeout reached, gallery not loaded');
-                updateStatus('Timeout - please reload');
-                document.getElementById('loadingText').innerHTML = `
-                    <div style="color: #ff6b6b;">Gallery Timeout</div>
-                    <small>Please refresh the page</small><br>
-                    <button onclick="location.reload()" style="margin-top: 10px; padding: 8px 16px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                        Reload Page
-                    </button>
-                `;
-            }
-        }, 15000);
-
-        console.log('🎨 Gallery script setup complete');
+        // Cleanup observers on page unload for better memory management
+        window.addEventListener('beforeunload', () => {
+            cleanupObservers();
+        }, { passive: true });
     </script>
 </body>
 </html>

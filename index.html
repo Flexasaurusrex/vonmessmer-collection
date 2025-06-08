@@ -2409,6 +2409,60 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
         // Initialize Supabase
         const supabaseUrl = 'https://qqkshpkbfixeyusqpsou.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
+// ─── Pending Curators helpers ───
+async function loadPendingCurators() {
+  const list = document.getElementById('pendingCuratorsList');
+  list.innerHTML = '<li style="color:#666;">Loading…</li>';
+
+  const { data, error } = await supabase
+    .from('curators')
+    .select('*')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error('Error loading pending curators:', error);
+    list.innerHTML = '<li style="color:red;">Failed to load</li>';
+    return;
+  }
+
+  if (!data.length) {
+    list.innerHTML = '<li style="color:#666;">No pending curators</li>';
+    return;
+  }
+
+  list.innerHTML = data.map(c => `
+    <li style="margin-bottom:8px; font-size:13px;">
+      <strong>${c.name}</strong> (${c.email})
+      <button style="margin-left:8px;padding:4px 8px;font-size:11px;"
+              onclick="approveCurator('${c.id}')">
+        Approve
+      </button>
+      <button style="margin-left:4px;padding:4px 8px;font-size:11px;"
+              onclick="rejectCurator('${c.id}')">
+        Reject
+      </button>
+    </li>
+  `).join('');
+}
+
+async function approveCurator(id) {
+  await supabase
+    .from('curators')
+    .update({ status: 'approved' })
+    .eq('id', id);
+  loadPendingCurators();
+}
+
+async function rejectCurator(id) {
+  await supabase
+    .from('curators')
+    .update({ status: 'rejected' })
+    .eq('id', id);
+  loadPendingCurators();
+}
+// ─────────────────────────────────
+
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         let artworks = [];
@@ -3880,26 +3934,25 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
 
         // Admin functions
         function toggleAdmin() {
-            const panel = document.getElementById('adminPanel');
-            panel.classList.toggle('open');
-            isAdminMode = panel.classList.contains('open') && (isAuthenticated || currentCurator);
-            
-            if (isAdminMode) {
-                // Check if curator is logged in
-                if (currentCurator) {
-                    updateAdminPanelForCurator();
-                } else {
-                    // Normal admin
-                    document.getElementById('editAboutBtn').style.display = 'block';
-                    document.getElementById('aboutText').value = aboutText;
-                }
-            } else {
-                document.getElementById('editAboutBtn').style.display = 'none';
-                document.getElementById('curationControls').classList.remove('show');
-            }
-            
-            renderGallery();
-        }
+            function toggleAdmin() {
+  const panel = document.getElementById('adminPanel');
+  panel.classList.toggle('open');
+  const open = panel.classList.contains('open');
+
+  if (open && isAuthenticated) {
+    // hide login, show admin content
+    document.getElementById('loginForm').style.display   = 'none';
+    document.getElementById('adminContent').style.display = 'block';
+    // ← load our pending‐curators list:
+    loadPendingCurators();
+  } else {
+    document.getElementById('loginForm').style.display   = 'block';
+    document.getElementById('adminContent').style.display = 'none';
+  }
+
+  // re-render gallery if you need it
+  renderGallery();
+}
 
         // Artwork functions
         async function loadArtworks() {

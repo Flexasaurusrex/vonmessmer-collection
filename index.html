@@ -2514,21 +2514,22 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             }
         }
 
+        // FIXED: Updated function to properly show curator artwork form
         function updateAdminPanelForCurator() {
             if (currentCurator) {
                 // Update admin panel to show curator is logged in
                 document.getElementById('loginForm').style.display = 'none';
                 document.getElementById('adminContent').style.display = 'block';
                 document.getElementById('userEmail').textContent = currentCurator.email + ' (Curator)';
-                
-                // Update admin title
+// Update admin title
                 document.querySelector('.admin-title').textContent = 'Curator Panel';
                 
-                // Hide main admin features, show curator features
+                // KEEP the artwork form visible for curators - they need it to manage their collections!
                 const artworkForm = document.getElementById('artworkForm');
-                const aboutSection = document.querySelector('.admin-form:last-child');
+                if (artworkForm) artworkForm.style.display = 'block';
                 
-                if (artworkForm) artworkForm.style.display = 'none';
+                // Only hide the about section since curators shouldn't edit the main site about
+                const aboutSection = document.querySelector('.admin-form:last-child');
                 if (aboutSection) aboutSection.style.display = 'none';
                 
                 // Add curator-specific message
@@ -2539,12 +2540,39 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                     curatorMessage.innerHTML = `
                         <div style="padding: 20px; background: #f8f8f8; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                             <h4 style="font-size: 14px; color: #1f2937; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Welcome, ${currentCurator.name}!</h4>
-                            <p style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">Manage your collections and artworks</p>
-                            <button class="btn" onclick="showCuratorDashboard()" style="width: auto; padding: 8px 16px;">Open Dashboard</button>
+                            <p style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">Use the form below to add artworks to your current collection</p>
+                            <button class="btn" onclick="showCuratorDashboard()" style="width: auto; padding: 8px 16px;">View All Collections</button>
                         </div>
                     `;
                     document.getElementById('adminContent').insertBefore(curatorMessage, document.getElementById('adminContent').firstChild);
                 }
+                
+                // Update the artwork form for curator use
+                updateArtworkFormForCurator();
+            }
+        }
+
+        function updateArtworkFormForCurator() {
+            // Update form title and submit button text to reflect curator use
+            const submitBtn = document.querySelector('#artworkForm .btn[type="submit"]');
+            if (submitBtn && submitBtn.textContent === 'Add Artwork') {
+                submitBtn.textContent = 'Add to Collection';
+            }
+            
+            // Add collection indicator if we're in a specific collection
+            if (currentCollection) {
+                let collectionIndicator = document.getElementById('collectionIndicator');
+                if (!collectionIndicator) {
+                    collectionIndicator = document.createElement('div');
+                    collectionIndicator.id = 'collectionIndicator';
+                    collectionIndicator.style.cssText = 'background: #e3f2fd; padding: 10px; border-radius: 6px; margin-bottom: 20px; font-size: 12px; text-align: center; color: #1976d2;';
+                    
+                    const artworkForm = document.getElementById('artworkForm');
+                    artworkForm.insertBefore(collectionIndicator, artworkForm.firstChild);
+                }
+                
+                // Get collection name
+                collectionIndicator.innerHTML = `📁 Adding to your active collection`;
             }
         }
 
@@ -2619,12 +2647,24 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                 curatorMessage.remove();
             }
             
+            // Remove collection indicator if it exists
+            const collectionIndicator = document.getElementById('collectionIndicator');
+            if (collectionIndicator) {
+                collectionIndicator.remove();
+            }
+            
             // Show normal admin forms
             const artworkForm = document.getElementById('artworkForm');
             const aboutSection = document.querySelector('.admin-form:last-child');
             
             if (artworkForm) artworkForm.style.display = 'block';
             if (aboutSection) aboutSection.style.display = 'block';
+            
+            // Reset submit button text
+            const submitBtn = document.querySelector('#artworkForm .btn[type="submit"]');
+            if (submitBtn) {
+                submitBtn.textContent = 'Add Artwork';
+            }
             
             // Reset to normal login state
             document.getElementById('loginForm').style.display = 'block';
@@ -2732,9 +2772,10 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             loadCuratorPage(currentCurator.id, collectionId);
         }
 
-        // Curator Pages
+        // Enhanced loadCuratorPage function to properly set up curator admin mode
         async function loadCuratorPage(curatorId, collectionId) {
             currentPage = 'curator';
+            currentCollection = collectionId; // Make sure this is set!
             
             try {
                 // Load curator info
@@ -2763,7 +2804,7 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                     return;
                 }
 
-                // Load collection artworks (this might be empty, which is fine)
+                // Load collection artworks
                 const { data: collectionArtworks, error: artworksError } = await supabase
                     .from('curator_artworks')
                     .select('*')
@@ -2771,7 +2812,6 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                     .order('display_order', { ascending: true, nullsLast: true })
                     .order('created_at', { ascending: false });
 
-                // Don't throw error if no artworks found, just log it
                 if (artworksError) {
                     console.error('Error loading artworks (non-critical):', artworksError);
                 }
@@ -2781,58 +2821,32 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                 filteredArtworks = [...artworks];
                 
                 // Update header tagline to show curator info
-                try {
-                    document.querySelector('.tagline').innerHTML = `
-                        <div style="display: flex; flex-direction: column; align-items: center;">
-                            <div style="font-size: 0.3em; font-weight: 400; margin-bottom: 10px; color: #6b7280;">${curator.name}</div>
-                            <div>${collection.name}</div>
-                            <div style="font-size: 0.4em; font-weight: 400; margin-top: 10px; color: #6b7280;">${collection.type.toUpperCase()} COLLECTION</div>
-                        </div>
-                    `;
-                } catch (taglineError) {
-                    console.error('Error updating tagline (non-critical):', taglineError);
+                document.querySelector('.tagline').innerHTML = `
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="font-size: 0.3em; font-weight: 400; margin-bottom: 10px; color: #6b7280;">${curator.name}</div>
+                        <div>${collection.name}</div>
+                        <div style="font-size: 0.4em; font-weight: 400; margin-top: 10px; color: #6b7280;">${collection.type.toUpperCase()} COLLECTION</div>
+                    </div>
+                `;
+                
+                populateFilterDropdowns();
+                renderGallery();
+                
+                // IMPORTANT: Enable curator admin mode if this is the current curator's collection
+                if (currentCurator && currentCurator.id === curatorId) {
+                    isAdminMode = true;
+                    isAuthenticated = true; // This enables admin controls
+                    
+                    // Update the admin panel for curator use
+                    updateAdminPanelForCurator();
+                    renderGallery(); // Re-render to show admin controls
                 }
                 
-                // These functions might have minor errors but shouldn't block page load
-                try {
-                    populateFilterDropdowns();
-                } catch (filterError) {
-                    console.error('Error populating filters (non-critical):', filterError);
-                }
-                
-                try {
-                    renderGallery();
-                } catch (renderError) {
-                    console.error('Error rendering gallery (non-critical):', renderError);
-                }
-                
-                // Show admin controls if this is the current curator's collection
-                try {
-                    if (currentCurator && currentCurator.id === curatorId) {
-                        // Enable curator admin mode
-                        isAdminMode = true;
-                        isAuthenticated = true;
-                        renderGallery();
-                    }
-                } catch (adminError) {
-                    console.error('Error setting admin mode (non-critical):', adminError);
-                }
-                
-                // Add back to main navigation
-                try {
-                    addBackToMainButton();
-                } catch (buttonError) {
-                    console.error('Error adding back button (non-critical):', buttonError);
-                }
+                addBackToMainButton();
                 
             } catch (error) {
                 console.error('Critical error loading curator page:', error);
-                // Only show alert for truly critical errors
-                if (error.message && error.message.includes('Failed to fetch')) {
-                    alert('Network error - please check your connection and try again');
-                } else {
-                    alert('Failed to load curator page');
-                }
+                alert('Failed to load curator page');
             }
         }
 
@@ -3421,14 +3435,21 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             document.getElementById('zoomImage').src = imageSrc;
             document.getElementById('zoomModal').classList.add('show');
         }
-        // Curator artwork management (reuse existing functions with collection_id)
+
+        // Enhanced saveCuratorArtwork function with better error handling
         async function saveCuratorArtwork(artworkData, collectionId) {
             if (!currentCurator) {
                 alert('Please login as a curator to save artworks');
                 return;
             }
 
+            if (!collectionId) {
+                alert('No collection selected. Please go to your dashboard and select a collection.');
+                return;
+            }
+
             try {
+                // Get the highest display order for this collection
                 const { data: maxOrderData } = await supabase
                     .from('curator_artworks')
                     .select('display_order')
@@ -3437,7 +3458,7 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                     .limit(1);
                 
                 const maxOrder = maxOrderData && maxOrderData.length > 0 ? maxOrderData[0].display_order : null;
-                const newDisplayOrder = maxOrder !== null ? maxOrder + 1 : null;
+                const newDisplayOrder = maxOrder !== null ? maxOrder + 1 : 1;
                 
                 const { data, error } = await supabase
                     .from('curator_artworks')
@@ -3452,7 +3473,9 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                 if (error) throw error;
 
                 console.log('Curator artwork saved:', data[0]);
-                loadCuratorPage(currentCurator.id, collectionId);
+                
+                // Reload the curator page to show the new artwork
+                await loadCuratorPage(currentCurator.id, collectionId);
                 return data[0];
             } catch (error) {
                 console.error('Error saving curator artwork:', error);
@@ -3461,6 +3484,7 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             }
         }
 
+        // Enhanced updateCuratorArtwork function
         async function updateCuratorArtwork(id, artworkData, collectionId) {
             if (!currentCurator) {
                 alert('Please login as a curator to update artworks');
@@ -3472,13 +3496,15 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                     .from('curator_artworks')
                     .update(artworkData)
                     .eq('id', id)
-                    .eq('curator_id', currentCurator.id)
+                    .eq('curator_id', currentCurator.id) // Ensure curator owns this artwork
                     .select();
 
                 if (error) throw error;
 
                 console.log('Curator artwork updated:', data[0]);
-                loadCuratorPage(currentCurator.id, collectionId);
+                
+                // Reload the curator page to show the updated artwork
+                await loadCuratorPage(currentCurator.id, collectionId);
                 return data[0];
             } catch (error) {
                 console.error('Error updating curator artwork:', error);
@@ -4088,11 +4114,12 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             });
         }
 
-        // Form handling
+        // Enhanced form submission handler that correctly routes to curator or main collection
         document.getElementById('artworkForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            if (!isAuthenticated) {
+            // Check authentication - allow either main admin or curator
+            if (!isAuthenticated && !currentCurator) {
                 alert('Please login to add artworks');
                 return;
             }
@@ -4109,7 +4136,7 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             };
 
             const imageFiles = document.getElementById('imageUpload').files;
-            const submitBtn = document.querySelector('.btn[type="submit"]');
+            const submitBtn = document.querySelector('#artworkForm .btn[type="submit"]');
             const originalText = submitBtn.textContent;
             
             try {
@@ -4149,24 +4176,35 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                 submitBtn.textContent = 'Saving...';
 
                 const editingId = document.getElementById('editingId').value;
+                
+                // Determine if we're in curator mode with a specific collection
+                const isCuratorCollection = currentCurator && currentCollection && currentPage === 'curator';
+                
                 if (editingId) {
-                    if (currentPage === 'curator' && currentCollection) {
+                    // Editing existing artwork
+                    if (isCuratorCollection) {
                         await updateCuratorArtwork(editingId, formData, currentCollection);
+                        alert('Artwork updated in your collection!');
                     } else {
                         await updateArtwork(editingId, formData);
+                        alert('Artwork updated successfully!');
                     }
                 } else {
-                    if (currentPage === 'curator' && currentCollection) {
+                    // Adding new artwork
+                    if (isCuratorCollection) {
                         await saveCuratorArtwork(formData, currentCollection);
+                        alert('Artwork added to your collection!');
                     } else {
                         await saveArtwork(formData);
+                        alert('Artwork saved successfully!');
                     }
                 }
 
                 resetForm();
-                alert('Artwork saved successfully!');
+                
             } catch (error) {
                 console.error('Error saving artwork:', error);
+                alert('Failed to save artwork. Please try again.');
             } finally {
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
@@ -4176,7 +4214,15 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
         function resetForm() {
             document.getElementById('artworkForm').reset();
             document.getElementById('editingId').value = '';
-            document.querySelector('.btn[type="submit"]').textContent = 'Add Artwork';
+            
+            // Reset submit button text based on context
+            const submitBtn = document.querySelector('#artworkForm .btn[type="submit"]');
+            if (currentCurator && currentCollection && currentPage === 'curator') {
+                submitBtn.textContent = 'Add to Collection';
+            } else {
+                submitBtn.textContent = 'Add Artwork';
+            }
+            
             document.querySelector('.upload-text').textContent = 'Click to upload images (multiple allowed)';
             document.getElementById('imagePreview').innerHTML = '';
         }
@@ -4192,13 +4238,24 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                 document.getElementById('artworkMedium').value = artwork.medium || '';
                 document.getElementById('artworkPrice').value = artwork.price || '';
                 document.getElementById('orientation').value = artwork.orientation;
-                document.querySelector('.btn[type="submit"]').textContent = 'Update Artwork';
+                
+                // Update submit button text based on context
+                const submitBtn = document.querySelector('#artworkForm .btn[type="submit"]');
+                if (currentCurator && currentCollection && currentPage === 'curator') {
+                    submitBtn.textContent = 'Update in Collection';
+                } else {
+                    submitBtn.textContent = 'Update Artwork';
+                }
+                
                 document.querySelector('.upload-text').textContent = 'Current images will be kept if none selected';
                 
                 const preview = document.getElementById('imagePreview');
                 preview.innerHTML = artwork.images.map((img, index) => 
                     `<img src="${img}" style="width: 80px; height: 60px; object-fit: cover; margin-right: 10px; border: 1px solid #e0e0e0;">`
                 ).join('');
+                
+                // Scroll to form for better UX
+                document.getElementById('artworkForm').scrollIntoView({ behavior: 'smooth' });
             }
         }
 

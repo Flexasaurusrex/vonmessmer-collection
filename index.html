@@ -2401,7 +2401,6 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        // Global variables
         let artworks = [];
         let filteredArtworks = [];
         let isAdminMode = false;
@@ -2418,7 +2417,7 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
         let isCuratorMode = false;
         let currentCollection = null;
         let allCurators = [];
-        let currentPage = 'main';
+        let currentPage = 'main'; // 'main', 'curator', 'browse-curators', 'curators-corner'
         
         // Curators Corner variables
         let articles = [];
@@ -2439,12 +2438,14 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             initializeLazyLoading();
             setupSearchAndFilters();
             setupRichEditor();
-            setupEventListeners();
         });
 
         // === CURATOR SYSTEM FUNCTIONS ===
         
+        // Curator Authentication
         async function checkCuratorAuth() {
+            // For this demo, we'll use memory-based storage instead of localStorage
+            // In a real implementation, you'd use proper session management
             if (currentCurator) {
                 isCuratorMode = true;
                 console.log('Curator logged in:', currentCurator.name);
@@ -2484,3 +2485,1995 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             }
 
             try {
+                // Query curators table
+                const { data, error } = await supabase
+                    .from('curators')
+                    .select('*')
+                    .eq('email', email)
+                    .eq('password', password) // In production, use proper password hashing
+                    .single();
+
+                if (error) throw error;
+
+                currentCurator = data;
+                isCuratorMode = true;
+                
+                // Update admin panel to show curator is logged in
+                updateAdminPanelForCurator();
+                
+                closeCuratorAuth();
+                showCuratorDashboard();
+                alert('Welcome back, ' + data.name + '!');
+                
+                // Clear form
+                document.getElementById('curatorLoginEmail').value = '';
+                document.getElementById('curatorLoginPassword').value = '';
+            } catch (error) {
+                console.error('Curator login error:', error);
+                alert('Login failed. Please check your credentials.');
+            }
+        }
+
+        function updateAdminPanelForCurator() {
+            if (currentCurator) {
+                // Update admin panel to show curator is logged in
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                document.getElementById('userEmail').textContent = currentCurator.email + ' (Curator)';
+                
+                // Update admin title
+                document.querySelector('.admin-title').textContent = 'Curator Panel';
+                
+                // Hide main admin features, show curator features
+                const artworkForm = document.getElementById('artworkForm');
+                const aboutSection = document.querySelector('.admin-form:last-child');
+                
+                if (artworkForm) artworkForm.style.display = 'none';
+                if (aboutSection) aboutSection.style.display = 'none';
+                
+                // Add curator-specific message
+                let curatorMessage = document.getElementById('curatorAdminMessage');
+                if (!curatorMessage) {
+                    curatorMessage = document.createElement('div');
+                    curatorMessage.id = 'curatorAdminMessage';
+                    curatorMessage.innerHTML = `
+                        <div style="padding: 20px; background: #f8f8f8; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                            <h4 style="font-size: 14px; color: #1f2937; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Welcome, ${currentCurator.name}!</h4>
+                            <p style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">Manage your collections and artworks</p>
+                            <button class="btn" onclick="showCuratorDashboard()" style="width: auto; padding: 8px 16px;">Open Dashboard</button>
+                        </div>
+                    `;
+                    document.getElementById('adminContent').insertBefore(curatorMessage, document.getElementById('adminContent').firstChild);
+                }
+            }
+        }
+
+        async function curatorRegister() {
+            const name = document.getElementById('curatorName').value;
+            const email = document.getElementById('curatorEmail').value;
+            const password = document.getElementById('curatorPassword').value;
+            const bio = document.getElementById('curatorBio').value;
+            
+            if (!name || !email || !password) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            try {
+                let profileImage = '';
+                const imageFile = document.getElementById('curatorImageUpload').files[0];
+                
+                if (imageFile) {
+                    profileImage = await compressImage(imageFile, 200, 0.8);
+                }
+
+                const { data, error } = await supabase
+                    .from('curators')
+                    .insert([{
+                        name: name,
+                        email: email,
+                        password: password, // In production, hash this
+                        bio: bio,
+                        profile_image: profileImage,
+                        status: 'pending'
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                alert('Registration successful! You can now login.');
+                showCuratorLogin();
+                
+                // Clear form
+                document.getElementById('curatorName').value = '';
+                document.getElementById('curatorEmail').value = '';
+                document.getElementById('curatorPassword').value = '';
+                document.getElementById('curatorBio').value = '';
+                document.getElementById('curatorImagePreview').innerHTML = '';
+                
+            } catch (error) {
+                console.error('Curator registration error:', error);
+                alert('Registration failed: ' + error.message);
+            }
+        }
+
+        function curatorLogout() {
+            currentCurator = null;
+            isCuratorMode = false;
+            
+            // Reset admin panel to normal state
+            resetAdminPanelFromCurator();
+            
+            closeCuratorDashboard();
+            alert('Logged out successfully');
+        }
+
+        function resetAdminPanelFromCurator() {
+            // Reset admin panel title
+            document.querySelector('.admin-title').textContent = 'Admin Panel';
+            
+            // Remove curator message if it exists
+            const curatorMessage = document.getElementById('curatorAdminMessage');
+            if (curatorMessage) {
+                curatorMessage.remove();
+            }
+            
+            // Show normal admin forms
+            const artworkForm = document.getElementById('artworkForm');
+            const aboutSection = document.querySelector('.admin-form:last-child');
+            
+            if (artworkForm) artworkForm.style.display = 'block';
+            if (aboutSection) aboutSection.style.display = 'block';
+            
+            // Reset to normal login state
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminContent').style.display = 'none';
+        }
+
+        // Curator Dashboard
+        function showCuratorDashboard() {
+            if (!currentCurator) return;
+            
+            document.getElementById('curatorDashboardName').textContent = currentCurator.name;
+            document.getElementById('curatorDashboardImage').src = currentCurator.profile_image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSI0MCIgZmlsbD0iI2Y4ZjhmOCIvPjx0ZXh0IHg9IjQwIiB5PSI0NSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZiNzI4MCIgZm9udC1zaXplPSIxNCIgZm9udC1mYW1pbHk9IkludGVyIj7wn5+kPC90ZXh0Pjwvc3ZnPg==';
+            
+            loadCuratorCollections();
+            document.getElementById('curatorDashboardModal').classList.add('show');
+        }
+
+        function closeCuratorDashboard() {
+            document.getElementById('curatorDashboardModal').classList.remove('show');
+        }
+
+        async function loadCuratorCollections() {
+            if (!currentCurator) return;
+            
+            try {
+                const { data, error } = await supabase
+                    .from('curator_collections')
+                    .select('*')
+                    .eq('curator_id', currentCurator.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const listContainer = document.getElementById('curatorCollectionsList');
+                if (data && data.length > 0) {
+                    listContainer.innerHTML = data.map(collection => `
+                        <div style="padding: 15px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 10px; background: #f9fafb;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h5 style="font-weight: 500; color: #1f2937; margin-bottom: 5px;">${collection.name}</h5>
+                                    <p style="font-size: 12px; color: #6b7280; text-transform: uppercase;">${collection.type} Collection</p>
+                                </div>
+                                <button onclick="openCuratorCollection('${collection.id}')" style="padding: 8px 12px; border: 1px solid #e5e7eb; background: white; border-radius: 6px; font-size: 11px; cursor: pointer;">
+                                    Manage
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    listContainer.innerHTML = '<p style="color: #6b7280; text-align: center; padding: 20px;">No collections yet. Create your first collection!</p>';
+                }
+            } catch (error) {
+                console.error('Error loading curator collections:', error);
+            }
+        }
+
+        async function createCuratorCollection() {
+            if (!currentCurator) return;
+            
+            const name = prompt('Collection Name:');
+            if (!name) return;
+            
+            // Better way to ask for collection type
+            let type = prompt('Collection Type: Enter "physical" or "digital":', 'physical');
+            if (!type) return;
+            
+            type = type.toLowerCase();
+            if (type !== 'physical' && type !== 'digital') {
+                alert('Please enter either "physical" or "digital"');
+                return;
+            }
+            
+            const description = prompt('Collection Description (optional):') || '';
+            
+            try {
+                const { data, error } = await supabase
+                    .from('curator_collections')
+                    .insert([{
+                        curator_id: currentCurator.id,
+                        name: name,
+                        type: type,
+                        description: description
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                alert('Collection created successfully!');
+                await loadCuratorCollections();
+            } catch (error) {
+                console.error('Error creating collection:', error);
+                alert('Failed to create collection: ' + error.message);
+            }
+        }
+
+        function editCuratorProfile() {
+            alert('Profile editing feature coming soon!');
+        }
+
+        function openCuratorCollection(collectionId) {
+            // Navigate to curator collection page
+            currentCollection = collectionId;
+            closeCuratorDashboard();
+            loadCuratorPage(currentCurator.id, collectionId);
+        }
+
+        // Curator Pages
+        async function loadCuratorPage(curatorId, collectionId) {
+            currentPage = 'curator';
+            
+            try {
+                // Load curator info
+                const { data: curator, error: curatorError } = await supabase
+                    .from('curators')
+                    .select('*')
+                    .eq('id', curatorId)
+                    .single();
+
+                if (curatorError) {
+                    console.error('Error loading curator:', curatorError);
+                    alert('Failed to load curator information');
+                    return;
+                }
+
+                // Load collection info
+                const { data: collection, error: collectionError } = await supabase
+                    .from('curator_collections')
+                    .select('*')
+                    .eq('id', collectionId)
+                    .single();
+
+                if (collectionError) {
+                    console.error('Error loading collection:', collectionError);
+                    alert('Failed to load collection information');
+                    return;
+                }
+
+                // Load collection artworks (this might be empty, which is fine)
+                const { data: collectionArtworks, error: artworksError } = await supabase
+                    .from('curator_artworks')
+                    .select('*')
+                    .eq('collection_id', collectionId)
+                    .order('display_order', { ascending: true, nullsLast: true })
+                    .order('created_at', { ascending: false });
+
+                // Don't throw error if no artworks found, just log it
+                if (artworksError) {
+                    console.error('Error loading artworks (non-critical):', artworksError);
+                }
+
+                // Update page content
+                artworks = collectionArtworks || [];
+                filteredArtworks = [...artworks];
+                
+                // Update header tagline to show curator info
+                try {
+                    document.querySelector('.tagline').innerHTML = `
+                        <div style="display: flex; flex-direction: column; align-items: center;">
+                            <div style="font-size: 0.3em; font-weight: 400; margin-bottom: 10px; color: #6b7280;">${curator.name}</div>
+                            <div>${collection.name}</div>
+                            <div style="font-size: 0.4em; font-weight: 400; margin-top: 10px; color: #6b7280;">${collection.type.toUpperCase()} COLLECTION</div>
+                        </div>
+                    `;
+                } catch (taglineError) {
+                    console.error('Error updating tagline (non-critical):', taglineError);
+                }
+                
+                // These functions might have minor errors but shouldn't block page load
+                try {
+                    populateFilterDropdowns();
+                } catch (filterError) {
+                    console.error('Error populating filters (non-critical):', filterError);
+                }
+                
+                try {
+                    renderGallery();
+                } catch (renderError) {
+                    console.error('Error rendering gallery (non-critical):', renderError);
+                }
+                
+                // Show admin controls if this is the current curator's collection
+                try {
+                    if (currentCurator && currentCurator.id === curatorId) {
+                        // Enable curator admin mode
+                        isAdminMode = true;
+                        isAuthenticated = true;
+                        renderGallery();
+                    }
+                } catch (adminError) {
+                    console.error('Error setting admin mode (non-critical):', adminError);
+                }
+                
+                // Add back to main navigation
+                try {
+                    addBackToMainButton();
+                } catch (buttonError) {
+                    console.error('Error adding back button (non-critical):', buttonError);
+                }
+                
+            } catch (error) {
+                console.error('Critical error loading curator page:', error);
+                // Only show alert for truly critical errors
+                if (error.message && error.message.includes('Failed to fetch')) {
+                    alert('Network error - please check your connection and try again');
+                } else {
+                    alert('Failed to load curator page');
+                }
+            }
+        }
+
+        // Browse Curators
+        async function loadCurators() {
+            try {
+                const { data, error } = await supabase
+                    .from('curators')
+                    .select('*')
+                    .eq('status', 'approved')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                allCurators = data || [];
+            } catch (error) {
+                console.error('Error loading curators:', error);
+            }
+        }
+
+        function showAllCurators() {
+            currentPage = 'browse-curators';
+            
+            // Update header tagline
+            document.querySelector('.tagline').textContent = 'GUEST CURATORS';
+            
+            // Update gallery to show curators
+            const grid = document.getElementById('galleryGrid');
+            if (allCurators.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-gallery">
+                        <h3>No Curators Yet</h3>
+                        <p>Be the first to join our curatorial community!</p>
+                    </div>
+                `;
+            } else {
+                grid.innerHTML = allCurators.map(curator => `
+                    <div class="artwork-card" onclick="showCuratorProfile('${curator.id}')">
+                        <div class="artwork-image square">
+                            <img src="${curator.profile_image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNmOGY4ZjgiLz48dGV4dCB4PSIxNTAiIHk9IjE2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZiNzI4MCIgZm9udC1zaXplPSI0OCIgZm9udC1mYW1pbHk9IkludGVyIj7wn5+kPC90ZXh0Pjwvc3ZnPg=='}" alt="${curator.name}" onload="this.classList.add('loaded')">
+                        </div>
+                        <div class="artwork-info">
+                            <div class="artwork-title">${curator.name}</div>
+                            <div class="artwork-details">
+                                <div class="artwork-artist">Curator</div>
+                                <div>Joined ${new Date(curator.created_at).getFullYear()}</div>
+                                ${curator.bio ? `<div style="margin-top: 8px; font-style: italic; text-transform: none;">${curator.bio.substring(0, 100)}${curator.bio.length > 100 ? '...' : ''}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Hide search controls for curator browse
+            document.getElementById('galleryControls').style.display = 'none';
+            
+            // Add back to main navigation
+            addBackToMainButton();
+        }
+
+        async function showCuratorProfile(curatorId) {
+            // Load first collection for this curator
+            try {
+                const { data: collections, error } = await supabase
+                    .from('curator_collections')
+                    .select('*')
+                    .eq('curator_id', curatorId)
+                    .limit(1);
+
+                if (error) throw error;
+
+                if (collections && collections.length > 0) {
+                    loadCuratorPage(curatorId, collections[0].id);
+                } else {
+                    alert('This curator has no collections yet.');
+                }
+            } catch (error) {
+                console.error('Error loading curator profile:', error);
+            }
+        }
+
+        function showFeaturedCurator() {
+            // For now, show the first curator
+            if (allCurators.length > 0) {
+                showCuratorProfile(allCurators[0].id);
+            } else {
+                alert('No featured curator available.');
+            }
+        }
+
+        function showCuratorApplication() {
+            document.getElementById('curatorAuthModal').classList.add('show');
+            showCuratorRegister();
+        }
+
+        function addBackToMainButton() {
+            const container = document.querySelector('.container');
+            let backButton = document.getElementById('backToMain');
+            
+            if (!backButton) {
+                backButton = document.createElement('div');
+                backButton.id = 'backToMain';
+                backButton.innerHTML = `
+                    <button onclick="returnToMain()" style="
+                        margin-bottom: 30px; 
+                        padding: 12px 20px; 
+                        background: rgba(255,255,255,0.9); 
+                        border: 1px solid #e5e7eb; 
+                        border-radius: 8px; 
+                        color: #6b7280; 
+                        font-size: 12px; 
+                        text-transform: uppercase; 
+                        letter-spacing: 1px; 
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.borderColor='#1f2937'; this.style.color='#1f2937';" onmouseout="this.style.borderColor='#e5e7eb'; this.style.color='#6b7280';">
+                        ← Back to Main Collection
+                    </button>
+                `;
+                container.insertBefore(backButton, document.getElementById('galleryControls'));
+            }
+        }
+
+        function returnToMain() {
+            currentPage = 'main';
+            currentCollection = null;
+            
+            // Don't automatically logout curators when returning to main
+            // They should be able to navigate between sections while staying logged in
+            if (!isAuthenticated && !currentCurator) {
+                isAdminMode = false;
+            }
+            
+            // Reset header
+            document.querySelector('.tagline').textContent = 'ART LEADS CULTURE';
+            
+            // Hide FAB
+            document.getElementById('fabWrite').style.display = 'none';
+            
+            // Remove back button
+            const backButton = document.getElementById('backToMain');
+            if (backButton) backButton.remove();
+            
+            // Reload main collection
+            loadArtworks();
+            
+            // Check admin auth (this will maintain curator login state)
+            checkAuthState();
+        }
+
+        // === CURATORS CORNER FUNCTIONS ===
+        
+        async function showCuratorsCorner() {
+            currentPage = 'curators-corner';
+            
+            // Update header tagline
+            document.querySelector('.tagline').innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div>CURATORS CORNER</div>
+                    <div style="font-size: 0.4em; font-weight: 400; margin-top: 10px; color: #6b7280;">ARTICLES & INSIGHTS</div>
+                </div>
+            `;
+            
+            // Show FAB
+            document.getElementById('fabWrite').style.display = 'flex';
+            
+            // Hide search controls
+            document.getElementById('galleryControls').style.display = 'none';
+            
+            // Load and render articles
+            await loadArticles();
+            renderArticles();
+            
+            // Add back to main navigation
+            addBackToMainButton();
+        }
+        
+        async function loadArticles() {
+            try {
+                // Try to load from database first
+                const { data, error } = await supabase
+                    .from('articles')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.warn('Could not load from database, using demo data:', error);
+                    // Fallback to demo data if table doesn't exist
+                    if (articles.length === 0) {
+                        articles = [
+                            {
+                                id: 'sample_1',
+                                title: 'The Evolution of Digital Art in Contemporary Galleries',
+                                excerpt: 'Exploring how digital mediums are reshaping the traditional gallery experience and what it means for collectors.',
+                                content: '<p>The art world is experiencing a profound transformation as digital mediums increasingly find their place within the hallowed halls of contemporary galleries...</p>',
+                                author_name: 'Alexandra Chen',
+                                author_title: 'Digital Art Curator',
+                                author_bio: 'Curator specializing in new media and digital art forms',
+                                author_avatar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNTAiIGZpbGw9IiNmMGYwZjAiLz48dGV4dCB4PSI1MCIgeT0iNjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2NjYiIGZvbnQtc2l6ZT0iMjQiIGZvbnQtZmFtaWx5PSJJbnRlciI+QUM8L3RleHQ+PC9zdmc+',
+                                author_website: '',
+                                author_twitter: '@alexarttech',
+                                author_instagram: '',
+                                author_linkedin: '',
+                                created_at: new Date(Date.now() - 86400000).toISOString(),
+                                images: []
+                            },
+                            {
+                                id: 'sample_2',
+                                title: 'Collecting in the Age of Social Media',
+                                excerpt: 'How Instagram and TikTok are influencing art collection trends and discovery patterns among younger demographics.',
+                                content: '<p>Social media platforms have fundamentally altered how we discover, discuss, and desire art...</p>',
+                                author_name: 'Marcus Rodriguez',
+                                author_title: 'Art Market Analyst',
+                                author_bio: 'Analyzing trends and patterns in contemporary art markets',
+                                author_avatar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNTAiIGZpbGw9IiNmMGYwZjAiLz48dGV4dCB4PSI1MCIgeT0iNjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2NjYiIGZvbnQtc2l6ZT0iMjQiIGZvbnQtZmFtaWx5PSJJbnRlciI+TVI8L3RleHQ+PC9zdmc+',
+                                author_website: 'https://artmarketinsights.com',
+                                author_twitter: '@marcusart',
+                                author_instagram: '@artmarketanalyst',
+                                author_linkedin: '',
+                                created_at: new Date(Date.now() - 172800000).toISOString(),
+                                images: []
+                            }
+                        ];
+                    }
+                } else {
+                    // Successfully loaded from database
+                    articles = data || [];
+                    console.log('Loaded', articles.length, 'articles from database');
+                }
+                
+                filteredArticles = [...articles];
+                
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                articles = [];
+                filteredArticles = [];
+            }
+        }
+        
+        function renderArticles() {
+            const grid = document.getElementById('galleryGrid');
+            
+            if (articles.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-gallery">
+                        <h3>No Articles Yet</h3>
+                        <p>Be the first to share insights about the art world.<br>Click the write button to get started.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredArticles.map(article => {
+                const readTime = calculateReadTime(article.content, article.images);
+                const publishedDate = new Date(article.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                return `
+                    <div class="article-card" onclick="openArticleReader('${article.id}')">
+                        <div class="article-header">
+                            <div class="article-meta">
+                                <img class="author-avatar" src="${article.author_avatar || generateAvatarPlaceholder(article.author_name)}" alt="${article.author_name}">
+                                <div class="author-info">
+                                    <h4>${article.author_name}</h4>
+                                    <div class="author-title">${article.author_title || 'Contributor'}</div>
+                                </div>
+                            </div>
+                            <h3 class="article-title">${article.title}</h3>
+                            <p class="article-excerpt">${article.excerpt || extractExcerpt(article.content)}</p>
+                            <div class="article-stats">
+                                <span class="article-date">${publishedDate}</span>
+                                <span class="read-time">${readTime} min read</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            setTimeout(() => {
+                animateArtworkCards();
+            }, 10);
+        }
+        
+        function openWriteArticle() {
+            document.getElementById('writeArticleModal').classList.add('show');
+            // Focus on author name field
+            setTimeout(() => {
+                document.getElementById('authorName').focus();
+            }, 300);
+        }
+        
+        function closeWriteArticle() {
+            document.getElementById('writeArticleModal').classList.remove('show');
+            resetArticleForm();
+        }
+        
+        function resetArticleForm() {
+            document.getElementById('articleForm').reset();
+            document.getElementById('authorAvatarPreview').style.display = 'none';
+            document.getElementById('avatarPlaceholder').style.display = 'block';
+            document.getElementById('articleContent').innerHTML = '';
+            document.getElementById('articleImagesPreview').innerHTML = '';
+            currentArticleImages = [];
+            isEditingArticle = false;
+            editingArticleId = null;
+        }
+        
+        // Rich Text Editor Functions
+        function setupRichEditor() {
+            const editor = document.getElementById('articleContent');
+            
+            editor.addEventListener('paste', function(e) {
+                setTimeout(() => {
+                    processDynamicContent(editor);
+                }, 100);
+            });
+            
+            editor.addEventListener('input', function(e) {
+                processDynamicContent(editor);
+            });
+        }
+        
+        function formatText(command, value = null) {
+            document.execCommand(command, false, value);
+            document.getElementById('articleContent').focus();
+        }
+        
+        function insertLink() {
+            const url = prompt('Enter URL:');
+            if (url) {
+                document.execCommand('createLink', false, url);
+            }
+            document.getElementById('articleContent').focus();
+        }
+        
+        function processDynamicContent(editor) {
+            const content = editor.innerHTML;
+            let newContent = content;
+            
+            // Process Twitter URLs
+            const twitterRegex = /https?:\/\/(www\.)?(twitter\.com|x\.com)\/\w+\/status\/(\d+)/g;
+            newContent = newContent.replace(twitterRegex, (match) => {
+                return createTwitterEmbed(match);
+            });
+            
+            if (newContent !== content) {
+                editor.innerHTML = newContent;
+                // Move cursor to end
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.selectNodeContents(editor);
+                range.collapse(false);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        }
+        
+        function createTwitterEmbed(url) {
+            // Extract tweet ID from URL
+            const tweetId = url.match(/status\/(\d+)/)?.[1];
+            if (!tweetId) return url;
+            
+            return `
+                <div class="embedded-tweet" data-tweet-url="${url}">
+                    <div class="tweet-author">
+                        <div class="tweet-avatar"></div>
+                        <div class="tweet-author-info">
+                            <h4>Twitter Post</h4>
+                            <p>@username</p>
+                        </div>
+                    </div>
+                    <div class="tweet-content">
+                        This tweet will be dynamically loaded when the article is published.
+                        <br><br>
+                        <em>URL: ${url}</em>
+                    </div>
+                    <div class="tweet-stats">
+                        <span>🔄 Retweets</span>
+                        <span>❤️ Likes</span>
+                        <span>💬 Replies</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Article Image Handling
+        document.getElementById('articleImagesUpload').addEventListener('change', async function() {
+            const files = this.files;
+            const preview = document.getElementById('articleImagesPreview');
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const compressedImage = await compressImage(file, 800, 0.8);
+                currentArticleImages.push(compressedImage);
+                
+                const imageItem = document.createElement('div');
+                imageItem.className = 'article-image-item';
+                imageItem.innerHTML = `
+                    <img src="${compressedImage}" alt="Article image">
+                    <button class="remove-image" onclick="removeArticleImage(${currentArticleImages.length - 1})" type="button">×</button>
+                `;
+                preview.appendChild(imageItem);
+            }
+        });
+        
+        function removeArticleImage(index) {
+            currentArticleImages.splice(index, 1);
+            const preview = document.getElementById('articleImagesPreview');
+            preview.children[index].remove();
+        }
+        
+        // Author Avatar Handling
+        document.getElementById('authorAvatarUpload').addEventListener('change', async function() {
+            const file = this.files[0];
+            if (file) {
+                const compressedImage = await compressImage(file, 200, 0.8);
+                const preview = document.getElementById('authorAvatarPreview');
+                const placeholder = document.getElementById('avatarPlaceholder');
+                
+                preview.src = compressedImage;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+            }
+        });
+        
+        // Article Submission
+        document.getElementById('articleForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                title: document.getElementById('articleTitle').value,
+                excerpt: document.getElementById('articleExcerpt').value,
+                content: document.getElementById('articleContent').innerHTML,
+                author_name: document.getElementById('authorName').value,
+                author_title: document.getElementById('authorTitle').value,
+                author_bio: document.getElementById('authorBio').value,
+                author_avatar: document.getElementById('authorAvatarPreview').src || null,
+                author_website: document.getElementById('authorWebsite').value,
+                author_twitter: document.getElementById('authorTwitter').value,
+                author_instagram: document.getElementById('authorInstagram').value,
+                author_linkedin: document.getElementById('authorLinkedIn').value,
+                images: currentArticleImages
+            };
+            
+            const submitBtn = document.querySelector('#articleForm button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                submitBtn.textContent = 'Publishing...';
+                submitBtn.disabled = true;
+                
+                // Try database first, fallback to demo mode if table doesn't exist
+                const { data, error } = await supabase
+                    .from('articles')
+                    .insert([formData])
+                    .select();
+
+                if (error) {
+                    console.warn('Database insert failed, using demo mode:', error);
+                    // Fallback to demo mode
+                    const mockId = 'article_' + Date.now();
+                    const articleWithId = { ...formData, id: mockId, created_at: new Date().toISOString() };
+                    articles.unshift(articleWithId);
+                    filteredArticles = [...articles];
+                    alert('Article published successfully!\n\nNote: Running in demo mode. Create the articles table in Supabase to enable full functionality.');
+                } else {
+                    console.log('Article published to database:', data[0]);
+                    await loadArticles();
+                    alert('Article published successfully!');
+                }
+                
+                closeWriteArticle();
+                renderArticles();
+                
+            } catch (error) {
+                console.error('Error publishing article:', error);
+                alert('Failed to publish article. Please try again.');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Article Reading
+        function openArticleReader(articleId) {
+            const article = articles.find(a => a.id === articleId);
+            if (!article) return;
+            
+            // Update modal content
+            document.getElementById('readerAuthorAvatar').src = article.author_avatar || generateAvatarPlaceholder(article.author_name);
+            document.getElementById('readerAuthorName').textContent = article.author_name;
+            document.getElementById('readerAuthorTitle').textContent = article.author_title || 'Contributor';
+            document.getElementById('readerArticleTitle').textContent = article.title;
+            document.getElementById('readerArticleContent').innerHTML = processArticleContent(article.content, article.images);
+            
+            const publishedDate = new Date(article.created_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            const readTime = calculateReadTime(article.content, article.images);
+            
+            document.getElementById('readerArticleDate').textContent = publishedDate;
+            document.getElementById('readerReadTime').textContent = `${readTime} min read`;
+            
+            // Update social links
+            const socialLinks = document.getElementById('readerSocialLinks');
+            let linksHTML = '';
+            
+            if (article.author_website) {
+                linksHTML += `<a href="${article.author_website}" target="_blank" class="social-link">Website</a>`;
+            }
+            if (article.author_twitter) {
+                const twitterHandle = article.author_twitter.replace('@', '');
+                linksHTML += `<a href="https://twitter.com/${twitterHandle}" target="_blank" class="social-link">Twitter</a>`;
+            }
+            if (article.author_instagram) {
+                const instaHandle = article.author_instagram.replace('@', '');
+                linksHTML += `<a href="https://instagram.com/${instaHandle}" target="_blank" class="social-link">Instagram</a>`;
+            }
+            if (article.author_linkedin) {
+                linksHTML += `<a href="${article.author_linkedin}" target="_blank" class="social-link">LinkedIn</a>`;
+            }
+            
+            socialLinks.innerHTML = linksHTML;
+            
+            document.getElementById('articleReaderModal').classList.add('show');
+        }
+        
+        function closeArticleReader() {
+            document.getElementById('articleReaderModal').classList.remove('show');
+        }
+        
+        // Utility Functions
+        function calculateReadTime(content, images = []) {
+            const wordsPerMinute = 200;
+            const secondsPerImage = 12; // Assume 12 seconds per image
+            
+            const textContent = content.replace(/<[^>]*>/g, '');
+            const wordCount = textContent.split(/\s+/).length;
+            const textTime = wordCount / wordsPerMinute;
+            
+            // Add time for images
+            const imageTime = (images?.length || 0) * (secondsPerImage / 60);
+            
+            const totalTime = textTime + imageTime;
+            return Math.max(1, Math.ceil(totalTime));
+        }
+        
+        function extractExcerpt(content, maxLength = 150) {
+            const textContent = content.replace(/<[^>]*>/g, '');
+            return textContent.length > maxLength 
+                ? textContent.substring(0, maxLength) + '...'
+                : textContent;
+        }
+        
+        function generateAvatarPlaceholder(name) {
+            const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+            return `data:image/svg+xml;base64,${btoa(`
+                <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="50" fill="#f0f0f0"/>
+                    <text x="50" y="60" text-anchor="middle" fill="#666" font-size="24" font-family="Inter">${initials}</text>
+                </svg>
+            `)}`;
+        }
+        
+        function processArticleContent(content, images = []) {
+            let processedContent = content;
+            
+            // Add images gallery at the end if there are images
+            if (images && images.length > 0) {
+                const imagesHTML = `
+                    <div class="article-images-gallery">
+                        ${images.map(img => `<img src="${img}" alt="Article image" onclick="openImageZoom('${img}')">`).join('')}
+                    </div>
+                `;
+                processedContent += imagesHTML;
+            }
+            
+            return processedContent;
+        }
+        
+        function openImageZoom(imageSrc) {
+            document.getElementById('zoomImage').src = imageSrc;
+            document.getElementById('zoomModal').classList.add('show');
+        }
+        // Curator artwork management (reuse existing functions with collection_id)
+        async function saveCuratorArtwork(artworkData, collectionId) {
+            if (!currentCurator) {
+                alert('Please login as a curator to save artworks');
+                return;
+            }
+
+            try {
+                const { data: maxOrderData } = await supabase
+                    .from('curator_artworks')
+                    .select('display_order')
+                    .eq('collection_id', collectionId)
+                    .order('display_order', { ascending: false, nullsLast: false })
+                    .limit(1);
+                
+                const maxOrder = maxOrderData && maxOrderData.length > 0 ? maxOrderData[0].display_order : null;
+                const newDisplayOrder = maxOrder !== null ? maxOrder + 1 : null;
+                
+                const { data, error } = await supabase
+                    .from('curator_artworks')
+                    .insert([{ 
+                        ...artworkData, 
+                        collection_id: collectionId,
+                        curator_id: currentCurator.id,
+                        display_order: newDisplayOrder 
+                    }])
+                    .select();
+
+                if (error) throw error;
+
+                console.log('Curator artwork saved:', data[0]);
+                loadCuratorPage(currentCurator.id, collectionId);
+                return data[0];
+            } catch (error) {
+                console.error('Error saving curator artwork:', error);
+                alert('Failed to save artwork: ' + error.message);
+                throw error;
+            }
+        }
+
+        async function updateCuratorArtwork(id, artworkData, collectionId) {
+            if (!currentCurator) {
+                alert('Please login as a curator to update artworks');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('curator_artworks')
+                    .update(artworkData)
+                    .eq('id', id)
+                    .eq('curator_id', currentCurator.id)
+                    .select();
+
+                if (error) throw error;
+
+                console.log('Curator artwork updated:', data[0]);
+                loadCuratorPage(currentCurator.id, collectionId);
+                return data[0];
+            } catch (error) {
+                console.error('Error updating curator artwork:', error);
+                alert('Failed to update artwork: ' + error.message);
+                throw error;
+            }
+        }
+
+        async function deleteCuratorArtwork(id, collectionId) {
+            if (!currentCurator) {
+                alert('Please login as a curator to delete artworks');
+                return;
+            }
+
+            const artwork = artworks.find(a => a.id === id);
+            if (!artwork) return;
+            
+            const confirmMessage = `Are you sure you want to delete "${artwork.title}" by ${artwork.artist}?\n\nThis action cannot be undone.`;
+            
+            if (!confirm(confirmMessage)) return;
+
+            try {
+                const { error } = await supabase
+                    .from('curator_artworks')
+                    .delete()
+                    .eq('id', id)
+                    .eq('curator_id', currentCurator.id);
+
+                if (error) throw error;
+
+                console.log('Curator artwork deleted:', artwork.title);
+                loadCuratorPage(currentCurator.id, collectionId);
+                
+                alert(`"${artwork.title}" has been deleted from your collection.`);
+            } catch (error) {
+                console.error('Error deleting curator artwork:', error);
+                alert('Failed to delete artwork: ' + error.message);
+            }
+        }
+
+        // Performance Optimizations (kept essential ones only)
+        function initializeLazyLoading() {
+            imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        const src = img.getAttribute('data-lazy');
+                        if (src) {
+                            img.src = src;
+                            img.onload = () => {
+                                img.classList.add('loaded');
+                                img.removeAttribute('data-lazy');
+                            };
+                            imageObserver.unobserve(img);
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '50px 0px'
+            });
+        }
+
+        function initializeAnimations() {
+            animationObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '30px 0px'
+            });
+        }
+
+        function animateArtworkCards() {
+            if (animationObserver) {
+                document.querySelectorAll('.artwork-card').forEach(card => {
+                    animationObserver.unobserve(card);
+                });
+            }
+
+            const cards = document.querySelectorAll('.artwork-card');
+            cards.forEach((card, index) => {
+                card.style.transitionDelay = `${Math.min(index * 0.05, 0.3)}s`;
+                card.classList.remove('animate-in');
+                
+                if (animationObserver) {
+                    animationObserver.observe(card);
+                }
+            });
+            
+            initializeImageLazyLoading();
+        }
+
+        function initializeImageLazyLoading() {
+            const images = document.querySelectorAll('.artwork-image img[data-lazy]');
+            images.forEach(img => {
+                if (imageObserver) {
+                    imageObserver.observe(img);
+                }
+            });
+        }
+
+        // Simple Arrangement System (replaces complex drag & drop)
+        function moveArtwork(id, direction) {
+            const currentIndex = filteredArtworks.findIndex(a => a.id === id);
+            const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+            
+            if (newIndex >= 0 && newIndex < filteredArtworks.length) {
+                // Swap positions
+                [filteredArtworks[currentIndex], filteredArtworks[newIndex]] = 
+                [filteredArtworks[newIndex], filteredArtworks[currentIndex]];
+                
+                renderGallery();
+                hasUnsavedChanges = true;
+                updateCurationStatus();
+                
+                // Show curation controls
+                if (isAdminMode && isAuthenticated) {
+                    document.getElementById('curationControls').classList.add('show');
+                }
+            }
+        }
+
+        function updateCurationStatus() {
+            const status = document.querySelector('.curation-status');
+            if (hasUnsavedChanges) {
+                status.textContent = 'Arrangement changed - click Save';
+                status.style.color = '#ff6b35';
+            } else {
+                status.textContent = 'Use ↑↓ arrows to arrange';
+                status.style.color = '#666';
+            }
+        }
+
+        async function saveCurationOrder() {
+            if (!hasUnsavedChanges) return;
+            
+            const saveBtn = document.getElementById('saveCuration');
+            const originalText = saveBtn.textContent;
+            
+            try {
+                saveBtn.textContent = 'Saving...';
+                saveBtn.classList.add('saving');
+                
+                const tableName = currentPage === 'curator' ? 'curator_artworks' : 'artworks';
+                
+                for (let i = 0; i < filteredArtworks.length; i++) {
+                    const artwork = filteredArtworks[i];
+                    await supabase
+                        .from(tableName)
+                        .update({ display_order: i })
+                        .eq('id', artwork.id);
+                }
+                
+                hasUnsavedChanges = false;
+                updateCurationStatus();
+                
+                saveBtn.textContent = 'Saved!';
+                setTimeout(() => {
+                    saveBtn.textContent = originalText;
+                    saveBtn.classList.remove('saving');
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Error saving curation order:', error);
+                saveBtn.textContent = 'Error';
+                setTimeout(() => {
+                    saveBtn.textContent = originalText;
+                    saveBtn.classList.remove('saving');
+                }, 1500);
+            }
+        }
+
+        async function resetCurationOrder() {
+            if (!confirm('Reset to chronological order? This will undo your custom arrangement.')) return;
+            
+            try {
+                const tableName = currentPage === 'curator' ? 'curator_artworks' : 'artworks';
+                
+                await supabase
+                    .from(tableName)
+                    .update({ display_order: null })
+                    .neq('id', '');
+                
+                if (currentPage === 'curator' && currentCollection) {
+                    await loadCuratorPage(currentCurator.id, currentCollection);
+                } else {
+                    await loadArtworks();
+                }
+                hasUnsavedChanges = false;
+                updateCurationStatus();
+                
+            } catch (error) {
+                console.error('Error resetting curation order:', error);
+            }
+        }
+
+        // Search & Filter Functions (streamlined)
+        function setupSearchAndFilters() {
+            const searchInput = document.getElementById('searchInput');
+            const artistFilter = document.getElementById('artistFilter');
+            const yearFilter = document.getElementById('yearFilter');
+            const mediumFilter = document.getElementById('mediumFilter');
+            const clearFilters = document.getElementById('clearFilters');
+
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    filterAndRenderGallery();
+                }, 150);
+            });
+
+            artistFilter.addEventListener('change', filterAndRenderGallery);
+            yearFilter.addEventListener('change', filterAndRenderGallery);
+            mediumFilter.addEventListener('change', filterAndRenderGallery);
+
+            clearFilters.addEventListener('click', function() {
+                searchInput.value = '';
+                artistFilter.value = '';
+                yearFilter.value = '';
+                mediumFilter.value = '';
+                filterAndRenderGallery();
+            });
+        }
+
+        function populateFilterDropdowns() {
+            if (artworks.length === 0) return;
+
+            const artists = [...new Set(artworks.map(a => a.artist))].sort();
+            const years = [...new Set(artworks.map(a => a.year))].sort().reverse();
+            const mediums = [...new Set(artworks.map(a => a.medium).filter(m => m))].sort();
+
+            populateSelect('artistFilter', artists);
+            populateSelect('yearFilter', years);
+            populateSelect('mediumFilter', mediums);
+
+            document.getElementById('galleryControls').style.display = artworks.length > 0 ? 'flex' : 'none';
+        }
+
+        function populateSelect(selectId, options) {
+            const select = document.getElementById(selectId);
+            const currentValue = select.value;
+            
+            select.innerHTML = select.querySelector('option').outerHTML;
+            
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                select.appendChild(optionElement);
+            });
+            
+            if (options.includes(currentValue)) {
+                select.value = currentValue;
+            }
+        }
+
+        function filterArtworks() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const artistFilter = document.getElementById('artistFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
+            const mediumFilter = document.getElementById('mediumFilter').value;
+
+            filteredArtworks = artworks.filter(artwork => {
+                const matchesSearch = !searchTerm || 
+                    artwork.title.toLowerCase().includes(searchTerm) ||
+                    artwork.artist.toLowerCase().includes(searchTerm);
+                
+                const matchesArtist = !artistFilter || artwork.artist === artistFilter;
+                const matchesYear = !yearFilter || artwork.year === yearFilter;
+                const matchesMedium = !mediumFilter || artwork.medium === mediumFilter;
+
+                return matchesSearch && matchesArtist && matchesYear && matchesMedium;
+            });
+
+            updateResultsCount();
+            return filteredArtworks;
+        }
+
+        function updateResultsCount() {
+            const count = filteredArtworks.length;
+            document.getElementById('resultNumber').textContent = count;
+        }
+
+        function filterAndRenderGallery() {
+            requestAnimationFrame(() => {
+                filterArtworks();
+                renderGallery();
+            });
+        }
+
+        // Authentication functions
+        async function checkAuthState() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                isAuthenticated = true;
+                document.getElementById('userEmail').textContent = session.user.email;
+                showAdminContent();
+            } else {
+                isAuthenticated = false;
+                showLoginForm();
+            }
+        }
+
+        function showAdminContent() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+            document.getElementById('editAboutBtn').style.display = isAdminMode ? 'block' : 'none';
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminContent').style.display = 'none';
+            document.getElementById('editAboutBtn').style.display = 'none';
+        }
+
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                isAuthenticated = true;
+                document.getElementById('userEmail').textContent = data.user.email;
+                showAdminContent();
+                alert('Login successful!');
+                
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed: ' + error.message);
+            }
+        }
+
+        async function logout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+
+                isAuthenticated = false;
+                isAdminMode = false;
+                
+                // Also logout curator if they were logged in
+                if (currentCurator) {
+                    currentCurator = null;
+                    isCuratorMode = false;
+                    resetAdminPanelFromCurator();
+                }
+                
+                showLoginForm();
+                const adminPanel = document.getElementById('adminPanel');
+                if (adminPanel.classList.contains('open')) {
+                    toggleAdmin();
+                }
+                renderGallery();
+                alert('Logged out successfully');
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout failed: ' + error.message);
+            }
+        }
+
+        // Admin functions
+        function toggleAdmin() {
+            const panel = document.getElementById('adminPanel');
+            panel.classList.toggle('open');
+            isAdminMode = panel.classList.contains('open') && (isAuthenticated || currentCurator);
+            
+            if (isAdminMode) {
+                // Check if curator is logged in
+                if (currentCurator) {
+                    updateAdminPanelForCurator();
+                } else {
+                    // Normal admin
+                    document.getElementById('editAboutBtn').style.display = 'block';
+                    document.getElementById('aboutText').value = aboutText;
+                }
+            } else {
+                document.getElementById('editAboutBtn').style.display = 'none';
+                document.getElementById('curationControls').classList.remove('show');
+            }
+            
+            renderGallery();
+        }
+
+        // Artwork functions
+        async function loadArtworks() {
+            try {
+                const { data, error } = await supabase
+                    .from('artworks')
+                    .select('*')
+                    .order('display_order', { ascending: true, nullsLast: true })
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                artworks = data || [];
+                filteredArtworks = [...artworks];
+                console.log('Loaded', artworks.length, 'artworks from database');
+                
+                populateFilterDropdowns();
+                renderGallery();
+            } catch (error) {
+                console.error('Error loading artworks:', error);
+                artworks = [];
+                filteredArtworks = [];
+                renderGallery();
+            }
+        }
+
+        async function saveArtwork(artworkData) {
+            if (!isAuthenticated) {
+                alert('Please login to save artworks');
+                return;
+            }
+
+            try {
+                const { data: maxOrderData } = await supabase
+                    .from('artworks')
+                    .select('display_order')
+                    .order('display_order', { ascending: false, nullsLast: false })
+                    .limit(1);
+                
+                const maxOrder = maxOrderData && maxOrderData.length > 0 ? maxOrderData[0].display_order : null;
+                const newDisplayOrder = maxOrder !== null ? maxOrder + 1 : null;
+                
+                const { data, error } = await supabase
+                    .from('artworks')
+                    .insert([{ ...artworkData, display_order: newDisplayOrder }])
+                    .select();
+
+                if (error) throw error;
+
+                console.log('Artwork saved:', data[0]);
+                await loadArtworks();
+                return data[0];
+            } catch (error) {
+                console.error('Error saving artwork:', error);
+                alert('Failed to save artwork: ' + error.message);
+                throw error;
+            }
+        }
+
+        async function updateArtwork(id, artworkData) {
+            if (!isAuthenticated) {
+                alert('Please login to update artworks');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('artworks')
+                    .update(artworkData)
+                    .eq('id', id)
+                    .select();
+
+                if (error) throw error;
+
+                console.log('Artwork updated:', data[0]);
+                await loadArtworks();
+                return data[0];
+            } catch (error) {
+                console.error('Error updating artwork:', error);
+                alert('Failed to update artwork: ' + error.message);
+                throw error;
+            }
+        }
+
+        async function deleteArtwork(id) {
+            if (!isAuthenticated) {
+                alert('Please login to delete artworks');
+                return;
+            }
+
+            const artwork = artworks.find(a => a.id === id);
+            if (!artwork) return;
+            
+            const confirmMessage = `Are you sure you want to delete "${artwork.title}" by ${artwork.artist}?\n\nThis action cannot be undone.`;
+            
+            if (!confirm(confirmMessage)) return;
+
+            try {
+                const { error } = await supabase
+                    .from('artworks')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                console.log('Artwork deleted:', artwork.title);
+                await loadArtworks();
+                
+                alert(`"${artwork.title}" has been deleted from your collection.`);
+            } catch (error) {
+                console.error('Error deleting artwork:', error);
+                alert('Failed to delete artwork: ' + error.message);
+            }
+        }
+
+        // About section functions
+        async function loadAbout() {
+            try {
+                const { data, error } = await supabase
+                    .from('about')
+                    .select('content')
+                    .order('updated_at', { ascending: false })
+                    .limit(1);
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    aboutText = data[0].content;
+                    document.getElementById('aboutContent').innerHTML = aboutText.split('\n').map(p => `<p>${p}</p>`).join('');
+                }
+            } catch (error) {
+                console.error('Error loading about:', error);
+            }
+        }
+
+        async function saveAbout() {
+            if (!isAuthenticated) {
+                alert('Please login to update about section');
+                return;
+            }
+
+            aboutText = document.getElementById('aboutText').value;
+
+            try {
+                const { data: existingData } = await supabase
+                    .from('about')
+                    .select('id')
+                    .limit(1);
+
+                if (existingData && existingData.length > 0) {
+                    const { error } = await supabase
+                        .from('about')
+                        .update({ content: aboutText, updated_at: new Date().toISOString() })
+                        .eq('id', existingData[0].id);
+
+                    if (error) throw error;
+                } else {
+                    const { error } = await supabase
+                        .from('about')
+                        .insert([{ content: aboutText }]);
+
+                    if (error) throw error;
+                }
+
+                document.getElementById('aboutContent').innerHTML = aboutText.split('\n').map(p => `<p>${p}</p>`).join('');
+                alert('About section updated successfully!');
+            } catch (error) {
+                console.error('Error saving about:', error);
+                alert('Failed to save about section: ' + error.message);
+            }
+        }
+
+        function editAbout() {
+            document.getElementById('aboutText').value = aboutText;
+            document.getElementById('aboutText').focus();
+        }
+
+        // Image compression
+        function compressImage(file, maxWidth = 600, quality = 0.85) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = function() {
+                    let { width, height } = img;
+                    
+                    const isMobile = window.innerWidth <= 768;
+                    const targetMaxWidth = isMobile ? 400 : maxWidth;
+                    
+                    if (width > targetMaxWidth) {
+                        height = (height * targetMaxWidth) / width;
+                        width = targetMaxWidth;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    
+                    console.log('Compressed image from', file.size, 'bytes to', Math.round(compressedDataUrl.length * 0.75), 'bytes');
+                    resolve(compressedDataUrl);
+                };
+                
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        // Form handling
+        document.getElementById('artworkForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!isAuthenticated) {
+                alert('Please login to add artworks');
+                return;
+            }
+
+            const formData = {
+                title: document.getElementById('artworkTitle').value,
+                artist: document.getElementById('artistName').value,
+                year: document.getElementById('artworkYear').value,
+                dimensions: document.getElementById('artworkDimensions').value,
+                medium: document.getElementById('artworkMedium').value,
+                price: document.getElementById('artworkPrice').value,
+                orientation: document.getElementById('orientation').value,
+                images: []
+            };
+
+            const imageFiles = document.getElementById('imageUpload').files;
+            const submitBtn = document.querySelector('.btn[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                if (imageFiles.length > 0) {
+                    submitBtn.textContent = 'Processing images...';
+                    submitBtn.disabled = true;
+                    
+                    for (let i = 0; i < imageFiles.length; i++) {
+                        const file = imageFiles[i];
+                        const fileSizeMB = file.size / (1024 * 1024);
+                        
+                        if (fileSizeMB > 2) {
+                            const compressedDataUrl = await compressImage(file, 800, 0.7);
+                            formData.images.push(compressedDataUrl);
+                        } else {
+                            const dataUrl = await new Promise((resolve) => {
+                                const reader = new FileReader();
+                                reader.onload = (e) => resolve(e.target.result);
+                                reader.readAsDataURL(file);
+                            });
+                            formData.images.push(dataUrl);
+                        }
+                    }
+                } else {
+                    const editingId = document.getElementById('editingId').value;
+                    if (editingId) {
+                        const existing = artworks.find(a => a.id === editingId);
+                        if (existing) {
+                            formData.images = existing.images;
+                        }
+                    } else {
+                        alert('Please select at least one image for the artwork.');
+                        return;
+                    }
+                }
+
+                submitBtn.textContent = 'Saving...';
+
+                const editingId = document.getElementById('editingId').value;
+                if (editingId) {
+                    if (currentPage === 'curator' && currentCollection) {
+                        await updateCuratorArtwork(editingId, formData, currentCollection);
+                    } else {
+                        await updateArtwork(editingId, formData);
+                    }
+                } else {
+                    if (currentPage === 'curator' && currentCollection) {
+                        await saveCuratorArtwork(formData, currentCollection);
+                    } else {
+                        await saveArtwork(formData);
+                    }
+                }
+
+                resetForm();
+                alert('Artwork saved successfully!');
+            } catch (error) {
+                console.error('Error saving artwork:', error);
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        function resetForm() {
+            document.getElementById('artworkForm').reset();
+            document.getElementById('editingId').value = '';
+            document.querySelector('.btn[type="submit"]').textContent = 'Add Artwork';
+            document.querySelector('.upload-text').textContent = 'Click to upload images (multiple allowed)';
+            document.getElementById('imagePreview').innerHTML = '';
+        }
+
+        function editArtworkForm(id) {
+            const artwork = artworks.find(a => a.id === id);
+            if (artwork) {
+                document.getElementById('editingId').value = id;
+                document.getElementById('artworkTitle').value = artwork.title;
+                document.getElementById('artistName').value = artwork.artist;
+                document.getElementById('artworkYear').value = artwork.year;
+                document.getElementById('artworkDimensions').value = artwork.dimensions || '';
+                document.getElementById('artworkMedium').value = artwork.medium || '';
+                document.getElementById('artworkPrice').value = artwork.price || '';
+                document.getElementById('orientation').value = artwork.orientation;
+                document.querySelector('.btn[type="submit"]').textContent = 'Update Artwork';
+                document.querySelector('.upload-text').textContent = 'Current images will be kept if none selected';
+                
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = artwork.images.map((img, index) => 
+                    `<img src="${img}" style="width: 80px; height: 60px; object-fit: cover; margin-right: 10px; border: 1px solid #e0e0e0;">`
+                ).join('');
+            }
+        }
+
+        // Gallery rendering
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            
+            if (artworks.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-gallery">
+                        <h3>No Artworks Yet</h3>
+                        <p>Add your first artwork using the admin panel.<br>Click the diamond in the bottom-right corner to get started.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (filteredArtworks.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-gallery">
+                        <h3>No Results Found</h3>
+                        <p>Try adjusting your search terms or filters to find what you're looking for.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredArtworks.map((artwork, index) => `
+                <div class="artwork-card" onclick="openModal('${artwork.id}')">
+                    <div class="artwork-image ${artwork.orientation}">
+                        ${artwork.images && artwork.images.length > 0 ? 
+                            `<img ${index < 6 ? `src="${artwork.images[0]}" onload="this.classList.add('loaded')"` : `data-lazy="${artwork.images[0]}"`} alt="${artwork.title}" ${index >= 6 ? 'loading="lazy"' : ''}>` 
+                            : ''
+                        }
+                        ${artwork.images && artwork.images.length > 1 ? `<div style="position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.8); padding: 4px 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px;">${artwork.images.length} Images</div>` : ''}
+                        ${isAdminMode && isAuthenticated ? `
+                            <div class="admin-controls">
+                                ${index > 0 ? `<button class="admin-btn" onclick="event.stopPropagation(); moveArtwork('${artwork.id}', 'up')" title="Move up">↑</button>` : ''}
+                                ${index < filteredArtworks.length - 1 ? `<button class="admin-btn" onclick="event.stopPropagation(); moveArtwork('${artwork.id}', 'down')" title="Move down">↓</button>` : ''}
+                                <button class="admin-btn" onclick="event.stopPropagation(); editArtworkForm('${artwork.id}')" title="Edit">✎</button>
+                                <button class="admin-btn danger" onclick="event.stopPropagation(); ${currentPage === 'curator' && currentCollection ? `deleteCuratorArtwork('${artwork.id}', '${currentCollection}')` : `deleteArtwork('${artwork.id}')`}" title="Delete">×</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="artwork-info">
+                        <div class="artwork-title">${artwork.title}</div>
+                        <div class="artwork-details">
+                            <div class="artwork-artist">${artwork.artist}</div>
+                            <div>${artwork.year}</div>
+                            ${artwork.dimensions ? `<div style="margin-top: 3px;">${artwork.dimensions}</div>` : ''}
+                            ${artwork.medium ? `<div style="margin-top: 3px; font-style: italic;">${artwork.medium}</div>` : ''}
+                            ${artwork.price ? `<div class="artwork-price">${artwork.price}</div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            setTimeout(() => {
+                animateArtworkCards();
+            }, 10);
+        }
+
+        // Modal functions
+        function openModal(id) {
+            const artwork = artworks.find(a => a.id === id);
+            if (artwork) {
+                currentModalImages = artwork.images || [];
+                currentImageIndex = 0;
+                
+                updateModalImage();
+                
+                document.getElementById('modalTitle').textContent = artwork.title;
+                document.getElementById('modalArtist').textContent = artwork.artist;
+                
+                let details = artwork.year;
+                if (artwork.dimensions) {
+                    details += ` • ${artwork.dimensions}`;
+                }
+                if (artwork.medium) {
+                    details += `\n${artwork.medium}`;
+                }
+                document.getElementById('modalDetails').innerHTML = details.replace('\n', '<br><em style="font-style: italic; color: #999;">') + (artwork.medium ? '</em>' : '');
+                
+                const priceElement = document.getElementById('modalPrice');
+                if (artwork.price) {
+                    priceElement.textContent = artwork.price;
+                    priceElement.style.display = 'block';
+                } else {
+                    priceElement.style.display = 'none';
+                }
+                
+                setupImageNavigation();
+                document.getElementById('artworkModal').classList.add('show');
+            }
+        }
+
+        function updateModalImage() {
+            if (currentModalImages.length > 0) {
+                document.getElementById('modalImage').src = currentModalImages[currentImageIndex];
+            }
+        }
+
+        function setupImageNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const dotsContainer = document.getElementById('imageDots');
+            
+            if (currentModalImages.length <= 1) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                dotsContainer.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'block';
+                nextBtn.style.display = 'block';
+                dotsContainer.style.display = 'flex';
+                
+                dotsContainer.innerHTML = currentModalImages.map((_, index) => 
+                    `<div class="dot ${index === currentImageIndex ? 'active' : ''}" onclick="goToImage(${index})"></div>`
+                ).join('');
+                
+                prevBtn.disabled = currentImageIndex === 0;
+                nextBtn.disabled = currentImageIndex === currentModalImages.length - 1;
+            }
+        }
+
+        function changeImage(direction) {
+            currentImageIndex += direction;
+            if (currentImageIndex < 0) currentImageIndex = 0;
+            if (currentImageIndex >= currentModalImages.length) currentImageIndex = currentModalImages.length - 1;
+            
+            updateModalImage();
+            setupImageNavigation();
+        }
+
+        function goToImage(index) {
+            currentImageIndex = index;
+            updateModalImage();
+            setupImageNavigation();
+        }
+
+        function closeModal() {
+            document.getElementById('artworkModal').classList.remove('show');
+        }
+
+        function openZoom() {
+            const currentImage = document.getElementById('modalImage').src;
+            document.getElementById('zoomImage').src = currentImage;
+            document.getElementById('zoomModal').classList.add('show');
+        }
+
+        function closeZoom() {
+            document.getElementById('zoomModal').classList.remove('show');
+        }
+
+        // Event listeners
+        document.getElementById('artworkModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.getElementById('zoomModal').addEventListener('click', function(e) {
+            if (e.target === this) closeZoom();
+        });
+
+        document.getElementById('writeArticleModal').addEventListener('click', function(e) {
+            if (e.target === this) closeWriteArticle();
+        });
+
+        document.getElementById('articleReaderModal').addEventListener('click', function(e) {
+            if (e.target === this) closeArticleReader();
+        });
+
+        document.addEventListener('click', function(e) {
+            const adminPanel = document.getElementById('adminPanel');
+            const adminTrigger = document.querySelector('.admin-trigger');
+            
+            if (adminPanel.classList.contains('open') && 
+                !adminPanel.contains(e.target) && 
+                !adminTrigger.contains(e.target)) {
+                toggleAdmin();
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        const fileInput = document.getElementById('imageUpload');
+        fileInput.addEventListener('change', function() {
+            const files = this.files;
+            const preview = document.getElementById('imagePreview');
+            
+            if (files.length > 0) {
+                document.querySelector('.upload-text').textContent = `${files.length} image(s) selected`;
+                
+                preview.innerHTML = '';
+                for (let i = 0; i < Math.min(files.length, 5); i++) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.cssText = 'width: 80px; height: 60px; object-fit: cover; margin-right: 10px; border: 1px solid #e0e0e0;';
+                        preview.appendChild(img);
+                    };
+                    reader.readAsDataURL(files[i]);
+                }
+                
+                if (files.length > 5) {
+                    const moreText = document.createElement('span');
+                    moreText.textContent = `+${files.length - 5} more`;
+                    moreText.style.cssText = 'font-size: 12px; color: #999; margin-left: 10px;';
+                    preview.appendChild(moreText);
+                }
+            }
+        });
+
+        // Curator image upload handler
+        const curatorFileInput = document.getElementById('curatorImageUpload');
+        if (curatorFileInput) {
+            curatorFileInput.addEventListener('change', function() {
+                const file = this.files[0];
+                const preview = document.getElementById('curatorImagePreview');
+                
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.innerHTML = `<img src="${e.target.result}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 1px solid #e0e0e0;">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('artworkModal');
+            const zoomModal = document.getElementById('zoomModal');
+            
+            if (zoomModal.classList.contains('show')) {
+                if (e.key === 'Escape') closeZoom();
+            } else if (modal.classList.contains('show')) {
+                if (e.key === 'ArrowLeft') changeImage(-1);
+                else if (e.key === 'ArrowRight') changeImage(1);
+                else if (e.key === 'Escape') closeModal();
+                else if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openZoom();
+                }
+            }
+        }, { passive: false });
+
+        // Setup curation control buttons
+        document.getElementById('saveCuration').addEventListener('click', saveCurationOrder);
+        document.getElementById('resetCuration').addEventListener('click', resetCurationOrder);
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (animationObserver) {
+                document.querySelectorAll('.artwork-card').forEach(card => {
+                    animationObserver.unobserve(card);
+                });
+            }
+            if (imageObserver) {
+                document.querySelectorAll('img[data-lazy]').forEach(img => {
+                    imageObserver.unobserve(img);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

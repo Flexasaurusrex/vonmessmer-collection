@@ -2515,38 +2515,49 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
         }
 
         function updateAdminPanelForCurator() {
-            if (currentCurator) {
-                // Update admin panel to show curator is logged in
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('adminContent').style.display = 'block';
-                document.getElementById('userEmail').textContent = currentCurator.email + ' (Curator)';
-                
-                // Update admin title
-                document.querySelector('.admin-title').textContent = 'Curator Panel';
-                
-                // Hide main admin features, show curator features
-                const artworkForm = document.getElementById('artworkForm');
-                const aboutSection = document.querySelector('.admin-form:last-child');
-                
-                if (artworkForm) artworkForm.style.display = 'none';
-                if (aboutSection) aboutSection.style.display = 'none';
-                
-                // Add curator-specific message
-                let curatorMessage = document.getElementById('curatorAdminMessage');
-                if (!curatorMessage) {
-                    curatorMessage = document.createElement('div');
-                    curatorMessage.id = 'curatorAdminMessage';
-                    curatorMessage.innerHTML = `
-                        <div style="padding: 20px; background: #f8f8f8; border-radius: 8px; margin-bottom: 20px; text-align: center;">
-                            <h4 style="font-size: 14px; color: #1f2937; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Welcome, ${currentCurator.name}!</h4>
-                            <p style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">Manage your collections and artworks</p>
-                            <button class="btn" onclick="showCuratorDashboard()" style="width: auto; padding: 8px 16px;">Open Dashboard</button>
-                        </div>
-                    `;
-                    document.getElementById('adminContent').insertBefore(curatorMessage, document.getElementById('adminContent').firstChild);
-                }
-            }
-        }
+  if (!currentCurator) return;
+
+  // Change panel title & hide login
+  document.querySelector('.admin-title').textContent = 'Curator Panel';
+  document.getElementById('loginForm').style.display   = 'none';
+  document.getElementById('adminContent').style.display = 'block';
+  document.getElementById('userEmail').textContent     = currentCurator.email + ' (Curator)';
+
+  // Add welcome message banner if not already there
+  if (!document.getElementById('curatorAdminMessage')) {
+    const msg = document.createElement('div');
+    msg.id = 'curatorAdminMessage';
+    msg.innerHTML = `
+      <div style="padding:20px;background:#f8f8f8;border-radius:8px;margin-bottom:20px;text-align:center;">
+        <h4 style="margin:0 0 10px;">Welcome, ${currentCurator.name}!</h4>
+        <p>Manage your collection below.</p>
+        <button class="btn" onclick="showCuratorDashboard()" style="padding:8px 16px;">Open Dashboard</button>
+      </div>`;
+    document.getElementById('adminContent').prepend(msg);
+  }
+
+  // Grab the artwork‐upload form and the About box
+  const artworkForm  = document.getElementById('artworkForm');
+  const aboutSection = document.querySelector('.admin-form:last-child');
+
+  // ----- REPLACED HIDING WITH SHOWING -----
+  // COMMENT OUT or REMOVE these hiding lines:
+  // if (artworkForm) artworkForm.style.display = 'none';
+  // if (aboutSection) aboutSection.style.display = 'none';
+
+  // INSTEAD, force the curator to see the upload form:
+  if (artworkForm) {
+    artworkForm.style.display = 'block';
+    // tweak the button label so it's clear
+    const submitBtn = artworkForm.querySelector('button[type="submit"]');
+    submitBtn.textContent = 'Add to My Collection';
+  }
+  // (optional) still hide the About‐update area if you like:
+  if (aboutSection) aboutSection.style.display = 'none';
+
+  // … any remaining bits of the function …
+}
+
 
         async function curatorRegister() {
             const name = document.getElementById('curatorName').value;

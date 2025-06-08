@@ -1928,7 +1928,7 @@
                 </svg>
             </a>
             <ul class="nav-links">
-                <li><a href="#physical">Physical Collection</a></li>
+                <li><a href="#" onclick="returnToMain()">Physical Collection</a></li>
                 <li><a href="https://linktr.ee/flexasaurusrex" target="_blank" rel="noopener noreferrer">Digital Collection</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle">Guest Curators</a>
@@ -1940,8 +1940,8 @@
                     </ul>
                 </li>
                 <li><a href="#" onclick="showCuratorsCorner()">Curators Corner</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#" onclick="scrollToSection('about')">About</a></li>
+                <li><a href="#" onclick="scrollToSection('contact')">Contact</a></li>
             </ul>
         </nav>
     </header>
@@ -2498,6 +2498,9 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                 currentCurator = data;
                 isCuratorMode = true;
                 
+                // Update admin panel to show curator is logged in
+                updateAdminPanelForCurator();
+                
                 closeCuratorAuth();
                 showCuratorDashboard();
                 alert('Welcome back, ' + data.name + '!');
@@ -2508,6 +2511,40 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             } catch (error) {
                 console.error('Curator login error:', error);
                 alert('Login failed. Please check your credentials.');
+            }
+        }
+
+        function updateAdminPanelForCurator() {
+            if (currentCurator) {
+                // Update admin panel to show curator is logged in
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                document.getElementById('userEmail').textContent = currentCurator.email + ' (Curator)';
+                
+                // Update admin title
+                document.querySelector('.admin-title').textContent = 'Curator Panel';
+                
+                // Hide main admin features, show curator features
+                const artworkForm = document.getElementById('artworkForm');
+                const aboutSection = document.querySelector('.admin-form:last-child');
+                
+                if (artworkForm) artworkForm.style.display = 'none';
+                if (aboutSection) aboutSection.style.display = 'none';
+                
+                // Add curator-specific message
+                let curatorMessage = document.getElementById('curatorAdminMessage');
+                if (!curatorMessage) {
+                    curatorMessage = document.createElement('div');
+                    curatorMessage.id = 'curatorAdminMessage';
+                    curatorMessage.innerHTML = `
+                        <div style="padding: 20px; background: #f8f8f8; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                            <h4 style="font-size: 14px; color: #1f2937; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Welcome, ${currentCurator.name}!</h4>
+                            <p style="font-size: 12px; color: #6b7280; margin-bottom: 15px;">Manage your collections and artworks</p>
+                            <button class="btn" onclick="showCuratorDashboard()" style="width: auto; padding: 8px 16px;">Open Dashboard</button>
+                        </div>
+                    `;
+                    document.getElementById('adminContent').insertBefore(curatorMessage, document.getElementById('adminContent').firstChild);
+                }
             }
         }
 
@@ -2564,8 +2601,34 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
         function curatorLogout() {
             currentCurator = null;
             isCuratorMode = false;
+            
+            // Reset admin panel to normal state
+            resetAdminPanelFromCurator();
+            
             closeCuratorDashboard();
             alert('Logged out successfully');
+        }
+
+        function resetAdminPanelFromCurator() {
+            // Reset admin panel title
+            document.querySelector('.admin-title').textContent = 'Admin Panel';
+            
+            // Remove curator message if it exists
+            const curatorMessage = document.getElementById('curatorAdminMessage');
+            if (curatorMessage) {
+                curatorMessage.remove();
+            }
+            
+            // Show normal admin forms
+            const artworkForm = document.getElementById('artworkForm');
+            const aboutSection = document.querySelector('.admin-form:last-child');
+            
+            if (artworkForm) artworkForm.style.display = 'block';
+            if (aboutSection) aboutSection.style.display = 'block';
+            
+            // Reset to normal login state
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminContent').style.display = 'none';
         }
 
         // Curator Dashboard
@@ -2895,8 +2958,12 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
         function returnToMain() {
             currentPage = 'main';
             currentCollection = null;
-            isAdminMode = false;
-            isAuthenticated = false;
+            
+            // Don't automatically logout curators when returning to main
+            // They should be able to navigate between sections while staying logged in
+            if (!isAuthenticated && !currentCurator) {
+                isAdminMode = false;
+            }
             
             // Reset header
             document.querySelector('.tagline').textContent = 'ART LEADS CULTURE';
@@ -2911,7 +2978,7 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             // Reload main collection
             loadArtworks();
             
-            // Check admin auth
+            // Check admin auth (this will maintain curator login state)
             checkAuthState();
         }
 
@@ -3354,6 +3421,7 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             document.getElementById('zoomImage').src = imageSrc;
             document.getElementById('zoomModal').classList.add('show');
         }
+        // Curator artwork management (reuse existing functions with collection_id)
         async function saveCuratorArtwork(artworkData, collectionId) {
             if (!currentCurator) {
                 alert('Please login as a curator to save artworks');
@@ -3768,8 +3836,19 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
 
                 isAuthenticated = false;
                 isAdminMode = false;
+                
+                // Also logout curator if they were logged in
+                if (currentCurator) {
+                    currentCurator = null;
+                    isCuratorMode = false;
+                    resetAdminPanelFromCurator();
+                }
+                
                 showLoginForm();
-                toggleAdmin();
+                const adminPanel = document.getElementById('adminPanel');
+                if (adminPanel.classList.contains('open')) {
+                    toggleAdmin();
+                }
                 renderGallery();
                 alert('Logged out successfully');
             } catch (error) {
@@ -3782,11 +3861,17 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
         function toggleAdmin() {
             const panel = document.getElementById('adminPanel');
             panel.classList.toggle('open');
-            isAdminMode = panel.classList.contains('open') && isAuthenticated;
+            isAdminMode = panel.classList.contains('open') && (isAuthenticated || currentCurator);
             
             if (isAdminMode) {
-                document.getElementById('editAboutBtn').style.display = 'block';
-                document.getElementById('aboutText').value = aboutText;
+                // Check if curator is logged in
+                if (currentCurator) {
+                    updateAdminPanelForCurator();
+                } else {
+                    // Normal admin
+                    document.getElementById('editAboutBtn').style.display = 'block';
+                    document.getElementById('aboutText').value = aboutText;
+                }
             } else {
                 document.getElementById('editAboutBtn').style.display = 'none';
                 document.getElementById('curationControls').classList.remove('show');

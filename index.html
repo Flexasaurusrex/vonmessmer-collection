@@ -1152,6 +1152,574 @@
             line-height: 1.6;
             color: #6b7280;
         }
+
+        /* === CURATORS CORNER STYLES === */
+        
+        /* Article Cards */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .article-card {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+        
+        .article-header {
+            padding: 30px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #f0f0f0;
+        }
+        
+        .author-info h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .author-info .author-title {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .article-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 500;
+            color: #1f2937;
+            line-height: 1.3;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .article-excerpt {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .article-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .article-date {
+            font-weight: 500;
+        }
+        
+        .read-time {
+            opacity: 0.8;
+        }
+        
+        /* Article Creation Form */
+        .article-form {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+        }
+        
+        .form-section h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .author-form-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+        
+        .author-form-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px dashed #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .author-form-avatar:hover {
+            border-color: #333;
+        }
+        
+        .author-form-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .author-form-fields {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .social-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        /* Rich Text Editor */
+        .rich-editor {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            min-height: 400px;
+            background: #ffffff;
+            position: relative;
+        }
+        
+        .editor-toolbar {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .editor-btn {
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            color: #4b5563;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .editor-btn:hover {
+            border-color: #333;
+            color: #333;
+        }
+        
+        .editor-btn.active {
+            background: #333;
+            color: #ffffff;
+            border-color: #333;
+        }
+        
+        .editor-content {
+            padding: 20px;
+            min-height: 300px;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        .editor-content:focus {
+            outline: none;
+        }
+        
+        /* Article Images */
+        .article-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .article-image-item {
+            position: relative;
+            aspect-ratio: 4/3;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f8f8f8;
+        }
+        
+        .article-image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Article Reading View */
+        .article-reader {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        }
+        
+        .article-reader-header {
+            padding: 50px 50px 30px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .article-reader-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .article-reader-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .article-reader-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .article-reader-author-info h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .article-reader-author-info p {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .article-reader-stats {
+            margin-left: auto;
+            text-align: right;
+            font-size: 11px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .article-reader-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 32px;
+            font-weight: 500;
+            color: #1f2937;
+            line-height: 1.2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        
+        .author-social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-link {
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            color: #6b7280;
+            font-size: 11px;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .social-link:hover {
+            border-color: #333;
+            color: #333;
+        }
+        
+        .article-content {
+            padding: 40px 50px 50px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.7;
+            color: #374151;
+        }
+        
+        .article-content h1, .article-content h2, .article-content h3 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 30px 0 15px;
+        }
+        
+        .article-content h1 { font-size: 24px; }
+        .article-content h2 { font-size: 20px; }
+        .article-content h3 { font-size: 16px; }
+        
+        .article-content p {
+            margin-bottom: 20px;
+        }
+        
+        .article-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 30px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .article-content blockquote {
+            border-left: 3px solid #333;
+            padding-left: 20px;
+            margin: 30px 0;
+            font-style: italic;
+            color: #6b7280;
+        }
+        
+        /* Dynamic Content (Tweets, etc.) */
+        .embedded-tweet {
+            background: #ffffff;
+            border: 1px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 30px 0;
+            font-family: 'Inter', sans-serif;
+            max-width: 500px;
+        }
+        
+        .tweet-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .tweet-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f0f0f0;
+        }
+        
+        .tweet-author-info h4 {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+            margin: 0;
+        }
+        
+        .tweet-author-info p {
+            font-size: 12px;
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        .tweet-content {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+        
+        .tweet-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        /* Floating Action Button */
+        .fab-write {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #1f2937;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(31, 41, 55, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .fab-write:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(31, 41, 55, 0.4);
+        }
+        
+        /* Curators Corner Header */
+        .corner-header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 50px;
+        }
+        
+        .corner-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 28px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+        
+        .corner-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Mobile Responsive for Curators Corner */
+        @media (max-width: 768px) {
+            .articles-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .article-form {
+                padding: 30px 20px;
+            }
+            
+            .author-form-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .social-links-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .article-reader {
+                border-radius: 0;
+                margin: 0 -20px;
+            }
+            
+            .article-reader-header,
+            .article-content {
+                padding: 30px 20px;
+            }
+            
+            .article-reader-meta {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .article-reader-stats {
+                margin-left: 0;
+                text-align: center;
+            }
+            
+            .article-reader-title {
+                font-size: 24px;
+            }
+            
+            .editor-toolbar {
+                padding: 10px 15px;
+            }
+            
+            .editor-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+            
+            .fab-write {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
         
         /* Mobile Responsive */
         @media (max-width: 1200px) {
@@ -1318,6 +1886,7 @@
                         <li><a href="#" onclick="toggleCuratorAuth()">Curator Login</a></li>
                     </ul>
                 </li>
+                <li><a href="#" onclick="showCuratorsCorner()">Curators Corner</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
@@ -1561,6 +2130,135 @@
         </div>
     </div>
 
+    <!-- Write Article Modal -->
+    <div class="modal" id="writeArticleModal">
+        <div class="modal-content" style="max-width: 900px; max-height: 95vh; overflow-y: auto;">
+            <button class="close-modal" onclick="closeWriteArticle()">×</button>
+            
+            <div style="padding: 40px;">
+                <h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 500; margin-bottom: 30px; text-align: center; color: #1f2937; text-transform: uppercase; letter-spacing: 1px;">Write Article</h3>
+                
+                <form id="articleForm">
+                    <!-- Author Information -->
+                    <div class="form-section">
+                        <h3>Author Information</h3>
+                        <div class="author-form-grid">
+                            <div class="author-form-avatar" onclick="document.getElementById('authorAvatarUpload').click()">
+                                <input type="file" id="authorAvatarUpload" style="display: none;" accept="image/*">
+                                <span id="avatarPlaceholder" style="font-size: 12px; color: #9ca3af; text-align: center;">Click to add<br>profile photo</span>
+                                <img id="authorAvatarPreview" src="" alt="" style="display: none;">
+                            </div>
+                            <div class="author-form-fields">
+                                <div class="form-group">
+                                    <label for="authorName">Author Name</label>
+                                    <input type="text" id="authorName" required placeholder="Your full name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="authorTitle">Title/Position</label>
+                                    <input type="text" id="authorTitle" placeholder="Art Critic, Curator, Artist, etc.">
+                                </div>
+                                <div class="form-group">
+                                    <label for="authorBio">Short Bio</label>
+                                    <textarea id="authorBio" rows="2" placeholder="Brief description about yourself..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="social-links-grid" style="margin-top: 20px;">
+                            <div class="form-group">
+                                <label for="authorWebsite">Website</label>
+                                <input type="url" id="authorWebsite" placeholder="https://yourwebsite.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="authorTwitter">Twitter/X Handle</label>
+                                <input type="text" id="authorTwitter" placeholder="@yourusername">
+                            </div>
+                            <div class="form-group">
+                                <label for="authorInstagram">Instagram Handle</label>
+                                <input type="text" id="authorInstagram" placeholder="@yourusername">
+                            </div>
+                            <div class="form-group">
+                                <label for="authorLinkedIn">LinkedIn</label>
+                                <input type="url" id="authorLinkedIn" placeholder="https://linkedin.com/in/yourprofile">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Article Content -->
+                    <div class="form-section">
+                        <h3>Article Content</h3>
+                        <div class="form-group">
+                            <label for="articleTitle">Article Title</label>
+                            <input type="text" id="articleTitle" required placeholder="Your compelling article title...">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="articleExcerpt">Article Excerpt</label>
+                            <textarea id="articleExcerpt" rows="3" placeholder="Brief summary that will appear in article previews..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Article Content</label>
+                            <div class="rich-editor">
+                                <div class="editor-toolbar">
+                                    <button type="button" class="editor-btn" onclick="formatText('bold')">Bold</button>
+                                    <button type="button" class="editor-btn" onclick="formatText('italic')">Italic</button>
+                                    <button type="button" class="editor-btn" onclick="formatText('underline')">Underline</button>
+                                    <button type="button" class="editor-btn" onclick="formatText('insertOrderedList')">List</button>
+                                    <button type="button" class="editor-btn" onclick="formatText('insertUnorderedList')">Bullets</button>
+                                    <button type="button" class="editor-btn" onclick="formatText('formatBlock', 'h2')">Heading</button>
+                                    <button type="button" class="editor-btn" onclick="formatText('formatBlock', 'blockquote')">Quote</button>
+                                    <button type="button" class="editor-btn" onclick="insertLink()">Link</button>
+                                    <button type="button" class="editor-btn" onclick="document.getElementById('articleImagesUpload').click()">Images</button>
+                                </div>
+                                <div class="editor-content" id="articleContent" contenteditable="true" placeholder="Start writing your article here...
+
+You can paste Twitter links and they'll be automatically embedded as beautiful tweet cards. You can also add images, format text, and create rich content that will look amazing.
+
+Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></div>
+                            </div>
+                            <input type="file" id="articleImagesUpload" style="display: none;" accept="image/*" multiple>
+                            <div class="article-images" id="articleImagesPreview"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 40px;">
+                        <button type="button" class="btn" onclick="closeWriteArticle()" style="width: auto; padding: 12px 30px;">Cancel</button>
+                        <button type="submit" class="btn" style="width: auto; padding: 12px 30px; background: #1f2937; color: #ffffff;">Publish Article</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Article Reader Modal -->
+    <div class="modal" id="articleReaderModal">
+        <div class="modal-content" style="max-width: 900px; max-height: 95vh; overflow-y: auto;">
+            <button class="close-modal" onclick="closeArticleReader()">×</button>
+            
+            <div class="article-reader">
+                <div class="article-reader-header">
+                    <div class="article-reader-meta">
+                        <div class="article-reader-author">
+                            <img class="article-reader-avatar" id="readerAuthorAvatar" src="" alt="">
+                            <div class="article-reader-author-info">
+                                <h3 id="readerAuthorName"></h3>
+                                <p id="readerAuthorTitle"></p>
+                            </div>
+                        </div>
+                        <div class="article-reader-stats">
+                            <div class="article-date" id="readerArticleDate"></div>
+                            <div class="read-time" id="readerReadTime"></div>
+                        </div>
+                    </div>
+                    <h1 class="article-reader-title" id="readerArticleTitle"></h1>
+                    <div class="author-social-links" id="readerSocialLinks"></div>
+                </div>
+                <div class="article-content" id="readerArticleContent"></div>
+            </div>
+        </div>
+    </div>
+
     <main>
         <div class="container">
             <!-- Search & Filter Controls -->
@@ -1607,6 +2305,11 @@
             </div>
         </div>
     </main>
+
+    <!-- Floating Action Button for Writing (only shows in Curators Corner) -->
+    <button class="fab-write" id="fabWrite" onclick="openWriteArticle()" style="display: none;">
+        ✎
+    </button>
 
     <section id="about" class="about-section">
         <div class="container">
@@ -1661,7 +2364,14 @@
         let isCuratorMode = false;
         let currentCollection = null;
         let allCurators = [];
-        let currentPage = 'main'; // 'main', 'curator', 'browse-curators'
+        let currentPage = 'main'; // 'main', 'curator', 'browse-curators', 'curators-corner'
+        
+        // Curators Corner variables
+        let articles = [];
+        let filteredArticles = [];
+        let currentArticleImages = [];
+        let isEditingArticle = false;
+        let editingArticleId = null;
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -1670,9 +2380,11 @@
             loadArtworks();
             loadAbout();
             loadCurators();
+            loadArticles();
             initializeAnimations();
             initializeLazyLoading();
             setupSearchAndFilters();
+            setupRichEditor();
         });
 
         // === CURATOR SYSTEM FUNCTIONS ===
@@ -2136,6 +2848,9 @@
             // Reset header
             document.querySelector('.tagline').textContent = 'ART LEADS CULTURE';
             
+            // Hide FAB
+            document.getElementById('fabWrite').style.display = 'none';
+            
             // Remove back button
             const backButton = document.getElementById('backToMain');
             if (backButton) backButton.remove();
@@ -2147,7 +2862,384 @@
             checkAuthState();
         }
 
-        // Curator artwork management (reuse existing functions with collection_id)
+        // === CURATORS CORNER FUNCTIONS ===
+        
+        async function showCuratorsCorner() {
+            currentPage = 'curators-corner';
+            
+            // Update header tagline
+            document.querySelector('.tagline').innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div>CURATORS CORNER</div>
+                    <div style="font-size: 0.4em; font-weight: 400; margin-top: 10px; color: #6b7280;">ARTICLES & INSIGHTS</div>
+                </div>
+            `;
+            
+            // Show FAB
+            document.getElementById('fabWrite').style.display = 'flex';
+            
+            // Hide search controls
+            document.getElementById('galleryControls').style.display = 'none';
+            
+            // Load and render articles
+            await loadArticles();
+            renderArticles();
+            
+            // Add back to main navigation
+            addBackToMainButton();
+        }
+        
+        async function loadArticles() {
+            try {
+                // Try to create the articles table if it doesn't exist
+                await createArticlesTable();
+                
+                const { data, error } = await supabase
+                    .from('articles')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                articles = data || [];
+                filteredArticles = [...articles];
+                console.log('Loaded', articles.length, 'articles from database');
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                articles = [];
+                filteredArticles = [];
+            }
+        }
+        
+        async function createArticlesTable() {
+            // This function attempts to create the articles table if it doesn't exist
+            // Note: In a production environment, you'd typically create tables through Supabase dashboard or migrations
+            try {
+                await supabase.rpc('create_articles_table_if_not_exists');
+            } catch (error) {
+                // Table creation might fail if RPC doesn't exist or user doesn't have permissions
+                // This is non-critical, so we just log it
+                console.log('Articles table creation skipped (this is normal)');
+            }
+        }
+        
+        function renderArticles() {
+            const grid = document.getElementById('galleryGrid');
+            
+            if (articles.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-gallery">
+                        <h3>No Articles Yet</h3>
+                        <p>Be the first to share insights about the art world.<br>Click the write button to get started.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredArticles.map(article => {
+                const readTime = calculateReadTime(article.content);
+                const publishedDate = new Date(article.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                return `
+                    <div class="article-card" onclick="openArticleReader('${article.id}')">
+                        <div class="article-header">
+                            <div class="article-meta">
+                                <img class="author-avatar" src="${article.author_avatar || generateAvatarPlaceholder(article.author_name)}" alt="${article.author_name}">
+                                <div class="author-info">
+                                    <h4>${article.author_name}</h4>
+                                    <div class="author-title">${article.author_title || 'Contributor'}</div>
+                                </div>
+                            </div>
+                            <h3 class="article-title">${article.title}</h3>
+                            <p class="article-excerpt">${article.excerpt || extractExcerpt(article.content)}</p>
+                            <div class="article-stats">
+                                <span class="article-date">${publishedDate}</span>
+                                <span class="read-time">${readTime} min read</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            setTimeout(() => {
+                animateArtworkCards();
+            }, 10);
+        }
+        
+        function openWriteArticle() {
+            document.getElementById('writeArticleModal').classList.add('show');
+            // Focus on author name field
+            setTimeout(() => {
+                document.getElementById('authorName').focus();
+            }, 300);
+        }
+        
+        function closeWriteArticle() {
+            document.getElementById('writeArticleModal').classList.remove('show');
+            resetArticleForm();
+        }
+        
+        function resetArticleForm() {
+            document.getElementById('articleForm').reset();
+            document.getElementById('authorAvatarPreview').style.display = 'none';
+            document.getElementById('avatarPlaceholder').style.display = 'block';
+            document.getElementById('articleContent').innerHTML = '';
+            document.getElementById('articleImagesPreview').innerHTML = '';
+            currentArticleImages = [];
+            isEditingArticle = false;
+            editingArticleId = null;
+        }
+        
+        // Rich Text Editor Functions
+        function setupRichEditor() {
+            const editor = document.getElementById('articleContent');
+            
+            editor.addEventListener('paste', function(e) {
+                setTimeout(() => {
+                    processDynamicContent(editor);
+                }, 100);
+            });
+            
+            editor.addEventListener('input', function(e) {
+                processDynamicContent(editor);
+            });
+        }
+        
+        function formatText(command, value = null) {
+            document.execCommand(command, false, value);
+            document.getElementById('articleContent').focus();
+        }
+        
+        function insertLink() {
+            const url = prompt('Enter URL:');
+            if (url) {
+                document.execCommand('createLink', false, url);
+            }
+            document.getElementById('articleContent').focus();
+        }
+        
+        function processDynamicContent(editor) {
+            const content = editor.innerHTML;
+            let newContent = content;
+            
+            // Process Twitter URLs
+            const twitterRegex = /https?:\/\/(www\.)?(twitter\.com|x\.com)\/\w+\/status\/(\d+)/g;
+            newContent = newContent.replace(twitterRegex, (match) => {
+                return createTwitterEmbed(match);
+            });
+            
+            if (newContent !== content) {
+                editor.innerHTML = newContent;
+                // Move cursor to end
+                const range = document.createRange();
+                const sel = window.getSelection();
+                range.selectNodeContents(editor);
+                range.collapse(false);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        }
+        
+        function createTwitterEmbed(url) {
+            // Extract tweet ID from URL
+            const tweetId = url.match(/status\/(\d+)/)?.[1];
+            if (!tweetId) return url;
+            
+            return `
+                <div class="embedded-tweet" data-tweet-url="${url}">
+                    <div class="tweet-author">
+                        <div class="tweet-avatar"></div>
+                        <div class="tweet-author-info">
+                            <h4>Twitter Post</h4>
+                            <p>@username</p>
+                        </div>
+                    </div>
+                    <div class="tweet-content">
+                        This tweet will be dynamically loaded when the article is published.
+                        <br><br>
+                        <em>URL: ${url}</em>
+                    </div>
+                    <div class="tweet-stats">
+                        <span>🔄 Retweets</span>
+                        <span>❤️ Likes</span>
+                        <span>💬 Replies</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Article Image Handling
+        document.getElementById('articleImagesUpload').addEventListener('change', async function() {
+            const files = this.files;
+            const preview = document.getElementById('articleImagesPreview');
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const compressedImage = await compressImage(file, 800, 0.8);
+                currentArticleImages.push(compressedImage);
+                
+                const imageItem = document.createElement('div');
+                imageItem.className = 'article-image-item';
+                imageItem.innerHTML = `
+                    <img src="${compressedImage}" alt="Article image">
+                    <button class="remove-image" onclick="removeArticleImage(${currentArticleImages.length - 1})" type="button">×</button>
+                `;
+                preview.appendChild(imageItem);
+            }
+        });
+        
+        function removeArticleImage(index) {
+            currentArticleImages.splice(index, 1);
+            const preview = document.getElementById('articleImagesPreview');
+            preview.children[index].remove();
+        }
+        
+        // Author Avatar Handling
+        document.getElementById('authorAvatarUpload').addEventListener('change', async function() {
+            const file = this.files[0];
+            if (file) {
+                const compressedImage = await compressImage(file, 200, 0.8);
+                const preview = document.getElementById('authorAvatarPreview');
+                const placeholder = document.getElementById('avatarPlaceholder');
+                
+                preview.src = compressedImage;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+            }
+        });
+        
+        // Article Submission
+        document.getElementById('articleForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                title: document.getElementById('articleTitle').value,
+                excerpt: document.getElementById('articleExcerpt').value,
+                content: document.getElementById('articleContent').innerHTML,
+                author_name: document.getElementById('authorName').value,
+                author_title: document.getElementById('authorTitle').value,
+                author_bio: document.getElementById('authorBio').value,
+                author_avatar: document.getElementById('authorAvatarPreview').src || null,
+                author_website: document.getElementById('authorWebsite').value,
+                author_twitter: document.getElementById('authorTwitter').value,
+                author_instagram: document.getElementById('authorInstagram').value,
+                author_linkedin: document.getElementById('authorLinkedIn').value,
+                images: currentArticleImages
+            };
+            
+            const submitBtn = document.querySelector('#articleForm button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                submitBtn.textContent = 'Publishing...';
+                submitBtn.disabled = true;
+                
+                const { data, error } = await supabase
+                    .from('articles')
+                    .insert([formData])
+                    .select();
+
+                if (error) throw error;
+
+                console.log('Article published:', data[0]);
+                closeWriteArticle();
+                await loadArticles();
+                renderArticles();
+                alert('Article published successfully!');
+                
+            } catch (error) {
+                console.error('Error publishing article:', error);
+                alert('Failed to publish article: ' + error.message);
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Article Reading
+        function openArticleReader(articleId) {
+            const article = articles.find(a => a.id === articleId);
+            if (!article) return;
+            
+            // Update modal content
+            document.getElementById('readerAuthorAvatar').src = article.author_avatar || generateAvatarPlaceholder(article.author_name);
+            document.getElementById('readerAuthorName').textContent = article.author_name;
+            document.getElementById('readerAuthorTitle').textContent = article.author_title || 'Contributor';
+            document.getElementById('readerArticleTitle').textContent = article.title;
+            document.getElementById('readerArticleContent').innerHTML = processArticleContent(article.content);
+            
+            const publishedDate = new Date(article.created_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            const readTime = calculateReadTime(article.content);
+            
+            document.getElementById('readerArticleDate').textContent = publishedDate;
+            document.getElementById('readerReadTime').textContent = `${readTime} min read`;
+            
+            // Update social links
+            const socialLinks = document.getElementById('readerSocialLinks');
+            let linksHTML = '';
+            
+            if (article.author_website) {
+                linksHTML += `<a href="${article.author_website}" target="_blank" class="social-link">Website</a>`;
+            }
+            if (article.author_twitter) {
+                const twitterHandle = article.author_twitter.replace('@', '');
+                linksHTML += `<a href="https://twitter.com/${twitterHandle}" target="_blank" class="social-link">Twitter</a>`;
+            }
+            if (article.author_instagram) {
+                const instaHandle = article.author_instagram.replace('@', '');
+                linksHTML += `<a href="https://instagram.com/${instaHandle}" target="_blank" class="social-link">Instagram</a>`;
+            }
+            if (article.author_linkedin) {
+                linksHTML += `<a href="${article.author_linkedin}" target="_blank" class="social-link">LinkedIn</a>`;
+            }
+            
+            socialLinks.innerHTML = linksHTML;
+            
+            document.getElementById('articleReaderModal').classList.add('show');
+        }
+        
+        function closeArticleReader() {
+            document.getElementById('articleReaderModal').classList.remove('show');
+        }
+        
+        // Utility Functions
+        function calculateReadTime(content) {
+            const wordsPerMinute = 200;
+            const textContent = content.replace(/<[^>]*>/g, '');
+            const wordCount = textContent.split(/\s+/).length;
+            return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
+        }
+        
+        function extractExcerpt(content, maxLength = 150) {
+            const textContent = content.replace(/<[^>]*>/g, '');
+            return textContent.length > maxLength 
+                ? textContent.substring(0, maxLength) + '...'
+                : textContent;
+        }
+        
+        function generateAvatarPlaceholder(name) {
+            const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+            return `data:image/svg+xml;base64,${btoa(`
+                <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="50" fill="#f0f0f0"/>
+                    <text x="50" y="60" text-anchor="middle" fill="#666" font-size="24" font-family="Inter">${initials}</text>
+                </svg>
+            `)}`;
+        }
+        
+        function processArticleContent(content) {
+            // Add any additional processing for published articles
+            // For now, just return the content as-is
+            return content;
+        }
         async function saveCuratorArtwork(artworkData, collectionId) {
             if (!currentCurator) {
                 alert('Please login as a curator to save artworks');
@@ -3069,6 +4161,14 @@
 
         document.getElementById('zoomModal').addEventListener('click', function(e) {
             if (e.target === this) closeZoom();
+        });
+
+        document.getElementById('writeArticleModal').addEventListener('click', function(e) {
+            if (e.target === this) closeWriteArticle();
+        });
+
+        document.getElementById('articleReaderModal').addEventListener('click', function(e) {
+            if (e.target === this) closeArticleReader();
         });
 
         document.addEventListener('click', function(e) {

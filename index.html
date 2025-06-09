@@ -2867,23 +2867,20 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
 //  UPDATED: Browse‑All Curators always refreshes data first
 // ────────────────────────────────────────────────────────────────
 async function showAllCurators() {
-    // Pull the latest approved curators each time in case an admin
-    // just approved someone and hasn’t hard‑refreshed the page.
+    // Always fetch the latest approved curators first
     await loadCurators();
 
     currentPage = 'browse-curators';
-
-    // Update header tagline
     document.querySelector('.tagline').textContent = 'GUEST CURATORS';
 
-    // Render grid
     const grid = document.getElementById('galleryGrid');
     if (allCurators.length === 0) {
         grid.innerHTML = `
             <div class="empty-gallery">
                 <h3>No Curators Yet</h3>
                 <p>Be the first to join our curatorial community!</p>
-            </div>`;
+            </div>
+        `;
     } else {
         grid.innerHTML = allCurators.map(curator => `
             <div class="artwork-card" onclick="showCuratorProfile('${curator.id}')">
@@ -2898,9 +2895,11 @@ async function showAllCurators() {
                         ${curator.bio ? `<div style="margin-top:8px;font-style:italic;text-transform:none;">${curator.bio.substring(0,100)}${curator.bio.length>100?'…':''}</div>` : ''}
                     </div>
                 </div>
-            </div>`).join('');
+            </div>
+        `).join('');
     }
 
+    // Hide artwork‑specific controls for this view
     document.getElementById('galleryControls').style.display = 'none';
     addBackToMainButton();
 }

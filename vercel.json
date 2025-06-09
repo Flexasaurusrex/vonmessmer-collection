@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/guest-curators.html",
+      "dest": "/guest-curators.html"
+    },
+    {
+      "src": "/curator.html", 
+      "dest": "/curator.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
+  ]
+}

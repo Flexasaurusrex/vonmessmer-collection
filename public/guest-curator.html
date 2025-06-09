@@ -1,87 +1,505 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guest Curator Collection</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
-      margin: 0;
-      padding: 20px;
-    }
-    h2 {
-      text-align: center;
-    }
-    .artwork-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-      margin-top: 2rem;
-    }
-    .artwork-card {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      overflow: hidden;
-      transition: transform 0.2s;
-    }
-    .artwork-card:hover {
-      transform: scale(1.02);
-    }
-    .artwork-card img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-    .artwork-info {
-      padding: 1rem;
-    }
-  </style>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Guest Curators - VonMesser Collection</title>
+    <meta content="Discover our guest curators and their carefully curated collections" name="description"/>
+    
+    <!-- Favicon -->
+    <link href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNmZmZmZmYiLz4KICA8ZyBmaWxsPSIjMzMzIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iOCwyIDEwLDIgMTMsOSAxNiwyIDE4LDIgMTQsMTIgMTEsMTIiLz4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTksMiAyMSwyIDIzLDcgMjUsMiAyNywyIDI3LDEyIDI1LDEyIDI1LDUgMjMsOSAyMSw5IDIwLDUgMjAsMTIgMTksMTIiLz4KICA8L2c+CiAgPHRleHQgeD0iMTYiIHk9IjI3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiBzdHlsZT0iZm9udC1mYW1pbHk6IHNhbnMtc2VyaWY7IGZvbnQtc2l6ZTogNXB4OyBmb250LXdlaWdodDogNDAwOyBsZXR0ZXItc3BhY2luZzogMC41cHg7Ij5WTTwvdGV4dD4KPC9zdmc+Cg==" rel="icon" type="image/svg+xml"/>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #2c2c2c;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #f0f0f0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            backdrop-filter: blur(10px);
+            padding: 25px 0;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .logo:hover {
+            opacity: 0.8;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 50px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #6b7280;
+            font-weight: 400;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #1f2937;
+        }
+        
+        /* Hero */
+        .hero {
+            padding: 80px 0 60px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            line-height: 0.9;
+            font-family: Impact, 'Arial Black', 'Helvetica Neue', Helvetica, sans-serif;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 16px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Main Content */
+        main {
+            padding: 60px 0;
+        }
+        
+        .curators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+        
+        .curator-card {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+        
+        .curator-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+        
+        .curator-avatar {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: #f8f8f8;
+        }
+        
+        .curator-info {
+            padding: 30px;
+        }
+        
+        .curator-name {
+            font-size: 20px;
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .curator-title {
+            font-size: 14px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .curator-bio {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .curator-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .collection-count {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .view-collections {
+            background: #1f2937;
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .view-collections:hover {
+            background: #374151;
+        }
+        
+        .collections-list {
+            margin-top: 15px;
+        }
+        
+        .collection-item {
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #4b5563;
+            transition: all 0.3s ease;
+            font-size: 13px;
+        }
+        
+        .collection-item:hover {
+            background: #ffffff;
+            border-color: #1f2937;
+            color: #1f2937;
+        }
+        
+        .collection-name {
+            font-weight: 500;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .collection-type {
+            font-size: 11px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #6b7280;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 120px 20px;
+            color: #6b7280;
+        }
+        
+        .empty-state h3 {
+            font-size: 20px;
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .empty-state p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            margin-bottom: 40px;
+        }
+        
+        .back-link:hover {
+            border-color: #1f2937;
+            color: #1f2937;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            .nav-links {
+                gap: 25px;
+            }
+            
+            .nav-links a {
+                font-size: 13px;
+            }
+            
+            .hero {
+                padding: 60px 0 40px;
+            }
+            
+            .curators-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .curator-info {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h2>Curator Collection</h2>
-  <div class="artwork-grid" id="artworkGrid"></div>
+    <header>
+        <nav class="container">
+            <a class="logo" href="index.html">
+                <svg height="38" viewbox="0 0 85 32" width="102" xmlns="http://www.w3.org/2000/svg">
+                    <g fill="#333" style="font-weight: 400;">
+                        <polygon points="24,3 27,3 32,17 35,3 38,3 31.5,19 28.5,19"></polygon>
+                        <polygon points="40,3 43,3 46,14 49,3 52,3 52,19 49.5,19 49.5,7 47.5,16 44.5,16 42.5,7 42.5,19 40,19"></polygon>
+                    </g>
+                    <text fill="#333" style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 6px; font-weight: 400; letter-spacing: 1.8px;" text-anchor="middle" x="42.5" y="29">VONMESSER</text>
+                </svg>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Physical Collection</a></li>
+                <li><a href="https://linktr.ee/flexasaurusrex" target="_blank">Digital Collection</a></li>
+                <li><a href="guest-curators.html" class="active">Guest Curators</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const supabaseUrl = 'https://qqkshpkbfixeyusqpsou.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
-    const client = supabase.createClient(supabaseUrl, supabaseKey);
+    <section class="hero">
+        <div class="container">
+            <h1>Guest Curators</h1>
+            <p>Discover unique perspectives from our community of curators</p>
+            <div style="margin-top: 30px;">
+                <a href="index.html" style="display: inline-block; padding: 12px 24px; background: #1f2937; color: white; text-decoration: none; border-radius: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease;">
+                    Apply to Curate
+                </a>
+                <p style="margin-top: 10px; font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px;">
+                    Use Guest Curators → Apply to Curate in the menu
+                </p>
+            </div>
+        </div>
+    </section>
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const curatorId = urlParams.get('curator_id');
+    <main>
+        <div class="container">
+            <a href="index.html" class="back-link">
+                ← Back to Main Collection
+            </a>
+            
+            <div id="curatorsGrid" class="curators-grid">
+                <div class="loading">Loading curators...</div>
+            </div>
+        </div>
+    </main>
 
-    async function loadArtworks() {
-      const { data, error } = await client
-        .from('artwork')
-        .select('*')
-        .eq('curator_id', curatorId);
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://qqkshpkbfixeyusqpsou.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-      const grid = document.getElementById('artworkGrid');
-      if (error || !data || data.length === 0) {
-        grid.innerHTML = '<p>No artwork found for this curator.</p>';
-        return;
-      }
+        let curators = [];
 
-      data.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'artwork-card';
+        // Load and display curators on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCurators();
+        });
 
-        card.innerHTML = `
-          <img src="${item.image_url}" alt="Artwork">
-          <div class="artwork-info">
-            <strong>${item.title || 'Untitled'}</strong><br>
-            <small>${item.description || ''}</small>
-          </div>
-        `;
+        async function loadCurators() {
+            try {
+                // Load curators
+                const { data: curatorsData, error: curatorsError } = await supabase
+                    .from('curators')
+                    .select('*')
+                    .eq('status', 'approved')
+                    .order('created_at', { ascending: false });
 
-        grid.appendChild(card);
-      });
-    }
+                if (curatorsError) throw curatorsError;
+                curators = curatorsData || [];
 
-    loadArtworks();
-  </script>
+                // Load collections for each curator
+                if (curators.length > 0) {
+                    const curatorIds = curators.map(c => c.id);
+                    const { data: collectionsData, error: collectionsError } = await supabase
+                        .from('curator_collections')
+                        .select('*')
+                        .in('curator_id', curatorIds)
+                        .order('created_at', { ascending: false });
+
+                    if (collectionsError) {
+                        console.warn('Could not load collections:', collectionsError);
+                    }
+
+                    // Group collections by curator
+                    const collectionsByCurator = {};
+                    (collectionsData || []).forEach(collection => {
+                        if (!collectionsByCurator[collection.curator_id]) {
+                            collectionsByCurator[collection.curator_id] = [];
+                        }
+                        collectionsByCurator[collection.curator_id].push(collection);
+                    });
+
+                    // Add collections to curators
+                    curators = curators.map(curator => ({
+                        ...curator,
+                        collections: collectionsByCurator[curator.id] || []
+                    }));
+                }
+
+                renderCurators();
+            } catch (error) {
+                console.error('Error loading curators:', error);
+                renderError();
+            }
+        }
+
+        function renderCurators() {
+            const grid = document.getElementById('curatorsGrid');
+            
+            if (curators.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No Curators Yet</h3>
+                        <p>Be the first to join our curatorial community!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = curators.map(curator => {
+                const collections = curator.collections || [];
+                const defaultAvatar = generateAvatarPlaceholder(curator.name);
+                
+                return `
+                    <div class="curator-card">
+                        <img class="curator-avatar" 
+                             src="${curator.profile_image || defaultAvatar}" 
+                             alt="${curator.name}"
+                             onerror="this.src='${defaultAvatar}'">
+                        <div class="curator-info">
+                            <div class="curator-name">${curator.name}</div>
+                            <div class="curator-title">Curator</div>
+                            ${curator.bio ? `<div class="curator-bio">${curator.bio}</div>` : ''}
+                            
+                            ${collections.length > 0 ? `
+                                <div class="collections-list">
+                                    ${collections.map(collection => `
+                                        <a href="curator.html?curator=${curator.id}&collection=${collection.id}" class="collection-item">
+                                            <div class="collection-name">${collection.name}</div>
+                                            <div class="collection-type">${collection.type} Collection</div>
+                                        </a>
+                                    `).join('')}
+                                </div>
+                            ` : `
+                                <div class="curator-stats">
+                                    <span class="collection-count">No collections yet</span>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderError() {
+            const grid = document.getElementById('curatorsGrid');
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <h3>Unable to Load Curators</h3>
+                    <p>Please check your connection and try again.</p>
+                </div>
+            `;
+        }
+
+        function generateAvatarPlaceholder(name) {
+            const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            return `data:image/svg+xml;base64,${btoa(`
+                <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="300" height="300" fill="#f8f8f8"/>
+                    <text x="150" y="160" text-anchor="middle" fill="#6b7280" font-size="48" font-family="Inter">${initials}</text>
+                </svg>
+            `)}`;
+        }
+    </script>
 </body>
 </html>

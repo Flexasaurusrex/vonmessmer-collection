@@ -1,44 +1,38 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VonMesser Collection - Art Leads Culture</title>
-    
-    <!-- Meta tags for SEO and social sharing -->
-    <meta name="description" content="A carefully curated assembly of contemporary and classical works exploring the intersection of traditional artistry and modern expression.">
-    <meta name="keywords" content="art collection, contemporary art, classical art, curated collection, VonMesser, art gallery">
-    <meta name="author" content="VonMesser Collection">
-    
-    <!-- Open Graph / Facebook / Instagram -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://vonmesser.xyz/">
-    <meta property="og:title" content="VonMesser Collection - Art Leads Culture">
-    <meta property="og:description" content="A carefully curated assembly of contemporary and classical works exploring the intersection of traditional artistry and modern expression.">
-    <meta property="og:image" content="https://vonmesser.xyz/social-preview-square.png">
-    <meta property="og:image:width" content="1080">
-    <meta property="og:image:height" content="1080">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://vonmesser.xyz/">
-    <meta property="twitter:title" content="VonMesser Collection - Art Leads Culture">
-    <meta property="twitter:description" content="A carefully curated assembly of contemporary and classical works exploring the intersection of traditional artistry and modern expression.">
-    <meta property="twitter:image" content="https://vonmesser.xyz/social-preview.png">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNmZmZmZmYiLz4KICA8ZyBmaWxsPSIjMzMzIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iOCwyIDEwLDIgMTMsOSAxNiwyIDE4LDIgMTQsMTIgMTEsMTIiLz4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTksMiAyMSwyIDIzLDcgMjUsMiAyNywyIDI3LDEyIDI1LDEyIDI1LDUgMjMsOSAyMSw5IDIwLDUgMjAsMTIgMTksMTIiLz4KICA8L2c+CiAgPHRleHQgeD0iMTYiIHk9IjI3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiBzdHlsZT0iZm9udC1mYW1pbHk6IHNhbnMtc2VyaWY7IGZvbnQtc2l6ZTogNXB4OyBmb250LXdlaWdodDogNDAwOyBsZXR0ZXItc3BhY2luZzogMC41cHg7Ij5WTTwvdGV4dD4KPC9zdmc+Cg==">
-    <meta name="theme-color" content="#333333">
-    
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- Google Fonts for Clean Typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
-    
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VonMesser Collection - Art Leads Culture</title>
+<!-- Meta tags for SEO and social sharing -->
+<meta content="A carefully curated assembly of contemporary and classical works exploring the intersection of traditional artistry and modern expression." name="description"/>
+<meta content="art collection, contemporary art, classical art, curated collection, VonMesser, art gallery" name="keywords"/>
+<meta content="VonMesser Collection" name="author"/>
+<!-- Open Graph / Facebook / Instagram -->
+<meta content="website" property="og:type"/>
+<meta content="https://vonmesser.xyz/" property="og:url"/>
+<meta content="VonMesser Collection - Art Leads Culture" property="og:title"/>
+<meta content="A carefully curated assembly of contemporary and classical works exploring the intersection of traditional artistry and modern expression." property="og:description"/>
+<meta content="https://vonmesser.xyz/social-preview-square.png" property="og:image"/>
+<meta content="1080" property="og:image:width"/>
+<meta content="1080" property="og:image:height"/>
+<!-- Twitter -->
+<meta content="summary_large_image" property="twitter:card"/>
+<meta content="https://vonmesser.xyz/" property="twitter:url"/>
+<meta content="VonMesser Collection - Art Leads Culture" property="twitter:title"/>
+<meta content="A carefully curated assembly of contemporary and classical works exploring the intersection of traditional artistry and modern expression." property="twitter:description"/>
+<meta content="https://vonmesser.xyz/social-preview.png" property="twitter:image"/>
+<!-- Favicon -->
+<link href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNmZmZmZmYiLz4KICA8ZyBmaWxsPSIjMzMzIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iOCwyIDEwLDIgMTMsOSAxNiwyIDE4LDIgMTQsMTIgMTEsMTIiLz4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTksMiAyMSwyIDIzLDcgMjUsMiAyNywyIDI3LDEyIDI1LDEyIDI1LDUgMjMsOSAyMSw5IDIwLDUgMjAsMTIgMTksMTIiLz4KICA8L2c+CiAgPHRleHQgeD0iMTYiIHk9IjI3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiBzdHlsZT0iZm9udC1mYW1pbHk6IHNhbnMtc2VyaWY7IGZvbnQtc2l6ZTogNXB4OyBmb250LXdlaWdodDogNDAwOyBsZXR0ZXItc3BhY2luZzogMC41cHg7Ij5WTTwvdGV4dD4KPC9zdmc+Cg==" rel="icon" type="image/svg+xml"/>
+<meta content="#333333" name="theme-color"/>
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Google Fonts for Clean Typography -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
         * {
             margin: 0;
             padding: 0;
@@ -1903,505 +1897,445 @@
     </style>
 </head>
 <body>
-    <header>
-        <nav class="container">
-            <a href="#" class="logo">
-                <svg width="102" height="38" viewBox="0 0 85 32" xmlns="http://www.w3.org/2000/svg">
-                    <!-- VM monogram -->
-                    <g fill="#333" style="font-weight: 400;">
-                        <!-- V -->
-                        <polygon points="24,3 27,3 32,17 35,3 38,3 31.5,19 28.5,19"/>
-                        <!-- M -->
-                        <polygon points="40,3 43,3 46,14 49,3 52,3 52,19 49.5,19 49.5,7 47.5,16 44.5,16 42.5,7 42.5,19 40,19"/>
-                    </g>
-                    
-                    <!-- VONMESSER text -->
-                    <text x="42.5" y="29" 
-                          text-anchor="middle" 
-                          fill="#333" 
-                          style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
+<header>
+<nav class="container">
+<a class="logo" href="#">
+<svg height="38" viewbox="0 0 85 32" width="102" xmlns="http://www.w3.org/2000/svg">
+<!-- VM monogram -->
+<g fill="#333" style="font-weight: 400;">
+<!-- V -->
+<polygon points="24,3 27,3 32,17 35,3 38,3 31.5,19 28.5,19"></polygon>
+<!-- M -->
+<polygon points="40,3 43,3 46,14 49,3 52,3 52,19 49.5,19 49.5,7 47.5,16 44.5,16 42.5,7 42.5,19 40,19"></polygon>
+</g>
+<!-- VONMESSER text -->
+<text fill="#333" style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
                                  font-size: 6px; 
                                  font-weight: 400; 
-                                 letter-spacing: 1.8px;">
+                                 letter-spacing: 1.8px;" text-anchor="middle" x="42.5" y="29">
                         VONMESSER
                     </text>
-                </svg>
-            </a>
-            <ul class="nav-links">
-                <li><a href="#" onclick="returnToMain()">Physical Collection</a></li>
-                <li><a href="https://linktr.ee/flexasaurusrex" target="_blank" rel="noopener noreferrer">Digital Collection</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle">Guest Curators</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#" onclick="showFeaturedCurator()">Featured Curator</a></li>
-                        <li><a href="#" onclick="showAllCurators()">Browse All Curators</a></li>
-                        <li><a href="#" onclick="showCuratorApplication()">Apply to Curate</a></li>
-                        <li><a href="#" onclick="toggleCuratorAuth()">Curator Login</a></li>
-                    </ul>
-                </li>
-                <li><a href="#" onclick="showCuratorsCorner()">Curators Corner</a></li>
-                <li><a href="#" onclick="scrollToSection('about')">About</a></li>
-                <li><a href="#" onclick="scrollToSection('contact')">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <!-- Hero Tagline Section -->
-    <section class="hero-tagline">
-        <div class="container">
-            <h1 class="tagline">Art Leads Culture</h1>
-        </div>
-    </section>
-
-    <!-- Admin Trigger Diamond -->
-    <div class="admin-trigger" onclick="toggleAdmin()">
-        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="10,2 18,10 10,18 2,10" 
-                     fill="#333" 
-                     stroke="none"/>
-        </svg>
-    </div>
-
-    <!-- Admin Panel -->
-    <div class="admin-panel" id="adminPanel">
-        <div class="admin-header">
-            <h3 class="admin-title">Admin Panel</h3>
-            <button class="close-admin" onclick="toggleAdmin()">×</button>
-        </div>
-        
-        <!-- Login Form -->
-        <div class="login-form" id="loginForm">
-            <h3>Admin Login</h3>
-            <div class="form-group">
-                <label for="loginEmail">Email</label>
-                <input type="email" id="loginEmail" required>
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" required>
-            </div>
-            <button class="btn" onclick="login()">Login</button>
-        </div>
-
-        <!-- Admin Content -->
-        <div id="adminContent" style="display: none;">
-            <div class="logout-section">
-                <span class="user-email" id="userEmail"></span>
-                <button class="btn btn-small" onclick="logout()">Logout</button>
-            </div>
-            
-            <form class="admin-form" id="artworkForm">
-                <input type="hidden" id="editingId" value="">
-                
-                <div class="form-group">
-                    <label for="artworkTitle">Artwork Title</label>
-                    <input type="text" id="artworkTitle" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="artistName">Artist Name</label>
-                    <input type="text" id="artistName" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="artworkYear">Year</label>
-                    <input type="text" id="artworkYear" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="artworkDimensions">Dimensions</label>
-                    <input type="text" id="artworkDimensions" placeholder="e.g., 24 × 36 in or 61 × 91 cm">
-                </div>
-                
-                <div class="form-group">
-                    <label for="artworkMedium">Medium</label>
-                    <input type="text" id="artworkMedium" placeholder="e.g., Oil on canvas, Archival pigment print on Hahnemühle Photo Rag 308, Mixed media">
-                </div>
-                
-                <div class="form-group">
-                    <label for="artworkPrice">Price (Optional)</label>
-                    <input type="text" id="artworkPrice" placeholder="e.g., $5,000 or Price on Request">
-                </div>
-                
-                <div class="form-group">
-                    <label for="orientation">Orientation</label>
-                    <select id="orientation" required>
-                        <option value="landscape">Landscape (4:3)</option>
-                        <option value="portrait">Portrait (3:4)</option>
-                        <option value="square">Square (1:1)</option>
-                        <option value="panoramic">Panoramic (16:9)</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Artwork Images</label>
-                    <div class="file-upload" onclick="document.getElementById('imageUpload').click()">
-                        <input type="file" id="imageUpload" style="display: none;" accept="image/*" multiple>
-                        <div class="upload-text">Click to upload images (multiple allowed)</div>
-                        <div style="font-size: 10px; color: #999; margin-top: 8px; text-transform: none; letter-spacing: 0;">
+</svg>
+</a>
+<ul class="nav-links">
+<li><a href="#" onclick="returnToMain()">Physical Collection</a></li>
+<li><a href="https://linktr.ee/flexasaurusrex" rel="noopener noreferrer" target="_blank">Digital Collection</a></li>
+<li class="dropdown">
+<a class="dropdown-toggle" href="#">Guest Curators</a>
+<ul class="dropdown-menu">
+<li><a href="#" onclick="showFeaturedCurator()">Featured Curator</a></li>
+<li><a href="#" onclick="showAllCurators()">Browse All Curators</a></li>
+<li><a href="#" onclick="showCuratorApplication()">Apply to Curate</a></li>
+<li><a href="#" onclick="toggleCuratorAuth()">Curator Login</a></li>
+</ul>
+</li>
+<li><a href="#" onclick="showCuratorsCorner()">Curators Corner</a></li>
+<li><a href="#" onclick="scrollToSection('about')">About</a></li>
+<li><a href="#" onclick="scrollToSection('contact')">Contact</a></li>
+</ul>
+</nav>
+</header>
+<!-- Hero Tagline Section -->
+<section class="hero-tagline">
+<div class="container">
+<h1 class="tagline">Art Leads Culture</h1>
+</div>
+</section>
+<!-- Admin Trigger Diamond -->
+<div class="admin-trigger" onclick="toggleAdmin()">
+<svg viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<polygon fill="#333" points="10,2 18,10 10,18 2,10" stroke="none"></polygon>
+</svg>
+</div>
+<!-- Admin Panel -->
+<div class="admin-panel" id="adminPanel">
+<div class="admin-header">
+<h3 class="admin-title">Admin Panel</h3>
+<button class="close-admin" onclick="toggleAdmin()">×</button>
+</div>
+<!-- Login Form -->
+<div class="login-form" id="loginForm">
+<h3>Admin Login</h3>
+<div class="form-group">
+<label for="loginEmail">Email</label>
+<input id="loginEmail" required="" type="email"/>
+</div>
+<div class="form-group">
+<label for="loginPassword">Password</label>
+<input id="loginPassword" required="" type="password"/>
+</div>
+<button class="btn" onclick="login()">Login</button>
+</div>
+<!-- Admin Content -->
+<div id="adminContent" style="display: none;">
+<div class="logout-section">
+<span class="user-email" id="userEmail"></span>
+<button class="btn btn-small" onclick="logout()">Logout</button>
+</div>
+<form class="admin-form" id="artworkForm">
+<input id="editingId" type="hidden" value=""/>
+<div class="form-group">
+<label for="artworkTitle">Artwork Title</label>
+<input id="artworkTitle" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="artistName">Artist Name</label>
+<input id="artistName" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="artworkYear">Year</label>
+<input id="artworkYear" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="artworkDimensions">Dimensions</label>
+<input id="artworkDimensions" placeholder="e.g., 24 × 36 in or 61 × 91 cm" type="text"/>
+</div>
+<div class="form-group">
+<label for="artworkMedium">Medium</label>
+<input id="artworkMedium" placeholder="e.g., Oil on canvas, Archival pigment print on Hahnemühle Photo Rag 308, Mixed media" type="text"/>
+</div>
+<div class="form-group">
+<label for="artworkPrice">Price (Optional)</label>
+<input id="artworkPrice" placeholder="e.g., $5,000 or Price on Request" type="text"/>
+</div>
+<div class="form-group">
+<label for="orientation">Orientation</label>
+<select id="orientation" required="">
+<option value="landscape">Landscape (4:3)</option>
+<option value="portrait">Portrait (3:4)</option>
+<option value="square">Square (1:1)</option>
+<option value="panoramic">Panoramic (16:9)</option>
+</select>
+</div>
+<div class="form-group">
+<label>Artwork Images</label>
+<div class="file-upload" onclick="document.getElementById('imageUpload').click()">
+<input accept="image/*" id="imageUpload" multiple="" style="display: none;" type="file"/>
+<div class="upload-text">Click to upload images (multiple allowed)</div>
+<div style="font-size: 10px; color: #999; margin-top: 8px; text-transform: none; letter-spacing: 0;">
                             Tip: For best performance, use images under 2MB each
                         </div>
-                    </div>
-                    <div id="imagePreview" style="margin-top: 15px;"></div>
-                </div>
-                
-                <button type="submit" class="btn">Add Artwork</button>
-                <button type="button" class="btn" onclick="resetForm()" style="margin-top: 10px;">Clear Form</button>
-            </form>
-            
-            <div class="admin-form" style="border-top: 1px solid #f0f0f0; padding-top: 30px; margin-top: 30px;">
-                <h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 20px;">About Section</h4>
-                
-                <div class="form-group">
-                    <label for="aboutText">About Text</label>
-                    <textarea id="aboutText" rows="8" placeholder="Write about yourself as a collector and curator..."></textarea>
-                </div>
-                
-                <button type="button" class="btn" onclick="saveAbout()">Update About</button>
-            </div>
-        
-            <!-- Pending Curator Approvals -->
-            <div class="admin-form" id="pendingCuratorsSection" style="border-top: 1px solid #f0f0f0; padding-top: 30px; margin-top: 30px; display: none;">
-                <h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 20px;">Pending Curator Approvals</h4>
-                <div id="pendingCuratorsList"></div>
-            </div>
 </div>
-    </div>
-
-    <!-- Zoom Modal -->
-    <div class="zoom-modal" id="zoomModal">
-        <button class="zoom-close" onclick="closeZoom()">×</button>
-        <img class="zoom-image" id="zoomImage" src="" alt="" onclick="closeZoom()">
-    </div>
-
-    <!-- Artwork Modal -->
-    <div class="modal" id="artworkModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal()">×</button>
-            <div class="modal-image-container">
-                <img class="modal-image" id="modalImage" src="" alt="" onclick="openZoom()">
-                <button class="image-nav prev" id="prevBtn" onclick="changeImage(-1)">‹</button>
-                <button class="image-nav next" id="nextBtn" onclick="changeImage(1)">›</button>
-                <div class="image-dots" id="imageDots"></div>
-            </div>
-            <div class="modal-info">
-                <h3 class="modal-title" id="modalTitle"></h3>
-                <div class="modal-artist" id="modalArtist"></div>
-                <div class="modal-details" id="modalDetails"></div>
-                <div class="modal-price" id="modalPrice" style="display: none;"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Curator Auth Modal -->
-    <div class="modal" id="curatorAuthModal">
-        <div class="modal-content" style="max-width: 500px;">
-            <button class="close-modal" onclick="closeCuratorAuth()">×</button>
-            
-            <!-- Curator Login Form -->
-            <div class="curator-auth-content" id="curatorLoginForm">
-                <div style="padding: 40px;">
-                    <h3 style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 500; margin-bottom: 30px; text-align: center; color: #1f2937;">Curator Login</h3>
-                    
-                    <div class="form-group">
-                        <label for="curatorLoginEmail">Email</label>
-                        <input type="email" id="curatorLoginEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="curatorLoginPassword">Password</label>
-                        <input type="password" id="curatorLoginPassword" required>
-                    </div>
-                    <button class="btn" onclick="curatorLogin()">Login</button>
-                    
-                    <div style="text-align: center; margin-top: 20px;">
-                        <button type="button" style="background: none; border: none; color: #6b7280; text-decoration: underline; cursor: pointer;" onclick="showCuratorRegister()">
+<div id="imagePreview" style="margin-top: 15px;"></div>
+</div>
+<button class="btn" type="submit">Add Artwork</button>
+<button class="btn" onclick="resetForm()" style="margin-top: 10px;" type="button">Clear Form</button>
+</form>
+<div class="admin-form" style="border-top: 1px solid #f0f0f0; padding-top: 30px; margin-top: 30px;">
+<h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 20px;">About Section</h4>
+<div class="form-group">
+<label for="aboutText">About Text</label>
+<textarea id="aboutText" placeholder="Write about yourself as a collector and curator..." rows="8"></textarea>
+</div>
+<button class="btn" onclick="saveAbout()" type="button">Update About</button>
+</div>
+<!-- Pending Curator Approvals -->
+<div class="admin-form" id="pendingCuratorsSection" style="border-top: 1px solid #f0f0f0; padding-top: 30px; margin-top: 30px; display: none;">
+<h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 20px;">Pending Curator Approvals</h4>
+<div id="pendingCuratorsList"></div>
+</div>
+</div>
+</div>
+<!-- Zoom Modal -->
+<div class="zoom-modal" id="zoomModal">
+<button class="zoom-close" onclick="closeZoom()">×</button>
+<img alt="" class="zoom-image" id="zoomImage" onclick="closeZoom()" src=""/>
+</div>
+<!-- Artwork Modal -->
+<div class="modal" id="artworkModal">
+<div class="modal-content">
+<button class="close-modal" onclick="closeModal()">×</button>
+<div class="modal-image-container">
+<img alt="" class="modal-image" id="modalImage" onclick="openZoom()" src=""/>
+<button class="image-nav prev" id="prevBtn" onclick="changeImage(-1)">‹</button>
+<button class="image-nav next" id="nextBtn" onclick="changeImage(1)">›</button>
+<div class="image-dots" id="imageDots"></div>
+</div>
+<div class="modal-info">
+<h3 class="modal-title" id="modalTitle"></h3>
+<div class="modal-artist" id="modalArtist"></div>
+<div class="modal-details" id="modalDetails"></div>
+<div class="modal-price" id="modalPrice" style="display: none;"></div>
+</div>
+</div>
+</div>
+<!-- Curator Auth Modal -->
+<div class="modal" id="curatorAuthModal">
+<div class="modal-content" style="max-width: 500px;">
+<button class="close-modal" onclick="closeCuratorAuth()">×</button>
+<!-- Curator Login Form -->
+<div class="curator-auth-content" id="curatorLoginForm">
+<div style="padding: 40px;">
+<h3 style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 500; margin-bottom: 30px; text-align: center; color: #1f2937;">Curator Login</h3>
+<div class="form-group">
+<label for="curatorLoginEmail">Email</label>
+<input id="curatorLoginEmail" required="" type="email"/>
+</div>
+<div class="form-group">
+<label for="curatorLoginPassword">Password</label>
+<input id="curatorLoginPassword" required="" type="password"/>
+</div>
+<button class="btn" onclick="curatorLogin()">Login</button>
+<div style="text-align: center; margin-top: 20px;">
+<button onclick="showCuratorRegister()" style="background: none; border: none; color: #6b7280; text-decoration: underline; cursor: pointer;" type="button">
                             New curator? Register here
                         </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Curator Registration Form -->
-            <div class="curator-auth-content" id="curatorRegisterForm" style="display: none;">
-                <div style="padding: 40px;">
-                    <h3 style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 500; margin-bottom: 30px; text-align: center; color: #1f2937;">Curator Registration</h3>
-                    
-                    <div class="form-group">
-                        <label for="curatorName">Curator Name</label>
-                        <input type="text" id="curatorName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="curatorEmail">Email</label>
-                        <input type="email" id="curatorEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="curatorPassword">Password</label>
-                        <input type="password" id="curatorPassword" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="curatorBio">Bio (Optional)</label>
-                        <textarea id="curatorBio" rows="3" placeholder="Tell us about your curatorial vision..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Profile Image</label>
-                        <div class="file-upload" onclick="document.getElementById('curatorImageUpload').click()">
-                            <input type="file" id="curatorImageUpload" style="display: none;" accept="image/*">
-                            <div class="upload-text">Click to upload profile image</div>
-                        </div>
-                        <div id="curatorImagePreview" style="margin-top: 15px;"></div>
-                    </div>
-                    <button class="btn" onclick="curatorRegister()">Register</button>
-                    
-                    <div style="text-align: center; margin-top: 20px;">
-                        <button type="button" style="background: none; border: none; color: #6b7280; text-decoration: underline; cursor: pointer;" onclick="showCuratorLogin()">
+</div>
+</div>
+</div>
+<!-- Curator Registration Form -->
+<div class="curator-auth-content" id="curatorRegisterForm" style="display: none;">
+<div style="padding: 40px;">
+<h3 style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 500; margin-bottom: 30px; text-align: center; color: #1f2937;">Curator Registration</h3>
+<div class="form-group">
+<label for="curatorName">Curator Name</label>
+<input id="curatorName" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="curatorEmail">Email</label>
+<input id="curatorEmail" required="" type="email"/>
+</div>
+<div class="form-group">
+<label for="curatorPassword">Password</label>
+<input id="curatorPassword" required="" type="password"/>
+</div>
+<div class="form-group">
+<label for="curatorBio">Bio (Optional)</label>
+<textarea id="curatorBio" placeholder="Tell us about your curatorial vision..." rows="3"></textarea>
+</div>
+<div class="form-group">
+<label>Profile Image</label>
+<div class="file-upload" onclick="document.getElementById('curatorImageUpload').click()">
+<input accept="image/*" id="curatorImageUpload" style="display: none;" type="file"/>
+<div class="upload-text">Click to upload profile image</div>
+</div>
+<div id="curatorImagePreview" style="margin-top: 15px;"></div>
+</div>
+<button class="btn" onclick="curatorRegister()">Register</button>
+<div style="text-align: center; margin-top: 20px;">
+<button onclick="showCuratorLogin()" style="background: none; border: none; color: #6b7280; text-decoration: underline; cursor: pointer;" type="button">
                             Already have an account? Login here
                         </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Curator Dashboard Modal -->
-    <div class="modal" id="curatorDashboardModal">
-        <div class="modal-content" style="max-width: 600px;">
-            <button class="close-modal" onclick="closeCuratorDashboard()">×</button>
-            <div style="padding: 40px;">
-                <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 30px;">
-                    <img id="curatorDashboardImage" src="" alt="" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; background: #f8f8f8;">
-                    <div>
-                        <h3 id="curatorDashboardName" style="font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 500; color: #1f2937; margin-bottom: 5px;"></h3>
-                        <p style="color: #6b7280; font-size: 14px;">Curator Dashboard</p>
-                    </div>
-                </div>
-                
-                <div style="display: flex; gap: 15px; margin-bottom: 30px;">
-                    <button class="btn" onclick="createCuratorCollection()" style="flex: 1;">Create Collection</button>
-                    <button class="btn" onclick="editCuratorProfile()" style="flex: 1;">Edit Profile</button>
-                    <button class="btn" onclick="curatorLogout()" style="flex: 1;">Logout</button>
-                </div>
-                
-                <div id="curatorCollections">
-                    <h4 style="font-size: 14px; font-weight: 500; color: #1f2937; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Your Collections</h4>
-                    <div id="curatorCollectionsList"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Write Article Modal -->
-    <div class="modal" id="writeArticleModal">
-        <div class="modal-content" style="max-width: 900px; max-height: 95vh; overflow-y: auto;">
-            <button class="close-modal" onclick="closeWriteArticle()">×</button>
-            
-            <div style="padding: 40px;">
-                <h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 500; margin-bottom: 30px; text-align: center; color: #1f2937; text-transform: uppercase; letter-spacing: 1px;">Write Article</h3>
-                
-                <form id="articleForm">
-                    <!-- Author Information -->
-                    <div class="form-section">
-                        <h3>Author Information</h3>
-                        <div class="author-form-grid">
-                            <div class="author-form-avatar" onclick="document.getElementById('authorAvatarUpload').click()">
-                                <input type="file" id="authorAvatarUpload" style="display: none;" accept="image/*">
-                                <span id="avatarPlaceholder" style="font-size: 12px; color: #9ca3af; text-align: center;">Click to add<br>profile photo</span>
-                                <img id="authorAvatarPreview" src="" alt="" style="display: none;">
-                            </div>
-                            <div class="author-form-fields">
-                                <div class="form-group">
-                                    <label for="authorName">Author Name</label>
-                                    <input type="text" id="authorName" required placeholder="Your full name">
-                                </div>
-                                <div class="form-group">
-                                    <label for="authorTitle">Title/Position</label>
-                                    <input type="text" id="authorTitle" placeholder="Art Critic, Curator, Artist, etc.">
-                                </div>
-                                <div class="form-group">
-                                    <label for="authorBio">Short Bio</label>
-                                    <textarea id="authorBio" rows="2" placeholder="Brief description about yourself..."></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="social-links-grid" style="margin-top: 20px;">
-                            <div class="form-group">
-                                <label for="authorWebsite">Website</label>
-                                <input type="url" id="authorWebsite" placeholder="https://yourwebsite.com">
-                            </div>
-                            <div class="form-group">
-                                <label for="authorTwitter">Twitter/X Handle</label>
-                                <input type="text" id="authorTwitter" placeholder="@yourusername">
-                            </div>
-                            <div class="form-group">
-                                <label for="authorInstagram">Instagram Handle</label>
-                                <input type="text" id="authorInstagram" placeholder="@yourusername">
-                            </div>
-                            <div class="form-group">
-                                <label for="authorLinkedIn">LinkedIn</label>
-                                <input type="url" id="authorLinkedIn" placeholder="https://linkedin.com/in/yourprofile">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Article Content -->
-                    <div class="form-section">
-                        <h3>Article Content</h3>
-                        <div class="form-group">
-                            <label for="articleTitle">Article Title</label>
-                            <input type="text" id="articleTitle" required placeholder="Your compelling article title...">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="articleExcerpt">Article Excerpt</label>
-                            <textarea id="articleExcerpt" rows="3" placeholder="Brief summary that will appear in article previews..."></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Article Content</label>
-                            <div class="rich-editor">
-                                <div class="editor-toolbar">
-                                    <button type="button" class="editor-btn" onclick="formatText('bold')">Bold</button>
-                                    <button type="button" class="editor-btn" onclick="formatText('italic')">Italic</button>
-                                    <button type="button" class="editor-btn" onclick="formatText('underline')">Underline</button>
-                                    <button type="button" class="editor-btn" onclick="formatText('insertOrderedList')">List</button>
-                                    <button type="button" class="editor-btn" onclick="formatText('insertUnorderedList')">Bullets</button>
-                                    <button type="button" class="editor-btn" onclick="formatText('formatBlock', 'h2')">Heading</button>
-                                    <button type="button" class="editor-btn" onclick="formatText('formatBlock', 'blockquote')">Quote</button>
-                                    <button type="button" class="editor-btn" onclick="insertLink()">Link</button>
-                                    <button type="button" class="editor-btn" onclick="document.getElementById('articleImagesUpload').click()">Images</button>
-                                </div>
-                                <div class="editor-content" id="articleContent" contenteditable="true" placeholder="Start writing your article here...
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Curator Dashboard Modal -->
+<div class="modal" id="curatorDashboardModal">
+<div class="modal-content" style="max-width: 600px;">
+<button class="close-modal" onclick="closeCuratorDashboard()">×</button>
+<div style="padding: 40px;">
+<div style="display: flex; align-items: center; gap: 20px; margin-bottom: 30px;">
+<img alt="" id="curatorDashboardImage" src="" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; background: #f8f8f8;"/>
+<div>
+<h3 id="curatorDashboardName" style="font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 500; color: #1f2937; margin-bottom: 5px;"></h3>
+<p style="color: #6b7280; font-size: 14px;">Curator Dashboard</p>
+</div>
+</div>
+<div style="display: flex; gap: 15px; margin-bottom: 30px;">
+<button class="btn" onclick="createCuratorCollection()" style="flex: 1;">Create Collection</button>
+<button class="btn" onclick="editCuratorProfile()" style="flex: 1;">Edit Profile</button>
+<button class="btn" onclick="curatorLogout()" style="flex: 1;">Logout</button>
+</div>
+<div id="curatorCollections">
+<h4 style="font-size: 14px; font-weight: 500; color: #1f2937; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Your Collections</h4>
+<div id="curatorCollectionsList"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Write Article Modal -->
+<div class="modal" id="writeArticleModal">
+<div class="modal-content" style="max-width: 900px; max-height: 95vh; overflow-y: auto;">
+<button class="close-modal" onclick="closeWriteArticle()">×</button>
+<div style="padding: 40px;">
+<h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 500; margin-bottom: 30px; text-align: center; color: #1f2937; text-transform: uppercase; letter-spacing: 1px;">Write Article</h3>
+<form id="articleForm">
+<!-- Author Information -->
+<div class="form-section">
+<h3>Author Information</h3>
+<div class="author-form-grid">
+<div class="author-form-avatar" onclick="document.getElementById('authorAvatarUpload').click()">
+<input accept="image/*" id="authorAvatarUpload" style="display: none;" type="file"/>
+<span id="avatarPlaceholder" style="font-size: 12px; color: #9ca3af; text-align: center;">Click to add<br/>profile photo</span>
+<img alt="" id="authorAvatarPreview" src="" style="display: none;"/>
+</div>
+<div class="author-form-fields">
+<div class="form-group">
+<label for="authorName">Author Name</label>
+<input id="authorName" placeholder="Your full name" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="authorTitle">Title/Position</label>
+<input id="authorTitle" placeholder="Art Critic, Curator, Artist, etc." type="text"/>
+</div>
+<div class="form-group">
+<label for="authorBio">Short Bio</label>
+<textarea id="authorBio" placeholder="Brief description about yourself..." rows="2"></textarea>
+</div>
+</div>
+</div>
+<div class="social-links-grid" style="margin-top: 20px;">
+<div class="form-group">
+<label for="authorWebsite">Website</label>
+<input id="authorWebsite" placeholder="https://yourwebsite.com" type="url"/>
+</div>
+<div class="form-group">
+<label for="authorTwitter">Twitter/X Handle</label>
+<input id="authorTwitter" placeholder="@yourusername" type="text"/>
+</div>
+<div class="form-group">
+<label for="authorInstagram">Instagram Handle</label>
+<input id="authorInstagram" placeholder="@yourusername" type="text"/>
+</div>
+<div class="form-group">
+<label for="authorLinkedIn">LinkedIn</label>
+<input id="authorLinkedIn" placeholder="https://linkedin.com/in/yourprofile" type="url"/>
+</div>
+</div>
+</div>
+<!-- Article Content -->
+<div class="form-section">
+<h3>Article Content</h3>
+<div class="form-group">
+<label for="articleTitle">Article Title</label>
+<input id="articleTitle" placeholder="Your compelling article title..." required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="articleExcerpt">Article Excerpt</label>
+<textarea id="articleExcerpt" placeholder="Brief summary that will appear in article previews..." rows="3"></textarea>
+</div>
+<div class="form-group">
+<label>Article Content</label>
+<div class="rich-editor">
+<div class="editor-toolbar">
+<button class="editor-btn" onclick="formatText('bold')" type="button">Bold</button>
+<button class="editor-btn" onclick="formatText('italic')" type="button">Italic</button>
+<button class="editor-btn" onclick="formatText('underline')" type="button">Underline</button>
+<button class="editor-btn" onclick="formatText('insertOrderedList')" type="button">List</button>
+<button class="editor-btn" onclick="formatText('insertUnorderedList')" type="button">Bullets</button>
+<button class="editor-btn" onclick="formatText('formatBlock', 'h2')" type="button">Heading</button>
+<button class="editor-btn" onclick="formatText('formatBlock', 'blockquote')" type="button">Quote</button>
+<button class="editor-btn" onclick="insertLink()" type="button">Link</button>
+<button class="editor-btn" onclick="document.getElementById('articleImagesUpload').click()" type="button">Images</button>
+</div>
+<div class="editor-content" contenteditable="true" id="articleContent" placeholder="Start writing your article here...
 
 You can paste Twitter links and they'll be automatically embedded as beautiful tweet cards. You can also add images, format text, and create rich content that will look amazing.
 
 Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></div>
-                            </div>
-                            <input type="file" id="articleImagesUpload" style="display: none;" accept="image/*" multiple>
-                            <div class="article-images" id="articleImagesPreview"></div>
-                        </div>
+</div>
+<input accept="image/*" id="articleImagesUpload" multiple="" style="display: none;" type="file"/>
+<div class="article-images" id="articleImagesPreview"></div>
+</div>
+</div>
+<div style="display: flex; gap: 15px; justify-content: center; margin-top: 40px;">
+<button class="btn" onclick="closeWriteArticle()" style="width: auto; padding: 12px 30px;" type="button">Cancel</button>
+<button class="btn" style="width: auto; padding: 12px 30px; background: #1f2937; color: #ffffff;" type="submit">Publish Article</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- Article Reader Modal -->
+<div class="modal" id="articleReaderModal">
+<div class="modal-content" style="max-width: 900px; max-height: 95vh; overflow-y: auto;">
+<button class="close-modal" onclick="closeArticleReader()">×</button>
+<div class="article-reader">
+<div class="article-reader-header">
+<div class="article-reader-meta">
+<div class="article-reader-author">
+<img alt="" class="article-reader-avatar" id="readerAuthorAvatar" src=""/>
+<div class="article-reader-author-info">
+<h3 id="readerAuthorName"></h3>
+<p id="readerAuthorTitle"></p>
+</div>
+</div>
+<div class="article-reader-stats">
+<div class="article-date" id="readerArticleDate"></div>
+<div class="read-time" id="readerReadTime"></div>
+</div>
+</div>
+<h1 class="article-reader-title" id="readerArticleTitle"></h1>
+<div class="author-social-links" id="readerSocialLinks"></div>
+</div>
+<div class="article-content" id="readerArticleContent"></div>
+</div>
+</div>
+</div>
+<main>
+<div class="container">
+<!-- Search & Filter Controls -->
+<div class="gallery-controls" id="galleryControls" style="display: none;">
+<div class="search-filter-group">
+<div class="search-box">
+<span class="search-icon">🔍</span>
+<input class="search-input" id="searchInput" placeholder="Search artworks..." type="text"/>
+</div>
+<div class="filter-group">
+<select class="filter-select" id="artistFilter">
+<option value="">Artists</option>
+</select>
+<select class="filter-select" id="yearFilter">
+<option value="">Years</option>
+</select>
+<select class="filter-select" id="mediumFilter">
+<option value="">Mediums</option>
+</select>
+</div>
+</div>
+<div class="controls-right">
+<div class="results-count" id="resultsCount">
+<span id="resultNumber">0</span> pieces
                     </div>
-                    
-                    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 40px;">
-                        <button type="button" class="btn" onclick="closeWriteArticle()" style="width: auto; padding: 12px 30px;">Cancel</button>
-                        <button type="submit" class="btn" style="width: auto; padding: 12px 30px; background: #1f2937; color: #ffffff;">Publish Article</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Article Reader Modal -->
-    <div class="modal" id="articleReaderModal">
-        <div class="modal-content" style="max-width: 900px; max-height: 95vh; overflow-y: auto;">
-            <button class="close-modal" onclick="closeArticleReader()">×</button>
-            
-            <div class="article-reader">
-                <div class="article-reader-header">
-                    <div class="article-reader-meta">
-                        <div class="article-reader-author">
-                            <img class="article-reader-avatar" id="readerAuthorAvatar" src="" alt="">
-                            <div class="article-reader-author-info">
-                                <h3 id="readerAuthorName"></h3>
-                                <p id="readerAuthorTitle"></p>
-                            </div>
-                        </div>
-                        <div class="article-reader-stats">
-                            <div class="article-date" id="readerArticleDate"></div>
-                            <div class="read-time" id="readerReadTime"></div>
-                        </div>
-                    </div>
-                    <h1 class="article-reader-title" id="readerArticleTitle"></h1>
-                    <div class="author-social-links" id="readerSocialLinks"></div>
-                </div>
-                <div class="article-content" id="readerArticleContent"></div>
-            </div>
-        </div>
-    </div>
-
-    <main>
-        <div class="container">
-            <!-- Search & Filter Controls -->
-            <div class="gallery-controls" id="galleryControls" style="display: none;">
-                <div class="search-filter-group">
-                    <div class="search-box">
-                        <span class="search-icon">🔍</span>
-                        <input type="text" class="search-input" id="searchInput" placeholder="Search artworks...">
-                    </div>
-                    
-                    <div class="filter-group">
-                        <select class="filter-select" id="artistFilter">
-                            <option value="">Artists</option>
-                        </select>
-                        
-                        <select class="filter-select" id="yearFilter">
-                            <option value="">Years</option>
-                        </select>
-                        
-                        <select class="filter-select" id="mediumFilter">
-                            <option value="">Mediums</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="controls-right">
-                    <div class="results-count" id="resultsCount">
-                        <span id="resultNumber">0</span> pieces
-                    </div>
-                    
-                    <button class="clear-filters" id="clearFilters">Clear</button>
-                </div>
-            </div>
-
-            <div class="gallery-grid" id="galleryGrid">
-                <div class="loading">Loading collection...</div>
-            </div>
-
-            <!-- Simple Curation Controls -->
-            <div class="curation-controls" id="curationControls">
-                <span class="curation-status">Use ↑↓ arrows to arrange</span>
-                <button class="curation-btn" id="saveCuration">Save Arrangement</button>
-                <button class="curation-btn" id="resetCuration">Reset to Date Order</button>
-            </div>
-        </div>
-    </main>
-
-    <!-- Floating Action Button for Writing (only shows in Curators Corner) -->
-    <button class="fab-write" id="fabWrite" onclick="openWriteArticle()" style="display: none;">
+<button class="clear-filters" id="clearFilters">Clear</button>
+</div>
+</div>
+<div class="gallery-grid" id="galleryGrid">
+<div class="loading">Loading collection...</div>
+</div>
+<!-- Simple Curation Controls -->
+<div class="curation-controls" id="curationControls">
+<span class="curation-status">Use ↑↓ arrows to arrange</span>
+<button class="curation-btn" id="saveCuration">Save Arrangement</button>
+<button class="curation-btn" id="resetCuration">Reset to Date Order</button>
+</div>
+</div>
+</main>
+<!-- Floating Action Button for Writing (only shows in Curators Corner) -->
+<button class="fab-write" id="fabWrite" onclick="openWriteArticle()" style="display: none;">
         ✎
     </button>
-
-    <section id="about" class="about-section">
-        <div class="container">
-            <div class="about-content">
-                <h2>About</h2>
-                <div class="about-text" id="aboutContent">
-                    <p>Welcome to the VonMesser Collection, a carefully curated assembly of contemporary and classical works that explore the intersection of traditional artistry and modern expression.</p>
-                    <p>As a collector and curator, I am drawn to pieces that challenge conventional boundaries while honoring the fundamental principles of artistic excellence. Each work in this collection has been selected for its unique voice, technical mastery, and ability to engage in dialogue with both historical precedent and contemporary discourse.</p>
-                </div>
-                <div class="edit-about" id="editAboutBtn" style="display: none;">
-                    <button class="btn btn-small" onclick="editAbout()">Edit About</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <div class="contact-content">
-                <h2>Contact</h2>
-                <p>Interested in learning more about the VonMesser Collection or inquiring about specific pieces? We welcome correspondence from collectors, curators, and art enthusiasts.</p>
-                <a href="mailto:flex@vonmesser.xyz" class="contact-email">flex@vonmesser.xyz</a>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 VonMesser Collection</p>
-        </div>
-    </footer>
-
-    <script>
+<section class="about-section" id="about">
+<div class="container">
+<div class="about-content">
+<h2>About</h2>
+<div class="about-text" id="aboutContent">
+<p>Welcome to the VonMesser Collection, a carefully curated assembly of contemporary and classical works that explore the intersection of traditional artistry and modern expression.</p>
+<p>As a collector and curator, I am drawn to pieces that challenge conventional boundaries while honoring the fundamental principles of artistic excellence. Each work in this collection has been selected for its unique voice, technical mastery, and ability to engage in dialogue with both historical precedent and contemporary discourse.</p>
+</div>
+<div class="edit-about" id="editAboutBtn" style="display: none;">
+<button class="btn btn-small" onclick="editAbout()">Edit About</button>
+</div>
+</div>
+</div>
+</section>
+<section class="contact-section" id="contact">
+<div class="container">
+<div class="contact-content">
+<h2>Contact</h2>
+<p>Interested in learning more about the VonMesser Collection or inquiring about specific pieces? We welcome correspondence from collectors, curators, and art enthusiasts.</p>
+<a class="contact-email" href="mailto:flex@vonmesser.xyz">flex@vonmesser.xyz</a>
+</div>
+</div>
+</section>
+<footer>
+<div class="container">
+<p>© 2024 VonMesser Collection</p>
+</div>
+</footer>
+<script>
         // Initialize Supabase
         const supabaseUrl = 'https://qqkshpkbfixeyusqpsou.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
@@ -4578,11 +4512,15 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
     }
     /* ========================================================================= */
 </script>
-
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
+  if (!window.location.pathname.includes('guest-curators')) {
+    console.log("Not on guest curators page — skipping curator tile injection.");
+    return;
+  }
+
   const guestCuratorsContainer = document.querySelector(".hero-tagline");
-  const sectionTitle = guestCuratorsContainer.querySelector(".tagline");
+  const sectionTitle = guestCuratorsContainer?.querySelector(".tagline");
 
   const response = await supabase
     .from("curators")
@@ -4591,61 +4529,38 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (response.error) {
     console.error("Error fetching curators:", response.error);
-    sectionTitle.insertAdjacentHTML("afterend", "<p style='text-align:center;color:#888;'>Error loading curators.</p>");
+    if (sectionTitle) {
+      sectionTitle.insertAdjacentHTML("afterend", "<p style='text-align:center;color:#888;'>Error loading curators.</p>");
+    }
     return;
   }
 
   const curators = response.data;
-  console.log("Approved curators found:", curators);
+  console.log("Approved curators:", curators);
 
-  if (!curators.length) {
-    sectionTitle.insertAdjacentHTML("afterend", "<p style='text-align:center;color:#888;'>No guest curators have been approved yet.</p>");
-    return;
-  }
+  const curatorHTML = curators.map(c => `
+    <div class="curator-tile" data-curator-id="${c.id}">
+      <h3>${c.name}</h3>
+      <p>${c.collection_count || 1} collection(s)</p>
+      <p style="font-size: 11px; color: #888;">Click to view collections</p>
+    </div>
+  `).join('');
 
-  const displayWrapper = document.createElement("div");
-  displayWrapper.style.maxWidth = "1000px";
-  displayWrapper.style.margin = "40px auto";
-  displayWrapper.style.display = "grid";
-  displayWrapper.style.gap = "30px";
-  displayWrapper.style.gridTemplateColumns = "repeat(auto-fit, minmax(240px, 1fr))";
+  const container = document.createElement("div");
+  container.className = "curator-tile-grid";
+  container.innerHTML = curatorHTML;
+  guestCuratorsContainer?.appendChild(container);
 
-  guestCuratorsContainer.appendChild(displayWrapper);
-
-  for (const curator of curators) {
-    const collectionsRes = await supabase
-      .from("curator_collections")
-      .select("*")
-      .eq("curator_id", curator.id);
-
-    console.log(`Curator ${curator.name || curator.email} collections:`, collectionsRes.data);
-
-    const card = document.createElement("div");
-    card.style.border = "1px solid #eee";
-    card.style.padding = "20px";
-    card.style.borderRadius = "12px";
-    card.style.background = "#fff";
-    card.style.boxShadow = "0 2px 10px rgba(0,0,0,0.05)";
-    card.style.transition = "transform 0.2s";
-    card.style.cursor = "pointer";
-
-    card.onmouseenter = () => (card.style.transform = "translateY(-4px)");
-    card.onmouseleave = () => (card.style.transform = "translateY(0)");
-
-    const name = curator.name || curator.email || "Unnamed Curator";
-
-    card.innerHTML = `
-      <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 10px; color: #1f2937;">${name}</h3>
-      <div style="font-size: 13px; color: #666;">${collectionsRes.data?.length || 0} collection(s)</div>
-      <div style="margin-top: 12px; font-size: 12px; color: #999;">Click to view (future feature)</div>
-    `;
-
-    displayWrapper.appendChild(card);
-  }
+  // Click handler
+  container.querySelectorAll(".curator-tile").forEach(tile => {
+    tile.addEventListener("click", () => {
+      const curatorId = tile.getAttribute("data-curator-id");
+      console.log("Loading curator collection for ID:", curatorId);
+      window.location.href = `/guest-curator.html?id=${curatorId}`;
+    });
+  });
 });
 </script>
-
-
 <script>
 // Curator modal setup
 const curatorModal = document.createElement("div");
@@ -4754,8 +4669,6 @@ function openCuratorModal(curator, collections) {
   curatorModal.style.display = "flex";
 }
 </script>
-
-
 <script>
 function showAllCurators() {
   const main = document.querySelector("main");
@@ -4883,6 +4796,5 @@ async function viewCollectionArtworks(collectionId) {
   modalContent.innerHTML = html;
 }
 </script>
-
 </body>
 </html>

@@ -2683,7 +2683,7 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             loadCuratorPage(currentCurator.id, collectionId);
         }
 
-        // Curator Pages
+        // Curator Pages - THIS IS THE FIXED VERSION
         async function loadCuratorPage(curatorId, collectionId) {
             currentPage = 'curator';
             
@@ -2787,7 +2787,7 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             }
         }
 
-        // Browse Curators
+        // Browse Curators - FIXED VERSION
         async function loadCurators() {
             try {
                 const { data, error } = await supabase
@@ -2803,13 +2803,14 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             }
         }
 
+        // FIXED: This function now properly loads curator collections within the same page
         function showAllCurators() {
             currentPage = 'browse-curators';
             
             // Update header tagline
             document.querySelector('.tagline').textContent = 'GUEST CURATORS';
             
-            // Update gallery to show curators
+            // Update gallery to show curators with enhanced information
             const grid = document.getElementById('galleryGrid');
             if (allCurators.length === 0) {
                 grid.innerHTML = `
@@ -2819,21 +2820,31 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                     </div>
                 `;
             } else {
-                grid.innerHTML = allCurators.map(curator => `
-                    <div class="artwork-card" onclick="showCuratorProfile('${curator.id}')">
-                        <div class="artwork-image square">
-                            <img src="${curator.profile_image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNmOGY4ZjgiLz48dGV4dCB4PSIxNTAiIHk9IjE2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZiNzI4MCIgZm9udC1zaXplPSI0OCIgZm9udC1mYW1pbHk9IkludGVyIj7wn5+kPC90ZXh0Pjwvc3ZnPg=='}" alt="${curator.name}" onload="this.classList.add('loaded')">
-                        </div>
-                        <div class="artwork-info">
-                            <div class="artwork-title">${curator.name}</div>
-                            <div class="artwork-details">
-                                <div class="artwork-artist">Curator</div>
-                                <div>Joined ${new Date(curator.created_at).getFullYear()}</div>
-                                ${curator.bio ? `<div style="margin-top: 8px; font-style: italic; text-transform: none;">${curator.bio.substring(0, 100)}${curator.bio.length > 100 ? '...' : ''}</div>` : ''}
+                // Load collection counts for each curator
+                Promise.all(allCurators.map(async curator => {
+                    const { data: collections } = await supabase
+                        .from('curator_collections')
+                        .select('id, name, type')
+                        .eq('curator_id', curator.id);
+                    
+                    return { ...curator, collections: collections || [] };
+                })).then(curatorsWithCollections => {
+                    grid.innerHTML = curatorsWithCollections.map(curator => `
+                        <div class="artwork-card" onclick="showCuratorCollections('${curator.id}', '${curator.name}', ${JSON.stringify(curator.collections).replace(/"/g, '&quot;')})">
+                            <div class="artwork-image square">
+                                <img src="${curator.profile_image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNmOGY4ZjgiLz48dGV4dCB4PSIxNTAiIHk9IjE2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZiNzI4MCIgZm9udC1zaXplPSI0OCIgZm9udC1mYW1pbHk9IkludGVyIj7wn5+kPC90ZXh0Pjwvc3ZnPg=='}" alt="${curator.name}" onload="this.classList.add('loaded')">
+                            </div>
+                            <div class="artwork-info">
+                                <div class="artwork-title">${curator.name}</div>
+                                <div class="artwork-details">
+                                    <div class="artwork-artist">Curator</div>
+                                    <div>${curator.collections.length} Collection(s)</div>
+                                    ${curator.bio ? `<div style="margin-top: 8px; font-style: italic; text-transform: none;">${curator.bio.substring(0, 100)}${curator.bio.length > 100 ? '...' : ''}</div>` : ''}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `).join('');
+                    `).join('');
+                });
             }
             
             // Hide search controls for curator browse
@@ -2843,31 +2854,56 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             addBackToMainButton();
         }
 
-        async function showCuratorProfile(curatorId) {
-            // Load first collection for this curator
-            try {
-                const { data: collections, error } = await supabase
-                    .from('curator_collections')
-                    .select('*')
-                    .eq('curator_id', curatorId)
-                    .limit(1);
-
-                if (error) throw error;
-
-                if (collections && collections.length > 0) {
-                    loadCuratorPage(curatorId, collections[0].id);
-                } else {
-                    alert('This curator has no collections yet.');
-                }
-            } catch (error) {
-                console.error('Error loading curator profile:', error);
+        // NEW: Function to show curator's collections in a modal
+        function showCuratorCollections(curatorId, curatorName, collectionsJson) {
+            const collections = JSON.parse(collectionsJson.replace(/&quot;/g, '"'));
+            
+            if (collections.length === 0) {
+                alert(`${curatorName} has no collections yet.`);
+                return;
             }
+
+            if (collections.length === 1) {
+                // If only one collection, go directly to it
+                loadCuratorPage(curatorId, collections[0].id);
+                return;
+            }
+
+            // If multiple collections, show selection modal
+            const modalContent = `
+                <div style="padding: 40px; text-align: center;">
+                    <h3 style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 500; margin-bottom: 30px; color: #1f2937;">${curatorName}'s Collections</h3>
+                    <div style="display: grid; gap: 15px; max-width: 400px; margin: 0 auto;">
+                        ${collections.map(collection => `
+                            <button onclick="loadCuratorPage('${curatorId}', '${collection.id}'); closeModal();" 
+                                    style="padding: 15px 20px; border: 1px solid #e5e7eb; background: white; border-radius: 8px; 
+                                           font-size: 14px; cursor: pointer; transition: all 0.3s ease; text-align: left;"
+                                    onmouseover="this.style.borderColor='#1f2937'" 
+                                    onmouseout="this.style.borderColor='#e5e7eb'">
+                                <div style="font-weight: 500; color: #1f2937; margin-bottom: 5px;">${collection.name}</div>
+                                <div style="font-size: 12px; color: #6b7280; text-transform: uppercase;">${collection.type} Collection</div>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Reuse the artwork modal for this
+            document.querySelector('#artworkModal .modal-content').innerHTML = `
+                <button class="close-modal" onclick="closeModal()">×</button>
+                ${modalContent}
+            `;
+            document.getElementById('artworkModal').classList.add('show');
         }
 
         function showFeaturedCurator() {
             // For now, show the first curator
             if (allCurators.length > 0) {
-                showCuratorProfile(allCurators[0].id);
+                showCuratorCollections(
+                    allCurators[0].id, 
+                    allCurators[0].name, 
+                    JSON.stringify([]).replace(/"/g, '&quot;')
+                );
             } else {
                 alert('No featured curator available.');
             }
@@ -3372,6 +3408,7 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             document.getElementById('zoomImage').src = imageSrc;
             document.getElementById('zoomModal').classList.add('show');
         }
+
         // Curator artwork management (reuse existing functions with collection_id)
         async function saveCuratorArtwork(artworkData, collectionId) {
             if (!currentCurator) {
@@ -4304,6 +4341,17 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             document.getElementById('zoomModal').classList.remove('show');
         }
 
+        // Scroll to section function
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
         // Event listeners
         document.getElementById('artworkModal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
@@ -4425,83 +4473,80 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                 });
             }
         });
-    
-    /* === Pending Curator Approval Helpers =================================== */
-    async function loadPendingCurators() {
-        if (!isAuthenticated || currentCurator) return; // only full admins
-        const section = document.getElementById('pendingCuratorsSection');
-        const list    = document.getElementById('pendingCuratorsList');
-        try {
-            const { data, error } = await supabase
-                .from('curators')
-                .select('*')
-                .eq('status', 'pending')
-                .order('created_at', { ascending: false });
-            if (error) throw error;
-            if (data.length) {
-                section.style.display = 'block';
-                list.innerHTML = data.map(c => `
-                    <div style="display:flex;justify-content:space-between;gap:15px;padding:15px;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:10px;background:#fafafa;">
-                        <div>
-                            <strong style="color:#1f2937;font-size:14px;">${c.name}</strong><br>
-                            <span style="font-size:12px;color:#6b7280;">${c.email}</span><br>
-                            ${c.bio ? `<em style="font-size:12px;color:#6b7280;">${c.bio.substring(0,120)}${c.bio.length>120?'…':''}</em>` : ''}
-                        </div>
-                        <div style="display:flex;gap:8px;flex-shrink:0;">
-                            <button class="btn btn-small" onclick="approveCurator('${c.id}')">Approve</button>
-                            <button class="btn btn-small btn-danger" onclick="rejectCurator('${c.id}')">Reject</button>
-                        </div>
-                    </div>`).join('');
-            } else {
+
+        // === Pending Curator Approval Helpers ===
+        async function loadPendingCurators() {
+            if (!isAuthenticated || currentCurator) return; // only full admins
+            const section = document.getElementById('pendingCuratorsSection');
+            const list    = document.getElementById('pendingCuratorsList');
+            try {
+                const { data, error } = await supabase
+                    .from('curators')
+                    .select('*')
+                    .eq('status', 'pending')
+                    .order('created_at', { ascending: false });
+                if (error) throw error;
+                if (data.length) {
+                    section.style.display = 'block';
+                    list.innerHTML = data.map(c => `
+                        <div style="display:flex;justify-content:space-between;gap:15px;padding:15px;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:10px;background:#fafafa;">
+                            <div>
+                                <strong style="color:#1f2937;font-size:14px;">${c.name}</strong><br>
+                                <span style="font-size:12px;color:#6b7280;">${c.email}</span><br>
+                                ${c.bio ? `<em style="font-size:12px;color:#6b7280;">${c.bio.substring(0,120)}${c.bio.length>120?'…':''}</em>` : ''}
+                            </div>
+                            <div style="display:flex;gap:8px;flex-shrink:0;">
+                                <button class="btn btn-small" onclick="approveCurator('${c.id}')">Approve</button>
+                                <button class="btn btn-small btn-danger" onclick="rejectCurator('${c.id}')">Reject</button>
+                            </div>
+                        </div>`).join('');
+                } else {
+                    section.style.display = 'none';
+                }
+            } catch (err) {
+                console.error('loadPendingCurators', err);
                 section.style.display = 'none';
             }
-        } catch (err) {
-            console.error('loadPendingCurators', err);
-            section.style.display = 'none';
         }
-    }
 
-    async function approveCurator(id) {
-        try {
-            const { error } = await supabase
-                .from('curators')
-                .update({ status: 'approved' })
-                .eq('id', id);
-            if (error) throw error;
-            alert('Curator approved!');
-            await loadCurators();
-            await loadPendingCurators();
-        } catch (err) {
-            console.error('approveCurator', err);
-            alert('Failed to approve curator: ' + err.message);
+        async function approveCurator(id) {
+            try {
+                const { error } = await supabase
+                    .from('curators')
+                    .update({ status: 'approved' })
+                    .eq('id', id);
+                if (error) throw error;
+                alert('Curator approved!');
+                await loadCurators();
+                await loadPendingCurators();
+            } catch (err) {
+                console.error('approveCurator', err);
+                alert('Failed to approve curator: ' + err.message);
+            }
         }
-    }
 
-    async function rejectCurator(id) {
-        if (!confirm('Reject this curator application?')) return;
-        try {
-            const { error } = await supabase
-                .from('curators')
-                .delete()
-                .eq('id', id);
-            if (error) throw error;
-            await loadPendingCurators();
-        } catch (err) {
-            console.error('rejectCurator', err);
-            alert('Failed to reject curator: ' + err.message);
+        async function rejectCurator(id) {
+            if (!confirm('Reject this curator application?')) return;
+            try {
+                const { error } = await supabase
+                    .from('curators')
+                    .delete()
+                    .eq('id', id);
+                if (error) throw error;
+                await loadPendingCurators();
+            } catch (err) {
+                console.error('rejectCurator', err);
+                alert('Failed to reject curator: ' + err.message);
+            }
         }
-    }
 
-    // Extend existing admin helpers
-    if (typeof showAdminContent === 'function') {
+        // Extend existing admin helpers
         const _origShowAdminContent = showAdminContent;
         showAdminContent = function () {
             _origShowAdminContent();
             if (!currentCurator) loadPendingCurators();
         };
-    }
 
-    if (typeof toggleAdmin === 'function') {
         const _origToggleAdmin = toggleAdmin;
         toggleAdmin = function () {
             _origToggleAdmin();
@@ -4509,292 +4554,6 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
                 loadPendingCurators();
             }
         };
-    }
-    /* ========================================================================= */
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  if (!window.location.pathname.includes('guest-curators')) {
-    console.log("Not on guest curators page — skipping curator tile injection.");
-    return;
-  }
-
-  const guestCuratorsContainer = document.querySelector(".hero-tagline");
-  const sectionTitle = guestCuratorsContainer?.querySelector(".tagline");
-
-  const response = await supabase
-    .from("curators")
-    .select("*")
-    .eq("status", "approved");
-
-  if (response.error) {
-    console.error("Error fetching curators:", response.error);
-    if (sectionTitle) {
-      sectionTitle.insertAdjacentHTML("afterend", "<p style='text-align:center;color:#888;'>Error loading curators.</p>");
-    }
-    return;
-  }
-
-  const curators = response.data;
-  console.log("Approved curators:", curators);
-
-  const curatorHTML = curators.map(c => `
-    <div class="curator-tile" data-curator-id="${c.id}">
-      <h3>${c.name}</h3>
-      <p>${c.collection_count || 1} collection(s)</p>
-      <p style="font-size: 11px; color: #888;">Click to view collections</p>
-    </div>
-  `).join('');
-
-  const container = document.createElement("div");
-  container.className = "curator-tile-grid";
-  container.innerHTML = curatorHTML;
-  guestCuratorsContainer?.appendChild(container);
-
-  // Click handler
-  container.querySelectorAll(".curator-tile").forEach(tile => {
-    tile.addEventListener("click", () => {
-      const curatorId = tile.getAttribute("data-curator-id");
-      console.log("Loading curator collection for ID:", curatorId);
-      window.location.href = `/guest-curator.html?id=${curatorId}`;
-    });
-  });
-});
-</script>
-<script>
-// Curator modal setup
-const curatorModal = document.createElement("div");
-curatorModal.id = "curatorModal";
-curatorModal.style.position = "fixed";
-curatorModal.style.top = "0";
-curatorModal.style.left = "0";
-curatorModal.style.width = "100%";
-curatorModal.style.height = "100%";
-curatorModal.style.background = "rgba(0,0,0,0.75)";
-curatorModal.style.display = "none";
-curatorModal.style.alignItems = "center";
-curatorModal.style.justifyContent = "center";
-curatorModal.style.zIndex = "5000";
-curatorModal.innerHTML = '<div style="background:#fff;max-width:600px;width:90%;padding:30px;border-radius:12px;position:relative;"><button onclick="closeCuratorModal()" style="position:absolute;top:10px;right:15px;font-size:18px;">×</button><div id="curatorModalContent"></div></div>';
-document.body.appendChild(curatorModal);
-
-function closeCuratorModal() {
-  curatorModal.style.display = "none";
-  document.getElementById("curatorModalContent").innerHTML = "";
-}
-
-function showAllCurators() {
-  const main = document.querySelector("main");
-  main.innerHTML = `
-    <section class="hero-tagline">
-      <div class="container">
-        <h1 class="tagline">Guest Curators</h1>
-        <div id="curatorBrowser" style="margin-top:40px;"></div>
-      </div>
-    </section>
-  `;
-
-  loadApprovedCurators();
-}
-
-async function loadApprovedCurators() {
-  const container = document.getElementById("curatorBrowser");
-  const { data: curators, error } = await supabase
-    .from("curators")
-    .select("*")
-    .eq("status", "approved");
-
-  if (error) {
-    console.error("Error fetching curators:", error);
-    container.innerHTML = "<p style='text-align:center;color:#888;'>Failed to load guest curators.</p>";
-    return;
-  }
-
-  if (!curators.length) {
-    container.innerHTML = "<p style='text-align:center;color:#888;'>No guest curators have been approved yet.</p>";
-    return;
-  }
-
-  const grid = document.createElement("div");
-  grid.style.maxWidth = "1000px";
-  grid.style.margin = "0 auto";
-  grid.style.display = "grid";
-  grid.style.gap = "30px";
-  grid.style.gridTemplateColumns = "repeat(auto-fit, minmax(240px, 1fr))";
-  container.appendChild(grid);
-
-  for (const curator of curators) {
-    const { data: collections } = await supabase
-      .from("curator_collections")
-      .select("*")
-      .eq("curator_id", curator.id);
-
-    const card = document.createElement("div");
-    card.style.border = "1px solid #eee";
-    card.style.padding = "20px";
-    card.style.borderRadius = "12px";
-    card.style.background = "#fff";
-    card.style.boxShadow = "0 2px 10px rgba(0,0,0,0.05)";
-    card.style.transition = "transform 0.2s";
-    card.style.cursor = "pointer";
-
-    card.onmouseenter = () => (card.style.transform = "translateY(-4px)");
-    card.onmouseleave = () => (card.style.transform = "translateY(0)");
-    card.onclick = () => openCuratorModal(curator, collections);
-
-    const name = curator.name || curator.email || "Unnamed Curator";
-    card.innerHTML = `
-      <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 10px; color: #1f2937;">${name}</h3>
-      <div style="font-size: 13px; color: #666;">${collections.length} collection(s)</div>
-      <div style="margin-top: 12px; font-size: 12px; color: #999;">Click to view collections</div>
-    `;
-    grid.appendChild(card);
-  }
-}
-
-function openCuratorModal(curator, collections) {
-  const modalContent = document.getElementById("curatorModalContent");
-  const name = curator.name || curator.email || "Unnamed Curator";
-  let html = `<h2 style="margin-bottom:20px;">${name}'s Collections</h2>`;
-  if (collections.length === 0) {
-    html += `<p>This curator has not uploaded any collections yet.</p>`;
-  } else {
-    html += `<ul style="list-style:none;padding:0;">`;
-    collections.forEach(col => {
-      html += `<li style="margin-bottom:10px;"><strong>${col.name}</strong> — ${col.type || 'Untyped'}</li>`;
-    });
-    html += `</ul>`;
-  }
-  modalContent.innerHTML = html;
-  curatorModal.style.display = "flex";
-}
-</script>
-<script>
-function showAllCurators() {
-  const main = document.querySelector("main");
-  main.innerHTML = `
-    <section class="hero-tagline">
-      <div class="container">
-        <h1 class="tagline">Guest Curators</h1>
-        <div id="curatorBrowser" style="margin-top:40px;"></div>
-      </div>
-    </section>
-  `;
-  loadApprovedCurators();
-}
-
-const curatorModal = document.createElement("div");
-curatorModal.id = "curatorModal";
-curatorModal.style.position = "fixed";
-curatorModal.style.top = "0";
-curatorModal.style.left = "0";
-curatorModal.style.width = "100%";
-curatorModal.style.height = "100%";
-curatorModal.style.background = "rgba(0,0,0,0.75)";
-curatorModal.style.display = "none";
-curatorModal.style.alignItems = "center";
-curatorModal.style.justifyContent = "center";
-curatorModal.style.zIndex = "5000";
-curatorModal.innerHTML = '<div style="background:#fff;max-width:700px;width:90%;padding:30px;border-radius:12px;position:relative;max-height:90vh;overflow-y:auto;"><button onclick="closeCuratorModal()" style="position:absolute;top:10px;right:15px;font-size:18px;">×</button><div id="curatorModalContent"></div></div>';
-document.body.appendChild(curatorModal);
-
-function closeCuratorModal() {
-  curatorModal.style.display = "none";
-  document.getElementById("curatorModalContent").innerHTML = "";
-}
-
-async function loadApprovedCurators() {
-  const container = document.getElementById("curatorBrowser");
-  const { data: curators, error } = await supabase
-    .from("curators")
-    .select("*")
-    .eq("status", "approved");
-
-  if (error || !curators) {
-    container.innerHTML = "<p style='text-align:center;color:#888;'>Failed to load guest curators.</p>";
-    return;
-  }
-
-  const grid = document.createElement("div");
-  grid.style.maxWidth = "1000px";
-  grid.style.margin = "0 auto";
-  grid.style.display = "grid";
-  grid.style.gap = "30px";
-  grid.style.gridTemplateColumns = "repeat(auto-fit, minmax(240px, 1fr))";
-  container.appendChild(grid);
-
-  for (const curator of curators) {
-    const { data: collections } = await supabase
-      .from("curator_collections")
-      .select("*")
-      .eq("curator_id", curator.id);
-
-    const card = document.createElement("div");
-    card.style.border = "1px solid #eee";
-    card.style.padding = "20px";
-    card.style.borderRadius = "12px";
-    card.style.background = "#fff";
-    card.style.boxShadow = "0 2px 10px rgba(0,0,0,0.05)";
-    card.style.transition = "transform 0.2s";
-    card.style.cursor = "pointer";
-
-    card.onmouseenter = () => (card.style.transform = "translateY(-4px)");
-    card.onmouseleave = () => (card.style.transform = "translateY(0)");
-    card.onclick = () => openCuratorModal(curator, collections);
-
-    const name = curator.name || curator.email || "Unnamed Curator";
-    card.innerHTML = `
-      <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 10px; color: #1f2937;">${name}</h3>
-      <div style="font-size: 13px; color: #666;">${collections.length} collection(s)</div>
-      <div style="margin-top: 12px; font-size: 12px; color: #999;">Click to view collections</div>
-    `;
-    grid.appendChild(card);
-  }
-}
-
-function openCuratorModal(curator, collections) {
-  const modalContent = document.getElementById("curatorModalContent");
-  const name = curator.name || curator.email || "Unnamed Curator";
-  let html = `<h2 style="margin-bottom:20px;">${name}'s Collections</h2>`;
-
-  if (collections.length === 0) {
-    html += `<p>This curator has not uploaded any collections yet.</p>`;
-  } else {
-    html += `<ul style="list-style:none;padding:0;">`;
-    for (const col of collections) {
-      html += `<li style="margin-bottom:15px;">
-        <strong>${col.name}</strong> — ${col.type || 'Untyped'}
-        <button onclick="viewCollectionArtworks('${col.id}')" style="margin-left:10px;font-size:12px;">View Artworks</button>
-      </li>`;
-    }
-    html += `</ul>`;
-  }
-
-  modalContent.innerHTML = html;
-  curatorModal.style.display = "flex";
-}
-
-async function viewCollectionArtworks(collectionId) {
-  const modalContent = document.getElementById("curatorModalContent");
-  const { data: artworks, error } = await supabase
-    .from("curator_artworks")
-    .select("*")
-    .eq("collection_id", collectionId);
-
-  if (error || !artworks || artworks.length === 0) {
-    modalContent.innerHTML = "<p>No artworks found for this collection.</p>";
-    return;
-  }
-
-  let html = "<h3 style='margin-bottom:20px;'>Artworks in Collection</h3>";
-  html += "<ul style='list-style:none;padding:0;'>";
-  artworks.forEach((art) => {
-    html += `<li style="margin-bottom:10px;"><strong>${art.title}</strong> by ${art.artist || 'Unknown'} (${art.year || 'Year N/A'})</li>`;
-  });
-  html += "</ul>";
-
-  modalContent.innerHTML = html;
-}
-</script>
+    </script>
 </body>
 </html>

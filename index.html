@@ -2060,16 +2060,7 @@
                 <button type="button" class="btn" onclick="saveAbout()">Update About</button>
             </div>
         </div>
-
-<!-- === Pending Curator Approvals (added 2025‑06‑08) === -->
-<div class="admin-form" id="pendingCuratorsSection" style="border-top: 1px solid #f0f0f0; padding-top: 30px; margin-top: 30px; display: none;">
-    <h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 20px;">
-        Pending Curator Approvals
-    </h4>
-    <div id="pendingCuratorsList"></div>
-</div>
-<!-- ===================================================== -->
-        </div>
+    </div>
 
     <!-- Zoom Modal -->
     <div class="zoom-modal" id="zoomModal">
@@ -2872,24 +2863,29 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             }
         }
 
-        
+        // ────────────────────────────────────────────────────────────────
+//  UPDATED: Browse‑All Curators always refreshes data first
+// ────────────────────────────────────────────────────────────────
 async function showAllCurators() {
-    await loadCurators(); // always refresh list
+    // Pull the latest approved curators each time in case an admin
+    // just approved someone and hasn’t hard‑refreshed the page.
+    await loadCurators();
 
     currentPage = 'browse-curators';
 
+    // Update header tagline
     document.querySelector('.tagline').textContent = 'GUEST CURATORS';
 
+    // Render grid
     const grid = document.getElementById('galleryGrid');
     if (allCurators.length === 0) {
         grid.innerHTML = `
             <div class="empty-gallery">
                 <h3>No Curators Yet</h3>
                 <p>Be the first to join our curatorial community!</p>
-            </div>
-        `;
+            </div>`;
     } else {
-        grid.innerHTML = allCurators.map(curator => \`
+        grid.innerHTML = allCurators.map(curator => `
             <div class="artwork-card" onclick="showCuratorProfile('${curator.id}')">
                 <div class="artwork-image square">
                     <img src="${curator.profile_image || generateAvatarPlaceholder(curator.name)}" alt="${curator.name}" onload="this.classList.add('loaded')">
@@ -2899,18 +2895,28 @@ async function showAllCurators() {
                     <div class="artwork-details">
                         <div class="artwork-artist">Curator</div>
                         <div>Joined ${new Date(curator.created_at).getFullYear()}</div>
-                        ${curator.bio ? `<div style="margin-top:8px;font-style:italic;text-transform:none;">
-                            ${curator.bio.substring(0, 100)}${curator.bio.length > 100 ? '…' : ''}</div>` : ''}
+                        ${curator.bio ? `<div style="margin-top:8px;font-style:italic;text-transform:none;">${curator.bio.substring(0,100)}${curator.bio.length>100?'…':''}</div>` : ''}
                     </div>
                 </div>
-            </div>
-        \`).join('');
+            </div>`).join('');
     }
 
     document.getElementById('galleryControls').style.display = 'none';
     addBackToMainButton();
 }
-
+// ────────────────────────────────────────────────────────────────
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Hide search controls for curator browse
+            document.getElementById('galleryControls').style.display = 'none';
+            
+            // Add back to main navigation
+            addBackToMainButton();
+        }
 
         async function showCuratorProfile(curatorId) {
             // Load first collection for this curator
@@ -3808,7 +3814,6 @@ async function showAllCurators() {
         }
 
         function showAdminContent() {
-    if (!currentCurator) loadPendingCurators();
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('adminContent').style.display = 'block';
             document.getElementById('editAboutBtn').style.display = isAdminMode ? 'block' : 'none';
@@ -3880,7 +3885,6 @@ async function showAllCurators() {
 
         // Admin functions
         function toggleAdmin() {
-    // loadPendingCurators() will be called below when appropriate
             const panel = document.getElementById('adminPanel');
             panel.classList.toggle('open');
             isAdminMode = panel.classList.contains('open') && (isAuthenticated || currentCurator);
@@ -4483,77 +4487,7 @@ async function showAllCurators() {
         document.getElementById('saveCuration').addEventListener('click', saveCurationOrder);
         document.getElementById('resetCuration').addEventListener('click', resetCurationOrder);
 
-        
-// === Pending Curator Approval Helpers (added 2025-06-08) ===
-async function loadPendingCurators() {
-    if (!isAuthenticated || currentCurator) return; // full admins only
-    const section = document.getElementById('pendingCuratorsSection');
-    const list = document.getElementById('pendingCuratorsList');
-    try {
-        const { data, error } = await supabase
-            .from('curators')
-            .select('*')
-            .eq('status', 'pending')
-            .order('created_at', { ascending: false });
-        if (error) throw error;
-        if (data.length) {
-            section.style.display = 'block';
-            list.innerHTML = data.map(c => `
-                <div style="display:flex;justify-content:space-between;gap:15px;padding:15px;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:10px;background:#fafafa;">
-                    <div>
-                        <strong style=\"color:#1f2937;font-size:14px;\">${c.name}</strong><br>
-                        <span style=\"font-size:12px;color:#6b7280;\">${c.email}</span><br>
-                        ${c.bio ? `<em style=\"font-size:12px;color:#6b7280;\">${c.bio.substring(0,120)}${c.bio.length>120?'…':''}</em>` : ''}
-                    </div>
-                    <div style="display:flex;gap:8px;">
-                        <button class=\"btn btn-small\" onclick=\"approveCurator('${c.id}')\">Approve</button>
-                        <button class=\"btn btn-small btn-danger\" onclick=\"rejectCurator('${c.id}')\">Reject</button>
-                    </div>
-                </div>
-            `).join('');
-        } else {
-            section.style.display = 'none';
-        }
-    } catch (err) {
-        console.error('loadPendingCurators', err);
-        section.style.display = 'none';
-    }
-}
-
-async function approveCurator(id) {
-    try {
-        const { error } = await supabase
-            .from('curators')
-            .update({ status: 'approved' })
-            .eq('id', id);
-        if (error) throw error;
-        alert('Curator approved!');
-        await loadCurators();
-        await loadPendingCurators();
-    } catch (err) {
-        console.error('approveCurator', err);
-        alert('Failed to approve curator: ' + err.message);
-    }
-}
-
-async function rejectCurator(id) {
-    if (!confirm('Reject this curator application?')) return;
-    try {
-        const { error } = await supabase
-            .from('curators')
-            .delete()
-            .eq('id', id);
-        if (error) throw error;
-        await loadPendingCurators();
-    } catch (err) {
-        console.error('rejectCurator', err);
-        alert('Failed to reject curator: ' + err.message);
-    }
-}
-// === end helpers ===
-
-
-// Cleanup on page unload
+        // Cleanup on page unload
         window.addEventListener('beforeunload', () => {
             if (animationObserver) {
                 document.querySelectorAll('.artwork-card').forEach(card => {

@@ -1,6 +1,6 @@
 # VonMesser Collection
 
-A sophisticated, minimal art gallery website featuring a clean masonry layout and comprehensive admin system for managing artwork collections.
+A sophisticated, minimal art gallery website featuring a clean masonry layout and comprehensive admin system for managing artwork collections...
 
 ## Features
 

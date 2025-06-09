@@ -2059,7 +2059,13 @@
                 
                 <button type="button" class="btn" onclick="saveAbout()">Update About</button>
             </div>
-        </div>
+        
+            <!-- Pending Curator Approvals -->
+            <div class="admin-form" id="pendingCuratorsSection" style="border-top: 1px solid #f0f0f0; padding-top: 30px; margin-top: 30px; display: none;">
+                <h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 20px;">Pending Curator Approvals</h4>
+                <div id="pendingCuratorsList"></div>
+            </div>
+</div>
     </div>
 
     <!-- Zoom Modal -->
@@ -2863,47 +2869,33 @@ Try pasting a tweet URL like: https://twitter.com/username/status/123456789"></d
             }
         }
 
-        // ────────────────────────────────────────────────────────────────
-//  UPDATED: Browse‑All Curators always refreshes data first
-// ────────────────────────────────────────────────────────────────
-async function showAllCurators() {
-    // Always fetch the latest approved curators first
-    await loadCurators();
-
-    currentPage = 'browse-curators';
-    document.querySelector('.tagline').textContent = 'GUEST CURATORS';
-
-    const grid = document.getElementById('galleryGrid');
-    if (allCurators.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-gallery">
-                <h3>No Curators Yet</h3>
-                <p>Be the first to join our curatorial community!</p>
-            </div>
-        `;
-    } else {
-        grid.innerHTML = allCurators.map(curator => `
-            <div class="artwork-card" onclick="showCuratorProfile('${curator.id}')">
-                <div class="artwork-image square">
-                    <img src="${curator.profile_image || generateAvatarPlaceholder(curator.name)}" alt="${curator.name}" onload="this.classList.add('loaded')">
-                </div>
-                <div class="artwork-info">
-                    <div class="artwork-title">${curator.name}</div>
-                    <div class="artwork-details">
-                        <div class="artwork-artist">Curator</div>
-                        <div>Joined ${new Date(curator.created_at).getFullYear()}</div>
-                        ${curator.bio ? `<div style="margin-top:8px;font-style:italic;text-transform:none;">${curator.bio.substring(0,100)}${curator.bio.length>100?'…':''}</div>` : ''}
+        function showAllCurators() {
+            currentPage = 'browse-curators';
+            
+            // Update header tagline
+            document.querySelector('.tagline').textContent = 'GUEST CURATORS';
+            
+            // Update gallery to show curators
+            const grid = document.getElementById('galleryGrid');
+            if (allCurators.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-gallery">
+                        <h3>No Curators Yet</h3>
+                        <p>Be the first to join our curatorial community!</p>
                     </div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // Hide artwork‑specific controls for this view
-    document.getElementById('galleryControls').style.display = 'none';
-    addBackToMainButton();
-}
-// ────────────────────────────────────────────────────────────────
+                `;
+            } else {
+                grid.innerHTML = allCurators.map(curator => `
+                    <div class="artwork-card" onclick="showCuratorProfile('${curator.id}')">
+                        <div class="artwork-image square">
+                            <img src="${curator.profile_image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNmOGY4ZjgiLz48dGV4dCB4PSIxNTAiIHk9IjE2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZiNzI4MCIgZm9udC1zaXplPSI0OCIgZm9udC1mYW1pbHk9IkludGVyIj7wn5+kPC90ZXh0Pjwvc3ZnPg=='}" alt="${curator.name}" onload="this.classList.add('loaded')">
+                        </div>
+                        <div class="artwork-info">
+                            <div class="artwork-title">${curator.name}</div>
+                            <div class="artwork-details">
+                                <div class="artwork-artist">Curator</div>
+                                <div>Joined ${new Date(curator.created_at).getFullYear()}</div>
+                                ${curator.bio ? `<div style="margin-top: 8px; font-style: italic; text-transform: none;">${curator.bio.substring(0, 100)}${curator.bio.length > 100 ? '...' : ''}</div>` : ''}
                             </div>
                         </div>
                     </div>
@@ -4499,6 +4491,92 @@ async function showAllCurators() {
                 });
             }
         });
-    </script>
+    
+    /* === Pending Curator Approval Helpers =================================== */
+    async function loadPendingCurators() {
+        if (!isAuthenticated || currentCurator) return; // only full admins
+        const section = document.getElementById('pendingCuratorsSection');
+        const list    = document.getElementById('pendingCuratorsList');
+        try {
+            const { data, error } = await supabase
+                .from('curators')
+                .select('*')
+                .eq('status', 'pending')
+                .order('created_at', { ascending: false });
+            if (error) throw error;
+            if (data.length) {
+                section.style.display = 'block';
+                list.innerHTML = data.map(c => `
+                    <div style="display:flex;justify-content:space-between;gap:15px;padding:15px;border:1px solid #e5e7eb;border-radius:8px;margin-bottom:10px;background:#fafafa;">
+                        <div>
+                            <strong style="color:#1f2937;font-size:14px;">${c.name}</strong><br>
+                            <span style="font-size:12px;color:#6b7280;">${c.email}</span><br>
+                            ${c.bio ? `<em style="font-size:12px;color:#6b7280;">${c.bio.substring(0,120)}${c.bio.length>120?'…':''}</em>` : ''}
+                        </div>
+                        <div style="display:flex;gap:8px;flex-shrink:0;">
+                            <button class="btn btn-small" onclick="approveCurator('${c.id}')">Approve</button>
+                            <button class="btn btn-small btn-danger" onclick="rejectCurator('${c.id}')">Reject</button>
+                        </div>
+                    </div>`).join('');
+            } else {
+                section.style.display = 'none';
+            }
+        } catch (err) {
+            console.error('loadPendingCurators', err);
+            section.style.display = 'none';
+        }
+    }
+
+    async function approveCurator(id) {
+        try {
+            const { error } = await supabase
+                .from('curators')
+                .update({ status: 'approved' })
+                .eq('id', id);
+            if (error) throw error;
+            alert('Curator approved!');
+            await loadCurators();
+            await loadPendingCurators();
+        } catch (err) {
+            console.error('approveCurator', err);
+            alert('Failed to approve curator: ' + err.message);
+        }
+    }
+
+    async function rejectCurator(id) {
+        if (!confirm('Reject this curator application?')) return;
+        try {
+            const { error } = await supabase
+                .from('curators')
+                .delete()
+                .eq('id', id);
+            if (error) throw error;
+            await loadPendingCurators();
+        } catch (err) {
+            console.error('rejectCurator', err);
+            alert('Failed to reject curator: ' + err.message);
+        }
+    }
+
+    // Extend existing admin helpers
+    if (typeof showAdminContent === 'function') {
+        const _origShowAdminContent = showAdminContent;
+        showAdminContent = function () {
+            _origShowAdminContent();
+            if (!currentCurator) loadPendingCurators();
+        };
+    }
+
+    if (typeof toggleAdmin === 'function') {
+        const _origToggleAdmin = toggleAdmin;
+        toggleAdmin = function () {
+            _origToggleAdmin();
+            if (document.getElementById('adminPanel').classList.contains('open') && isAuthenticated && !currentCurator) {
+                loadPendingCurators();
+            }
+        };
+    }
+    /* ========================================================================= */
+</script>
 </body>
 </html>

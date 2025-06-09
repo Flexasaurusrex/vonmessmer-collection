@@ -4755,5 +4755,142 @@ function openCuratorModal(curator, collections) {
 }
 </script>
 
+
+<script>
+// Ensure curator display only runs from Browse All Curators
+function showAllCurators() {
+  const main = document.querySelector("main");
+  main.innerHTML = `
+    <section class="hero-tagline">
+      <div class="container">
+        <h1 class="tagline">Guest Curators</h1>
+        <div id="curatorBrowser" style="margin-top:40px;"></div>
+      </div>
+    </section>
+  `;
+  loadApprovedCurators();
+}
+
+// Add modal for curator collection artworks
+const curatorModal = document.createElement("div");
+curatorModal.id = "curatorModal";
+curatorModal.style.position = "fixed";
+curatorModal.style.top = "0";
+curatorModal.style.left = "0";
+curatorModal.style.width = "100%";
+curatorModal.style.height = "100%";
+curatorModal.style.background = "rgba(0,0,0,0.75)";
+curatorModal.style.display = "none";
+curatorModal.style.alignItems = "center";
+curatorModal.style.justifyContent = "center";
+curatorModal.style.zIndex = "5000";
+curatorModal.innerHTML = '<div style="background:#fff;max-width:700px;width:90%;padding:30px;border-radius:12px;position:relative;max-height:90vh;overflow-y:auto;"><button onclick="closeCuratorModal()" style="position:absolute;top:10px;right:15px;font-size:18px;">×</button><div id="curatorModalContent"></div></div>';
+document.body.appendChild(curatorModal);
+
+function closeCuratorModal() {
+  curatorModal.style.display = "none";
+  document.getElementById("curatorModalContent").innerHTML = "";
+}
+
+async function loadApprovedCurators() {
+  const container = document.getElementById("curatorBrowser");
+  const { data: curators, error } = await supabase
+    .from("curators")
+    .select("*")
+    .eq("status", "approved");
+
+  if (error) {
+    console.error("Error fetching curators:", error);
+    container.innerHTML = "<p style='text-align:center;color:#888;'>Failed to load guest curators.</p>";
+    return;
+  }
+
+  if (!curators.length) {
+    container.innerHTML = "<p style='text-align:center;color:#888;'>No guest curators have been approved yet.</p>";
+    return;
+  }
+
+  const grid = document.createElement("div");
+  grid.style.maxWidth = "1000px";
+  grid.style.margin = "0 auto";
+  grid.style.display = "grid";
+  grid.style.gap = "30px";
+  grid.style.gridTemplateColumns = "repeat(auto-fit, minmax(240px, 1fr))";
+  container.appendChild(grid);
+
+  for (const curator of curators) {
+    const { data: collections } = await supabase
+      .from("curator_collections")
+      .select("*")
+      .eq("curator_id", curator.id);
+
+    const card = document.createElement("div");
+    card.style.border = "1px solid #eee";
+    card.style.padding = "20px";
+    card.style.borderRadius = "12px";
+    card.style.background = "#fff";
+    card.style.boxShadow = "0 2px 10px rgba(0,0,0,0.05)";
+    card.style.transition = "transform 0.2s";
+    card.style.cursor = "pointer";
+
+    card.onmouseenter = () => (card.style.transform = "translateY(-4px)");
+    card.onmouseleave = () => (card.style.transform = "translateY(0)");
+    card.onclick = () => openCuratorModal(curator, collections);
+
+    const name = curator.name || curator.email || "Unnamed Curator";
+    card.innerHTML = `
+      <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 10px; color: #1f2937;">${name}</h3>
+      <div style="font-size: 13px; color: #666;">${collections.length} collection(s)</div>
+      <div style="margin-top: 12px; font-size: 12px; color: #999;">Click to view collections</div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+async function openCuratorModal(curator, collections) {
+  const modalContent = document.getElementById("curatorModalContent");
+  const name = curator.name || curator.email || "Unnamed Curator";
+  let html = `<h2 style="margin-bottom:20px;">${name}'s Collections</h2>`;
+
+  if (collections.length === 0) {
+    html += `<p>This curator has not uploaded any collections yet.</p>`;
+  } else {
+    html += `<ul style="list-style:none;padding:0;">`;
+    for (const col of collections) {
+      html += `<li style="margin-bottom:15px;">
+        <strong>${col.name}</strong> — ${col.type || 'Untyped'}
+        <button onclick="viewCollectionArtworks('${col.id}')" style="margin-left:10px;font-size:12px;">View Artworks</button>
+      </li>`;
+    }
+    html += `</ul>`;
+  }
+
+  modalContent.innerHTML = html;
+  curatorModal.style.display = "flex";
+}
+
+async function viewCollectionArtworks(collectionId) {
+  const modalContent = document.getElementById("curatorModalContent");
+  const { data: artworks, error } = await supabase
+    .from("artworks")
+    .select("*")
+    .eq("collection_id", collectionId);
+
+  if (error || !artworks || artworks.length === 0) {
+    modalContent.innerHTML = "<p>No artworks found for this collection.</p>";
+    return;
+  }
+
+  let html = "<h3 style='margin-bottom:20px;'>Artworks in Collection</h3>";
+  html += "<ul style='list-style:none;padding:0;'>";
+  artworks.forEach((art) => {
+    html += `<li style="margin-bottom:10px;"><strong>${art.title}</strong> by ${art.artist || 'Unknown'} (${art.year || 'Year N/A'})</li>`;
+  });
+  html += "</ul>";
+
+  modalContent.innerHTML = html;
+}
+</script>
+
 </body>
 </html>

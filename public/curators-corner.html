@@ -149,6 +149,7 @@
             text-align: center;
             border-bottom: 1px solid #f0f0f0;
             background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            position: relative;
         }
         
         .hero h1 {
@@ -171,184 +172,35 @@
             margin: 0 auto 30px;
         }
         
-        /* Admin Controls */
-        .admin-controls {
-            position: fixed;
-            bottom: 30px;
+        .submit-article-btn {
+            position: absolute;
+            top: 30px;
             right: 30px;
-            z-index: 999;
-        }
-        
-        .admin-trigger {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            opacity: 0.3;
-            transition: all 0.3s ease;
-        }
-        
-        .admin-trigger:hover {
-            opacity: 0.8;
-            transform: scale(1.2);
-        }
-        
-        .admin-trigger svg {
-            width: 100%;
-            height: 100%;
-        }
-        
-        /* Admin Panel */
-        .admin-panel {
-            position: fixed;
-            top: 0;
-            right: -420px;
-            width: 400px;
-            height: 100vh;
-            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(253,253,253,0.95) 100%);
-            backdrop-filter: blur(20px);
-            border-left: 1px solid rgba(240,240,240,0.8);
-            z-index: 2000;
-            transition: right 0.3s ease;
-            overflow-y: auto;
-            padding: 20px;
-            box-shadow: -10px 0 40px rgba(0,0,0,0.12);
-        }
-        
-        .admin-panel.open {
-            right: 0;
-        }
-        
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .admin-title {
-            font-size: 16px;
-            font-weight: 400;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .close-admin {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: #999;
-        }
-        
-        /* Form Styles */
-        .admin-form {
-            margin-bottom: 30px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #4b5563;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #d1d5db;
-            background: #f9fafb;
-            font-size: 14px;
-            font-family: 'Inter', sans-serif;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-        
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #1f2937;
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(31,41,55,0.1);
-        }
-        
-        .btn {
-            padding: 12px 24px;
-            border: 1px solid #1f2937;
-            background: #ffffff;
-            color: #1f2937;
-            font-family: 'Inter', sans-serif;
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            border-radius: 6px;
-        }
-        
-        .btn:hover {
             background: #1f2937;
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(31,41,55,0.2);
-        }
-        
-        .btn-small {
-            padding: 6px 12px;
-            font-size: 10px;
-            width: auto;
-        }
-        
-        .btn-danger {
-            border-color: #e74c3c;
-            color: #e74c3c;
-        }
-        
-        .btn-danger:hover {
-            background: #e74c3c;
-            color: #ffffff;
-        }
-        
-        /* Login Form */
-        .login-form {
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .login-form h3 {
-            font-size: 14px;
-            font-weight: 400;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 30px;
-            color: #666;
-        }
-        
-        .logout-section {
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            border: 1px solid #e0e0e0;
-            margin-bottom: 20px;
-            background: #f8f8f8;
+            gap: 8px;
         }
         
-        .user-email {
-            font-size: 12px;
-            color: #666;
+        .submit-article-btn:hover {
+            background: #374151;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(31, 41, 55, 0.3);
+        }
+        
+        .submit-article-btn svg {
+            width: 16px;
+            height: 16px;
         }
         
         /* Main Content */
@@ -423,6 +275,20 @@
             color: #9ca3af;
         }
         
+        .article-author-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .article-author-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #e5e7eb;
+        }
+        
         .article-date {
             color: #6b7280;
         }
@@ -472,7 +338,7 @@
             border-bottom-color: #4b5563;
         }
         
-        /* Article Detail Modal */
+        /* Article Submission Modal */
         .article-modal {
             position: fixed;
             top: 0;
@@ -494,7 +360,7 @@
         
         .article-modal-content {
             background: #ffffff;
-            max-width: 800px;
+            max-width: 700px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -504,134 +370,331 @@
         }
         
         .article-modal-header {
-            position: relative;
-            background: #f8f8f8;
-            padding: 40px;
-            border-radius: 12px 12px 0 0;
-        }
-        
-        .article-modal-image {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 8px;
+            padding: 30px 30px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
             margin-bottom: 30px;
-        }
-        
-        .article-modal-body {
-            padding: 40px;
         }
         
         .article-modal-title {
-            font-family: 'Crimson Text', serif;
-            font-size: 32px;
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-        
-        .article-modal-meta {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #6b7280;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        .article-modal-content-text {
-            font-family: 'Crimson Text', serif;
-            font-size: 18px;
-            color: #374151;
-            line-height: 1.8;
-        }
-        
-        .article-modal-content-text p {
-            margin-bottom: 24px;
-        }
-        
-        .article-modal-content-text h2,
-        .article-modal-content-text h3 {
-            font-family: 'Inter', sans-serif;
+            font-size: 20px;
             font-weight: 500;
+            color: #1f2937;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #1f2937;
-            margin: 32px 0 16px;
-        }
-        
-        .article-modal-content-text h2 {
-            font-size: 16px;
-        }
-        
-        .article-modal-content-text h3 {
-            font-size: 14px;
         }
         
         .close-article-modal {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.9);
+            background: none;
             border: none;
-            padding: 15px;
+            font-size: 24px;
             cursor: pointer;
-            font-size: 18px;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
+            color: #6b7280;
+            padding: 5px;
+            transition: color 0.3s ease;
         }
         
         .close-article-modal:hover {
-            background: rgba(255, 255, 255, 1);
-            transform: scale(1.1);
+            color: #1f2937;
         }
         
-        /* Article Admin Controls */
-        .article-admin-controls {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            display: flex;
-            gap: 8px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .article-modal-body {
+            padding: 0 30px 30px;
         }
         
-        .article-card:hover .article-admin-controls {
-            opacity: 1;
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
         }
         
-        .article-admin-btn {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #ddd;
-            padding: 8px 10px;
-            cursor: pointer;
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group label {
+            display: block;
             font-size: 12px;
-            border-radius: 4px;
-            transition: all 0.2s ease;
-            min-width: 32px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #4b5563;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1f2937;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(31,41,55,0.1);
+        }
+        
+        .image-upload-group {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 30px 20px;
             text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
         }
         
-        .article-admin-btn:hover {
-            background: #333;
+        .image-upload-group:hover {
+            border-color: #1f2937;
+            background: #f9fafb;
+        }
+        
+        .image-upload-group.dragover {
+            border-color: #1f2937;
+            background: #f0f9ff;
+        }
+        
+        .upload-text {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .upload-hint {
+            color: #9ca3af;
+            font-size: 12px;
+        }
+        
+        .image-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .image-preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f3f4f6;
+        }
+        
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(239, 68, 68, 0.9);
             color: white;
-            border-color: #333;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .article-admin-btn.danger:hover {
-            background: #e74c3c;
-            border-color: #e74c3c;
+        .author-pfp-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e5e7eb;
+            margin: 0 auto 15px;
+            display: block;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: 1px solid #1f2937;
+            background: #1f2937;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            border-radius: 6px;
+        }
+        
+        .btn:hover {
+            background: #374151;
+            box-shadow: 0 4px 12px rgba(31,41,55,0.2);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Rich Text Editor */
+        .rich-editor-container {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background: #f9fafb;
+            transition: all 0.3s ease;
+        }
+        
+        .rich-editor-container:focus-within {
+            border-color: #1f2937;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(31,41,55,0.1);
+        }
+        
+        .rich-editor {
+            min-height: 400px;
+            padding: 20px;
+            font-family: 'Crimson Text', serif;
+            font-size: 16px;
+            line-height: 1.8;
+            color: #374151;
+            outline: none;
+            white-space: pre-wrap;
+        }
+        
+        .rich-editor:empty::before {
+            content: attr(data-placeholder);
+            color: #9ca3af;
+            font-style: italic;
+        }
+        
+        .rich-editor p {
+            margin: 0 0 16px 0;
+            min-height: 1.8em;
+        }
+        
+        .rich-editor p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .rich-editor.dragover {
+            background: #f0f9ff;
+            border-color: #1f2937;
+        }
+        
+        /* Inline Images */
+        .inline-image-container {
+            margin: 24px 0;
+            text-align: center;
+            position: relative;
+            display: block;
+            max-width: 100%;
+        }
+        
+        .inline-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .inline-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .image-caption {
+            margin-top: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: #6b7280;
+            font-style: italic;
+            text-align: center;
+            outline: none;
+            border: none;
+            background: transparent;
+            width: 100%;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .image-caption:focus {
+            background: #f9fafb;
+            color: #374151;
+        }
+        
+        .image-caption:empty::before {
+            content: "Click to add a caption...";
+            color: #d1d5db;
+        }
+        
+        .image-upload-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .delete-inline-image {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .inline-image-container:hover .delete-inline-image {
+            display: flex;
+        }
+        
+        .editor-hint {
+            padding: 12px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e5e7eb;
+            font-size: 12px;
+            color: #6b7280;
+            border-radius: 0 0 6px 6px;
         }
         
         /* Loading and Empty States */
@@ -669,6 +732,156 @@
             line-height: 1.6;
         }
         
+        /* Article Detail Modal */
+        .article-detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .article-detail-modal.show {
+            display: flex;
+        }
+        
+        .article-detail-content {
+            background: #ffffff;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            position: relative;
+        }
+        
+        .article-detail-header {
+            position: relative;
+            background: #f8f8f8;
+            padding: 40px;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .article-detail-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .article-detail-body {
+            padding: 40px;
+        }
+        
+        .article-detail-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .article-detail-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6b7280;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .article-detail-meta .article-author-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .article-detail-meta .article-author-avatar {
+            width: 32px;
+            height: 32px;
+        }
+        
+        .article-detail-content-text {
+            font-family: 'Crimson Text', serif;
+            font-size: 18px;
+            color: #374151;
+            line-height: 1.8;
+        }
+        
+        .article-detail-content-text p {
+            margin-bottom: 24px;
+        }
+        
+        /* Style inline images in article content */
+        .article-detail-content-text .inline-image-container {
+            margin: 32px 0;
+            text-align: center;
+        }
+        
+        .article-detail-content-text .inline-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .article-detail-content-text .image-caption {
+            margin-top: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: #6b7280;
+            font-style: italic;
+            text-align: center;
+        }
+        
+        /* Hide editing controls in article view */
+        .article-detail-content-text .delete-inline-image,
+        .article-detail-content-text .image-upload-overlay {
+            display: none !important;
+        }
+        
+        /* Make captions non-editable in article view */
+        .article-detail-content-text .image-caption {
+            pointer-events: none;
+        }
+        
+        .close-detail-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .close-detail-modal:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+        
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .container {
@@ -687,6 +900,12 @@
                 padding: 60px 0 40px;
             }
             
+            .submit-article-btn {
+                position: static;
+                margin: 20px auto 0;
+                display: flex;
+            }
+            
             .articles-grid {
                 grid-template-columns: 1fr;
                 gap: 30px;
@@ -696,18 +915,20 @@
                 padding: 20px;
             }
             
-            .article-modal {
+            .article-modal,
+            .article-detail-modal {
                 padding: 10px;
             }
             
             .article-modal-header,
-            .article-modal-body {
+            .article-modal-body,
+            .article-detail-header,
+            .article-detail-body {
                 padding: 20px;
             }
             
-            .admin-panel {
-                width: 100%;
-                right: -100%;
+            .form-row {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -746,92 +967,13 @@
             <h1>Curators Corner</h1>
             <p>Insights, articles, and perspectives from the art curation community</p>
         </div>
-    </section>
-
-    <!-- Admin Controls -->
-    <div class="admin-controls">
-        <div class="admin-trigger" onclick="toggleAdmin()">
-            <svg viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <polygon fill="#333" points="10,2 18,10 10,18 2,10" stroke="none"></polygon>
+        <button class="submit-article-btn" onclick="openSubmissionModal()">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
             </svg>
-        </div>
-    </div>
-
-    <!-- Admin Panel -->
-    <div class="admin-panel" id="adminPanel">
-        <div class="admin-header">
-            <h3 class="admin-title">Article Admin</h3>
-            <button class="close-admin" onclick="toggleAdmin()">×</button>
-        </div>
-
-        <!-- Login Form -->
-        <div class="login-form" id="loginForm">
-            <h3>Admin Login</h3>
-            <div class="form-group">
-                <label for="loginEmail">Email</label>
-                <input id="loginEmail" required type="email"/>
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input id="loginPassword" required type="password"/>
-            </div>
-            <button class="btn" onclick="login()">Login</button>
-        </div>
-
-        <!-- Admin Content -->
-        <div id="adminContent" style="display: none;">
-            <div class="logout-section">
-                <span class="user-email" id="userEmail"></span>
-                <button class="btn btn-small" onclick="logout()">Logout</button>
-            </div>
-
-            <form class="admin-form" id="articleForm">
-                <input id="editingId" type="hidden" value=""/>
-                
-                <div class="form-group">
-                    <label for="articleTitle">Article Title</label>
-                    <input id="articleTitle" required type="text"/>
-                </div>
-                
-                <div class="form-group">
-                    <label for="articleAuthor">Author</label>
-                    <input id="articleAuthor" required type="text"/>
-                </div>
-                
-                <div class="form-group">
-                    <label for="articleCategory">Category</label>
-                    <select id="articleCategory" required>
-                        <option value="">Select Category</option>
-                        <option value="Curation">Curation</option>
-                        <option value="Art History">Art History</option>
-                        <option value="Contemporary Art">Contemporary Art</option>
-                        <option value="Exhibitions">Exhibitions</option>
-                        <option value="Artist Spotlight">Artist Spotlight</option>
-                        <option value="Market Insights">Market Insights</option>
-                        <option value="Opinion">Opinion</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="articleExcerpt">Excerpt</label>
-                    <textarea id="articleExcerpt" rows="3" placeholder="Brief description or teaser..."></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="articleContent">Article Content</label>
-                    <textarea id="articleContent" rows="12" placeholder="Write your article content here..." required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="featuredImage">Featured Image URL</label>
-                    <input id="featuredImage" type="url" placeholder="https://example.com/image.jpg"/>
-                </div>
-                
-                <button class="btn" type="submit">Publish Article</button>
-                <button class="btn" onclick="resetForm()" style="margin-top: 10px;" type="button">Clear Form</button>
-            </form>
-        </div>
-    </div>
+            Submit Article
+        </button>
+    </section>
 
     <main>
         <div class="container">
@@ -845,21 +987,128 @@
         </div>
     </main>
 
-    <!-- Article Detail Modal -->
-    <div class="article-modal" id="articleModal">
+    <!-- Article Submission Modal -->
+    <div class="article-modal" id="submissionModal">
         <div class="article-modal-content">
-            <button class="close-article-modal" onclick="closeArticleModal()">×</button>
             <div class="article-modal-header">
-                <img id="modalFeaturedImage" class="article-modal-image" src="" alt="" style="display: none;">
-                <h1 id="modalTitle" class="article-modal-title"></h1>
-                <div class="article-modal-meta">
-                    <span id="modalAuthor"></span>
-                    <span id="modalDate"></span>
-                    <span id="modalCategory"></span>
-                </div>
+                <h3 class="article-modal-title">Submit Your Article</h3>
+                <button class="close-article-modal" onclick="closeSubmissionModal()">×</button>
             </div>
             <div class="article-modal-body">
-                <div id="modalContent" class="article-modal-content-text"></div>
+                <form id="articleSubmissionForm">
+                    <!-- Author Information -->
+                    <div class="form-group">
+                        <label>Author Profile Picture</label>
+                        <div class="image-upload-group" id="authorPfpUpload">
+                            <img id="authorPfpPreview" class="author-pfp-preview" src="" alt="Profile Picture" style="display: none;">
+                            <div class="upload-text">Click to upload profile picture</div>
+                            <div class="upload-hint">JPG, PNG, WebP (Max 2MB) - Optional</div>
+                            <input type="file" id="authorPfpInput" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="authorName">Author Name *</label>
+                            <input id="authorName" type="text" required placeholder="Your full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="authorEmail">Email *</label>
+                            <input id="authorEmail" type="email" required placeholder="your@email.com">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="authorBio">Author Bio</label>
+                        <textarea id="authorBio" rows="3" placeholder="Brief bio about yourself (optional)"></textarea>
+                    </div>
+                    
+                    <!-- Article Information -->
+                    <div class="form-group">
+                        <label for="articleTitle">Article Title *</label>
+                        <input id="articleTitle" type="text" required placeholder="Enter your article title">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="articleCategory">Category *</label>
+                            <select id="articleCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="Curation">Curation</option>
+                                <option value="Art History">Art History</option>
+                                <option value="Contemporary Art">Contemporary Art</option>
+                                <option value="Exhibitions">Exhibitions</option>
+                                <option value="Artist Spotlight">Artist Spotlight</option>
+                                <option value="Market Insights">Market Insights</option>
+                                <option value="Opinion">Opinion</option>
+                                <option value="Interview">Interview</option>
+                                <option value="Review">Review</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="readTime">Estimated Read Time</label>
+                            <select id="readTime">
+                                <option value="2 min read">2 min read</option>
+                                <option value="3 min read">3 min read</option>
+                                <option value="5 min read" selected>5 min read</option>
+                                <option value="7 min read">7 min read</option>
+                                <option value="10 min read">10 min read</option>
+                                <option value="15 min read">15 min read</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="articleExcerpt">Article Excerpt *</label>
+                        <textarea id="articleExcerpt" rows="3" required placeholder="Brief summary or teaser for your article"></textarea>
+                    </div>
+                    
+                    <!-- Featured Image Upload -->
+                    <div class="form-group">
+                        <label>Featured Image</label>
+                        <div class="image-upload-group" id="featuredImageUpload">
+                            <div class="upload-text">Click or drag featured image here</div>
+                            <div class="upload-hint">JPG, PNG, WebP (Max 5MB) - Optional but recommended</div>
+                            <input type="file" id="featuredImageInput" accept="image/*" style="display: none;">
+                        </div>
+                        <div id="featuredImagePreview" class="image-preview"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="articleContent">Article Content *</label>
+                        <div class="rich-editor-container">
+                            <div id="articleContent" class="rich-editor" contenteditable="true" data-placeholder="Start writing your article... Drag images directly into the text to add them inline with captions."></div>
+                            <div class="editor-hint">
+                                💡 <strong>Pro tip:</strong> Drag images directly into your text to add them inline. Click on any image to add a caption.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn" id="submitBtn">Submit Article</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Article Detail Modal -->
+    <div class="article-detail-modal" id="articleDetailModal">
+        <div class="article-detail-content">
+            <button class="close-detail-modal" onclick="closeDetailModal()">×</button>
+            <div class="article-detail-header">
+                <img id="detailFeaturedImage" class="article-detail-image" src="" alt="" style="display: none;">
+                <h1 id="detailTitle" class="article-detail-title"></h1>
+                <div class="article-detail-meta">
+                    <div class="article-author-info">
+                        <img id="detailAuthorAvatar" class="article-author-avatar" src="" alt="">
+                        <span id="detailAuthor"></span>
+                    </div>
+                    <span id="detailDate"></span>
+                    <span id="detailCategory"></span>
+                    <span id="detailReadTime"></span>
+                </div>
+            </div>
+            <div class="article-detail-body">
+                <div id="detailContent" class="article-detail-content-text"></div>
             </div>
         </div>
     </div>
@@ -871,99 +1120,311 @@
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         let articles = [];
-        let isAuthenticated = false;
-        let isAdminMode = false;
+        let authorProfilePicture = null;
+        let featuredImage = null;
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
-            checkAuthState();
             loadArticles();
+            setupEventListeners();
         });
 
-        // Authentication functions
-        async function checkAuthState() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                isAuthenticated = true;
-                document.getElementById('userEmail').textContent = session.user.email;
-                showAdminContent();
-            } else {
-                isAuthenticated = false;
-                showLoginForm();
+        function setupEventListeners() {
+            // Author profile picture upload
+            document.getElementById('authorPfpUpload').addEventListener('click', () => {
+                document.getElementById('authorPfpInput').click();
+            });
+            
+            document.getElementById('authorPfpInput').addEventListener('change', handleAuthorPfpUpload);
+            
+            // Featured image upload
+            document.getElementById('featuredImageUpload').addEventListener('click', () => {
+                document.getElementById('featuredImageInput').click();
+            });
+            
+            document.getElementById('featuredImageInput').addEventListener('change', handleFeaturedImageUpload);
+            
+            // Rich text editor setup
+            setupRichEditor();
+            
+            // Form submission
+            document.getElementById('articleSubmissionForm').addEventListener('submit', handleArticleSubmission);
+            
+            // Modal close events
+            document.getElementById('submissionModal').addEventListener('click', function(e) {
+                if (e.target === this) closeSubmissionModal();
+            });
+            
+            document.getElementById('articleDetailModal').addEventListener('click', function(e) {
+                if (e.target === this) closeDetailModal();
+            });
+            
+            // Drag and drop for featured image
+            const featuredUpload = document.getElementById('featuredImageUpload');
+            featuredUpload.addEventListener('dragover', handleDragOver);
+            featuredUpload.addEventListener('drop', handleFeaturedImageDrop);
+        }
+
+        // Rich Text Editor Setup
+        function setupRichEditor() {
+            const editor = document.getElementById('articleContent');
+            
+            // Handle drag and drop for inline images
+            editor.addEventListener('dragover', handleEditorDragOver);
+            editor.addEventListener('drop', handleEditorDrop);
+            editor.addEventListener('paste', handleEditorPaste);
+            
+            // Handle enter key for proper paragraph breaks
+            editor.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    insertParagraphBreak();
+                }
+            });
+            
+            // Initialize with a paragraph
+            if (!editor.innerHTML.trim()) {
+                editor.innerHTML = '<p></p>';
+                setCursorToEnd(editor);
             }
         }
 
-        function showAdminContent() {
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('adminContent').style.display = 'block';
+        function handleEditorDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
         }
 
-        function showLoginForm() {
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('adminContent').style.display = 'none';
-        }
-
-        async function login() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
+        function handleEditorDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
             
-            if (!email || !password) {
-                alert('Please enter both email and password');
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+            if (files.length > 0) {
+                insertInlineImage(files[0], e);
+            }
+        }
+
+        function handleEditorPaste(e) {
+            e.preventDefault();
+            
+            // Handle pasted images
+            const items = Array.from(e.clipboardData.items);
+            const imageItem = items.find(item => item.type.startsWith('image/'));
+            
+            if (imageItem) {
+                const file = imageItem.getAsFile();
+                insertInlineImage(file, e);
                 return;
             }
-
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
-
-                if (error) throw error;
-
-                isAuthenticated = true;
-                document.getElementById('userEmail').textContent = data.user.email;
-                showAdminContent();
-                alert('Login successful!');
-                
-                document.getElementById('loginEmail').value = '';
-                document.getElementById('loginPassword').value = '';
-                renderArticles(); // Re-render to show admin controls
-            } catch (error) {
-                console.error('Login error:', error);
-                alert('Login failed: ' + error.message);
+            
+            // Handle pasted text
+            const text = e.clipboardData.getData('text/plain');
+            if (text) {
+                insertTextAtCursor(text);
             }
         }
 
-        async function logout() {
+        async function insertInlineImage(file, event) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image must be under 5MB');
+                return;
+            }
+            
+            const editor = document.getElementById('articleContent');
+            const imageId = 'inline-img-' + Date.now();
+            
+            // Create placeholder
+            const placeholder = document.createElement('div');
+            placeholder.className = 'inline-image-container';
+            placeholder.setAttribute('contenteditable', 'false');
+            placeholder.innerHTML = `
+                <div class="image-upload-overlay">Uploading image...</div>
+                <div class="image-caption" contenteditable="true" data-placeholder="Click to add a caption..."></div>
+            `;
+            
+            // Insert at cursor position or at the end
+            insertElementAtCursor(placeholder);
+            
             try {
-                const { error } = await supabase.auth.signOut();
-                if (error) throw error;
-
-                isAuthenticated = false;
-                isAdminMode = false;
+                // Compress and process image
+                const compressedImage = await compressImage(file, 800, 0.85);
                 
-                showLoginForm();
-                const adminPanel = document.getElementById('adminPanel');
-                if (adminPanel.classList.contains('open')) {
-                    toggleAdmin();
+                // Replace placeholder with actual image
+                placeholder.innerHTML = `
+                    <img class="inline-image" src="${compressedImage}" alt="Inline image" id="${imageId}">
+                    <button class="delete-inline-image" onclick="removeInlineImage(this)" title="Delete image">×</button>
+                    <div class="image-caption" contenteditable="true" data-placeholder="Click to add a caption..."></div>
+                `;
+                
+                // Focus on caption for immediate editing
+                const caption = placeholder.querySelector('.image-caption');
+                setTimeout(() => {
+                    caption.focus();
+                }, 100);
+                
+            } catch (error) {
+                console.error('Error uploading inline image:', error);
+                placeholder.innerHTML = `
+                    <div style="padding: 20px; color: #ef4444; text-align: center; font-size: 14px; border: 1px dashed #ef4444; border-radius: 8px;">
+                        ❌ Failed to upload image. Please try again.
+                    </div>
+                `;
+            }
+        }
+
+        function insertElementAtCursor(element) {
+            const selection = window.getSelection();
+            const editor = document.getElementById('articleContent');
+            
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                
+                // If we're inside a paragraph, split it
+                const currentParagraph = range.commonAncestorContainer.nodeType === Node.TEXT_NODE 
+                    ? range.commonAncestorContainer.parentElement 
+                    : range.commonAncestorContainer;
+                
+                if (currentParagraph.tagName === 'P') {
+                    // Split the paragraph if there's content after cursor
+                    const afterRange = range.cloneRange();
+                    afterRange.selectNodeContents(currentParagraph);
+                    afterRange.setStart(range.endContainer, range.endOffset);
+                    
+                    const afterContent = afterRange.extractContents();
+                    
+                    // Insert image container after current paragraph
+                    currentParagraph.parentNode.insertBefore(element, currentParagraph.nextSibling);
+                    
+                    // Create new paragraph for content after cursor if any
+                    if (afterContent.textContent.trim()) {
+                        const newParagraph = document.createElement('p');
+                        newParagraph.appendChild(afterContent);
+                        element.parentNode.insertBefore(newParagraph, element.nextSibling);
+                    } else {
+                        // Create empty paragraph for continued writing
+                        const newParagraph = document.createElement('p');
+                        newParagraph.innerHTML = '<br>';
+                        element.parentNode.insertBefore(newParagraph, element.nextSibling);
+                    }
+                } else {
+                    // Insert at current position
+                    range.insertNode(element);
                 }
-                renderArticles(); // Re-render to hide admin controls
-                alert('Logged out successfully');
-            } catch (error) {
-                console.error('Logout error:', error);
-                alert('Logout failed: ' + error.message);
+            } else {
+                // Append to end
+                editor.appendChild(element);
+                const newParagraph = document.createElement('p');
+                newParagraph.innerHTML = '<br>';
+                editor.appendChild(newParagraph);
+            }
+            
+            // Clear selection
+            selection.removeAllRanges();
+        }
+
+        function insertTextAtCursor(text) {
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                
+                const textLines = text.split('\n');
+                textLines.forEach((line, index) => {
+                    if (index > 0) {
+                        insertParagraphBreak();
+                    }
+                    const textNode = document.createTextNode(line);
+                    range.insertNode(textNode);
+                    range.setStartAfter(textNode);
+                    range.setEndAfter(textNode);
+                });
+                
+                selection.removeAllRanges();
+                selection.addRange(range);
             }
         }
 
-        // Admin functions
-        function toggleAdmin() {
-            const panel = document.getElementById('adminPanel');
-            panel.classList.toggle('open');
-            isAdminMode = panel.classList.contains('open') && isAuthenticated;
-            renderArticles(); // Re-render to show/hide admin controls
+        function insertParagraphBreak() {
+            const selection = window.getSelection();
+            const editor = document.getElementById('articleContent');
+            
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                const currentElement = range.commonAncestorContainer.nodeType === Node.TEXT_NODE 
+                    ? range.commonAncestorContainer.parentElement 
+                    : range.commonAncestorContainer;
+                
+                // Create new paragraph
+                const newParagraph = document.createElement('p');
+                newParagraph.innerHTML = '<br>';
+                
+                if (currentElement.tagName === 'P') {
+                    // Split current paragraph
+                    const afterRange = range.cloneRange();
+                    afterRange.selectNodeContents(currentElement);
+                    afterRange.setStart(range.startContainer, range.startOffset);
+                    const afterContent = afterRange.extractContents();
+                    
+                    if (afterContent.textContent.trim()) {
+                        newParagraph.appendChild(afterContent);
+                    }
+                    
+                    currentElement.parentNode.insertBefore(newParagraph, currentElement.nextSibling);
+                } else {
+                    editor.appendChild(newParagraph);
+                }
+                
+                // Set cursor to new paragraph
+                const newRange = document.createRange();
+                newRange.setStart(newParagraph, 0);
+                newRange.setEnd(newParagraph, 0);
+                selection.removeAllRanges();
+                selection.addRange(newRange);
+            }
         }
 
-        // Article functions
+        function setCursorToEnd(element) {
+            const range = document.createRange();
+            const selection = window.getSelection();
+            range.selectNodeContents(element);
+            range.collapse(false);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+
+        function removeInlineImage(button) {
+            const container = button.closest('.inline-image-container');
+            if (container) {
+                container.remove();
+            }
+        }
+
+        function getEditorContent() {
+            const editor = document.getElementById('articleContent');
+            
+            // Clean up empty paragraphs and normalize content
+            const clonedEditor = editor.cloneNode(true);
+            
+            // Remove empty paragraphs at the end
+            const paragraphs = clonedEditor.querySelectorAll('p');
+            for (let i = paragraphs.length - 1; i >= 0; i--) {
+                const p = paragraphs[i];
+                if (!p.textContent.trim() && !p.querySelector('img')) {
+                    p.remove();
+                } else {
+                    break;
+                }
+            }
+            
+            return clonedEditor.innerHTML;
+        }
+
+        function setEditorContent(htmlContent) {
+            const editor = document.getElementById('articleContent');
+            editor.innerHTML = htmlContent || '<p></p>';
+        }
+
+        // Article loading and rendering
         async function loadArticles() {
             try {
                 const { data, error } = await supabase
@@ -979,61 +1440,8 @@
                 renderArticles();
             } catch (error) {
                 console.error('Error loading articles:', error);
-                // Create table if it doesn't exist and add sample article
-                createSampleArticle();
+                renderArticles(); // Render empty state
             }
-        }
-
-        async function createSampleArticle() {
-            // Try to create a sample article for demonstration
-            const sampleArticle = {
-                title: "The Evolution of Art Curation in the Digital Age",
-                author: "VonMesser Collection",
-                category: "Curation",
-                excerpt: "Exploring how digital technologies are transforming the way we curate, display, and experience art in contemporary galleries and collections.",
-                content: `<p>The art world has undergone a profound transformation in the digital age, fundamentally altering how we approach curation, exhibition, and audience engagement. As collectors and curators, we find ourselves at the intersection of traditional practices and innovative technologies that are reshaping our field.</p>
-
-<h2>Digital Platforms and Virtual Galleries</h2>
-
-<p>The emergence of digital platforms has democratized access to art, allowing curators to reach global audiences without the constraints of physical space. Virtual galleries offer unprecedented flexibility in presentation, enabling curators to experiment with new forms of storytelling and thematic organization.</p>
-
-<p>This shift has also challenged traditional notions of the "white cube" gallery space, opening up possibilities for more dynamic and interactive presentations that would be impossible in physical venues.</p>
-
-<h2>Data-Driven Curation</h2>
-
-<p>Modern curation increasingly relies on data analytics to understand audience preferences and engagement patterns. This information helps curators make more informed decisions about which works to feature and how to organize exhibitions for maximum impact.</p>
-
-<p>However, the challenge lies in balancing data insights with curatorial intuition and artistic vision. The most successful digital-age curators are those who can synthesize quantitative feedback with their deep understanding of art and culture.</p>
-
-<h2>The Future of Curatorial Practice</h2>
-
-<p>As we look toward the future, it's clear that successful curation will require a hybrid approach that leverages both digital tools and traditional expertise. The role of the curator is evolving from gatekeeper to facilitator, helping audiences navigate an increasingly complex and abundant art landscape.</p>
-
-<p>The challenge—and opportunity—for today's curators is to harness these new technologies while maintaining the critical eye and cultural knowledge that has always been at the heart of great curation.</p>`,
-                featured_image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=400&fit=crop",
-                published: true,
-                created_at: new Date().toISOString()
-            };
-
-            try {
-                const { data, error } = await supabase
-                    .from('articles')
-                    .insert([sampleArticle])
-                    .select();
-
-                if (error) {
-                    console.error('Error creating sample article:', error);
-                    articles = [];
-                } else {
-                    articles = data || [];
-                    console.log('Created sample article');
-                }
-            } catch (error) {
-                console.error('Error with sample article:', error);
-                articles = [];
-            }
-            
-            renderArticles();
         }
 
         function renderArticles() {
@@ -1043,7 +1451,7 @@
                 grid.innerHTML = `
                     <div class="empty-articles">
                         <h3>No Articles Yet</h3>
-                        <p>Articles and insights from the art curation community will appear here.<br>Check back soon for new content!</p>
+                        <p>Be the first to share your insights with the art curation community!<br>Click "Submit Article" to get started.</p>
                     </div>
                 `;
                 return;
@@ -1056,210 +1464,291 @@
                     day: 'numeric'
                 });
 
+                const authorAvatar = article.author_profile_picture || generateAvatarPlaceholder(article.author);
+
                 return `
-                    <div class="article-card" onclick="openArticleModal('${article.id}')">
+                    <div class="article-card" onclick="openDetailModal('${article.id}')">
                         ${article.featured_image ? `<img class="article-featured-image" src="${article.featured_image}" alt="${article.title}">` : ''}
-                        
-                        ${isAdminMode && isAuthenticated ? `
-                            <div class="article-admin-controls">
-                                <button class="article-admin-btn" onclick="event.stopPropagation(); editArticle('${article.id}')" title="Edit">✎</button>
-                                <button class="article-admin-btn danger" onclick="event.stopPropagation(); deleteArticle('${article.id}')" title="Delete">×</button>
-                            </div>
-                        ` : ''}
                         
                         <div class="article-content">
                             <div class="article-meta">
+                                <div class="article-author-info">
+                                    <img class="article-author-avatar" src="${authorAvatar}" alt="${article.author}">
+                                    <span class="article-author">By ${article.author}</span>
+                                </div>
                                 <span class="article-date">${publishedDate}</span>
-                                <span class="article-author">By ${article.author}</span>
                                 ${article.category ? `<span class="article-category">${article.category}</span>` : ''}
+                                ${article.read_time ? `<span class="article-category">${article.read_time}</span>` : ''}
                             </div>
                             
                             <h2 class="article-title">${article.title}</h2>
                             
                             ${article.excerpt ? `<p class="article-excerpt">${article.excerpt}</p>` : ''}
                             
-                            <a href="#" class="read-more" onclick="event.preventDefault(); event.stopPropagation(); openArticleModal('${article.id}')">Read More</a>
+                            <a href="#" class="read-more" onclick="event.preventDefault(); event.stopPropagation(); openDetailModal('${article.id}')">Read More</a>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        // Article modal functions
-        function openArticleModal(id) {
+        // Modal functions
+        function openSubmissionModal() {
+            document.getElementById('submissionModal').classList.add('show');
+        }
+
+        function closeSubmissionModal() {
+            document.getElementById('submissionModal').classList.remove('show');
+            resetSubmissionForm();
+        }
+
+        function openDetailModal(id) {
             const article = articles.find(a => a.id === id);
             if (!article) return;
             
-            document.getElementById('modalTitle').textContent = article.title;
-            document.getElementById('modalAuthor').textContent = `By ${article.author}`;
-            document.getElementById('modalDate').textContent = new Date(article.created_at).toLocaleDateString('en-US', {
+            document.getElementById('detailTitle').textContent = article.title;
+            document.getElementById('detailAuthor').textContent = `By ${article.author}`;
+            document.getElementById('detailDate').textContent = new Date(article.created_at).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             });
-            document.getElementById('modalCategory').textContent = article.category || '';
+            document.getElementById('detailCategory').textContent = article.category || '';
+            document.getElementById('detailReadTime').textContent = article.read_time || '';
             
-            // Handle featured image
-            const modalImage = document.getElementById('modalFeaturedImage');
+            // Author avatar
+            const authorAvatar = article.author_profile_picture || generateAvatarPlaceholder(article.author);
+            document.getElementById('detailAuthorAvatar').src = authorAvatar;
+            document.getElementById('detailAuthorAvatar').alt = article.author;
+            
+            // Featured image
+            const detailImage = document.getElementById('detailFeaturedImage');
             if (article.featured_image) {
-                modalImage.src = article.featured_image;
-                modalImage.alt = article.title;
-                modalImage.style.display = 'block';
+                detailImage.src = article.featured_image;
+                detailImage.alt = article.title;
+                detailImage.style.display = 'block';
             } else {
-                modalImage.style.display = 'none';
+                detailImage.style.display = 'none';
             }
             
-            // Set content (assuming it might contain HTML)
-            document.getElementById('modalContent').innerHTML = article.content;
+            // Content (render rich HTML content)
+            document.getElementById('detailContent').innerHTML = article.content;
             
-            document.getElementById('articleModal').classList.add('show');
+            document.getElementById('articleDetailModal').classList.add('show');
         }
 
-        function closeArticleModal() {
-            document.getElementById('articleModal').classList.remove('show');
+        function closeDetailModal() {
+            document.getElementById('articleDetailModal').classList.remove('show');
         }
 
-        // Form handling
-        document.getElementById('articleForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // Image upload handlers
+        async function handleAuthorPfpUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
             
-            if (!isAuthenticated) {
-                alert('Please login to publish articles');
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Profile picture must be under 2MB');
                 return;
             }
+            
+            try {
+                authorProfilePicture = await compressImage(file, 200, 0.8);
+                const preview = document.getElementById('authorPfpPreview');
+                preview.src = authorProfilePicture;
+                preview.style.display = 'block';
+                
+                // Hide upload text
+                const uploadText = document.querySelector('#authorPfpUpload .upload-text');
+                const uploadHint = document.querySelector('#authorPfpUpload .upload-hint');
+                uploadText.style.display = 'none';
+                uploadHint.style.display = 'none';
+            } catch (error) {
+                console.error('Error uploading profile picture:', error);
+                alert('Error uploading profile picture. Please try again.');
+            }
+        }
 
-            const formData = {
-                title: document.getElementById('articleTitle').value,
-                author: document.getElementById('articleAuthor').value,
-                category: document.getElementById('articleCategory').value,
-                excerpt: document.getElementById('articleExcerpt').value,
-                content: document.getElementById('articleContent').value.replace(/\n/g, '<br>'),
-                featured_image: document.getElementById('featuredImage').value || null,
-                published: true
-            };
+        async function handleFeaturedImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            await processFeaturedImage(file);
+        }
 
-            const submitBtn = document.querySelector('.btn[type="submit"]');
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        async function handleFeaturedImageDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+            if (files.length > 0) {
+                await processFeaturedImage(files[0]);
+            }
+        }
+
+        async function processFeaturedImage(file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Featured image must be under 5MB');
+                return;
+            }
+            
+            try {
+                featuredImage = await compressImage(file, 800, 0.85);
+                
+                const preview = document.getElementById('featuredImagePreview');
+                preview.innerHTML = `
+                    <div class="image-preview-item">
+                        <img src="${featuredImage}" alt="Featured image">
+                        <button class="remove-image" onclick="removeFeaturedImage()">×</button>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error uploading featured image:', error);
+                alert('Error uploading featured image. Please try again.');
+            }
+        }
+
+        function removeFeaturedImage() {
+            featuredImage = null;
+            document.getElementById('featuredImagePreview').innerHTML = '';
+        }
+
+        // Form submission
+        async function handleArticleSubmission(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
             const originalText = submitBtn.textContent;
             
             try {
-                submitBtn.textContent = 'Publishing...';
+                submitBtn.textContent = 'Submitting...';
                 submitBtn.disabled = true;
 
-                const editingId = document.getElementById('editingId').value;
-                if (editingId) {
-                    await updateArticle(editingId, formData);
-                } else {
-                    await saveArticle(formData);
+                const authorName = document.getElementById('authorName').value;
+                const authorEmail = document.getElementById('authorEmail').value;
+                const authorBio = document.getElementById('authorBio').value;
+                const title = document.getElementById('articleTitle').value;
+                const category = document.getElementById('articleCategory').value;
+                const readTime = document.getElementById('readTime').value;
+                const excerpt = document.getElementById('articleExcerpt').value;
+                const content = getEditorContent(); // Get rich HTML content
+
+                // Validate content
+                const editor = document.getElementById('articleContent');
+                if (!editor.textContent.trim()) {
+                    alert('Please write some content for your article.');
+                    return;
                 }
 
-                resetForm();
-                alert('Article published successfully!');
+                // Generate author avatar if none provided
+                const finalAuthorPfp = authorProfilePicture || generateAvatarPlaceholder(authorName);
+
+                const articleData = {
+                    title: title,
+                    author: authorName,
+                    author_email: authorEmail,
+                    author_bio: authorBio || null,
+                    author_profile_picture: finalAuthorPfp,
+                    category: category,
+                    read_time: readTime,
+                    excerpt: excerpt,
+                    content: content, // Rich HTML content
+                    featured_image: featuredImage || null,
+                    published: true,
+                    created_at: new Date().toISOString()
+                };
+
+                const { data, error } = await supabase
+                    .from('articles')
+                    .insert([articleData])
+                    .select();
+
+                if (error) throw error;
+
+                alert('Article submitted successfully! Thank you for your contribution.');
+                closeSubmissionModal();
+                await loadArticles(); // Refresh the articles list
+                
             } catch (error) {
-                console.error('Error saving article:', error);
-                alert('Failed to publish article: ' + error.message);
+                console.error('Error submitting article:', error);
+                alert('Error submitting article: ' + error.message);
             } finally {
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
             }
-        });
-
-        async function saveArticle(articleData) {
-            const { data, error } = await supabase
-                .from('articles')
-                .insert([articleData])
-                .select();
-
-            if (error) throw error;
-
-            console.log('Article saved:', data[0]);
-            await loadArticles();
-            return data[0];
         }
 
-        async function updateArticle(id, articleData) {
-            const { data, error } = await supabase
-                .from('articles')
-                .update(articleData)
-                .eq('id', id)
-                .select();
-
-            if (error) throw error;
-
-            console.log('Article updated:', data[0]);
-            await loadArticles();
-            return data[0];
-        }
-
-        async function deleteArticle(id) {
-            if (!isAuthenticated) {
-                alert('Please login to delete articles');
-                return;
-            }
-
-            const article = articles.find(a => a.id === id);
-            if (!article) return;
+        // Utility functions
+        function resetSubmissionForm() {
+            document.getElementById('articleSubmissionForm').reset();
+            authorProfilePicture = null;
+            featuredImage = null;
             
-            if (!confirm(`Are you sure you want to delete "${article.title}"?\n\nThis action cannot be undone.`)) return;
+            // Reset rich editor
+            setEditorContent('<p></p>');
+            
+            // Reset image previews
+            document.getElementById('authorPfpPreview').style.display = 'none';
+            document.getElementById('featuredImagePreview').innerHTML = '';
+            
+            // Show upload text again
+            const uploadText = document.querySelector('#authorPfpUpload .upload-text');
+            const uploadHint = document.querySelector('#authorPfpUpload .upload-hint');
+            if (uploadText) uploadText.style.display = 'block';
+            if (uploadHint) uploadHint.style.display = 'block';
+        }
 
-            try {
-                const { error } = await supabase
-                    .from('articles')
-                    .delete()
-                    .eq('id', id);
-
-                if (error) throw error;
-
-                console.log('Article deleted:', article.title);
-                await loadArticles();
+        function compressImage(file, maxWidth = 800, quality = 0.85) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
                 
-                alert(`"${article.title}" has been deleted.`);
-            } catch (error) {
-                console.error('Error deleting article:', error);
-                alert('Failed to delete article: ' + error.message);
-            }
+                img.onload = function() {
+                    let { width, height } = img;
+                    
+                    if (width > maxWidth) {
+                        height = (height * maxWidth) / width;
+                        width = maxWidth;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    
+                    console.log('Compressed image from', file.size, 'bytes to', Math.round(compressedDataUrl.length * 0.75), 'bytes');
+                    resolve(compressedDataUrl);
+                };
+                
+                img.src = URL.createObjectURL(file);
+            });
         }
 
-        function editArticle(id) {
-            const article = articles.find(a => a.id === id);
-            if (article) {
-                document.getElementById('editingId').value = id;
-                document.getElementById('articleTitle').value = article.title;
-                document.getElementById('articleAuthor').value = article.author;
-                document.getElementById('articleCategory').value = article.category || '';
-                document.getElementById('articleExcerpt').value = article.excerpt || '';
-                document.getElementById('articleContent').value = article.content.replace(/<br>/g, '\n');
-                document.getElementById('featuredImage').value = article.featured_image || '';
-                document.querySelector('.btn[type="submit"]').textContent = 'Update Article';
-            }
+        function generateAvatarPlaceholder(name) {
+            const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            return `data:image/svg+xml;base64,${btoa(`
+                <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="100" fill="#f8f8f8"/>
+                    <text x="50" y="60" text-anchor="middle" fill="#6b7280" font-size="24" font-family="Inter">${initials}</text>
+                </svg>
+            `)}`;
         }
 
-        function resetForm() {
-            document.getElementById('articleForm').reset();
-            document.getElementById('editingId').value = '';
-            document.querySelector('.btn[type="submit"]').textContent = 'Publish Article';
-        }
-
-        // Event listeners
-        document.getElementById('articleModal').addEventListener('click', function(e) {
-            if (e.target === this) closeArticleModal();
-        });
-
-        document.addEventListener('click', function(e) {
-            const adminPanel = document.getElementById('adminPanel');
-            const adminTrigger = document.querySelector('.admin-trigger');
-            
-            if (adminPanel.classList.contains('open') && 
-                !adminPanel.contains(e.target) && 
-                !adminTrigger.contains(e.target)) {
-                toggleAdmin();
-            }
-        });
-
+        // Keyboard event handlers
         document.addEventListener('keydown', function(e) {
-            const modal = document.getElementById('articleModal');
-            
-            if (modal.classList.contains('show')) {
-                if (e.key === 'Escape') closeArticleModal();
+            if (e.key === 'Escape') {
+                if (document.getElementById('submissionModal').classList.contains('show')) {
+                    closeSubmissionModal();
+                }
+                if (document.getElementById('articleDetailModal').classList.contains('show')) {
+                    closeDetailModal();
+                }
             }
         });
     </script>

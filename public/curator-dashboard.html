@@ -543,6 +543,186 @@
         .hidden {
             display: none !important;
         }
+        
+        /* Profile Modal Styles */
+        .profile-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .profile-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .profile-header-info {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+            align-items: start;
+        }
+        
+        .profile-avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ffffff;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+        
+        .avatar-upload {
+            background: #1f2937;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .avatar-upload:hover {
+            background: #374151;
+            transform: translateY(-2px);
+        }
+        
+        .profile-basic-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .status-display {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+        }
+        
+        .status-approved {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+        }
+        
+        .status-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .status-text {
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .status-description {
+            font-size: 12px;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+        
+        .collections-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .collection-summary-card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .collection-summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .collection-summary-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .collection-summary-details {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .profile-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .profile-actions .btn {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        /* Mobile Responsive for Profile Modal */
+        @media (max-width: 768px) {
+            .profile-header-info {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .collections-summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-actions {
+                flex-direction: column;
+            }
+            
+            .profile-actions .btn {
+                min-width: auto;
+            }
+        }
     </style>
 </head>
 <body>
@@ -678,6 +858,138 @@
         </div>
     </div>
 
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3 class="modal-title">My Profile</h3>
+                <button class="close-modal" onclick="closeProfileModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-sections">
+                    <!-- Profile Information Section -->
+                    <div class="profile-section">
+                        <h4 class="section-title">Profile Information</h4>
+                        <form id="profileForm">
+                            <div class="profile-header-info">
+                                <div class="profile-avatar-section">
+                                    <img id="profileAvatarPreview" class="profile-avatar-large" src="" alt="Profile Picture">
+                                    <div class="avatar-upload" onclick="document.getElementById('profilePictureInput').click()">
+                                        <span>Change Photo</span>
+                                        <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                                    </div>
+                                </div>
+                                <div class="profile-basic-info">
+                                    <div class="form-group">
+                                        <label for="profileName">Full Name</label>
+                                        <input type="text" id="profileName" name="name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="profileEmail">Email</label>
+                                        <input type="email" id="profileEmail" name="email" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profileBio">Bio</label>
+                                <textarea id="profileBio" name="bio" rows="4" placeholder="Tell us about your curatorial background and interests..."></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profilePassword">New Password (leave blank to keep current)</label>
+                                <input type="password" id="profilePassword" name="password" placeholder="Enter new password">
+                            </div>
+                            
+                            <button type="submit" class="btn">Save Profile Changes</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Account Status Section -->
+                    <div class="profile-section">
+                        <h4 class="section-title">Account Status</h4>
+                        <div class="status-display" id="profileAccountStatus">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Collections Management -->
+                    <div class="profile-section">
+                        <h4 class="section-title">My Collections</h4>
+                        <div class="collections-summary" id="profileCollectionsSummary">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                        <div class="profile-actions">
+                            <button class="btn btn-secondary" onclick="createCollectionFromProfile()">Create New Collection</button>
+                            <button class="btn btn-secondary" onclick="closeProfileModal(); scrollToCollections()">Manage All Collections</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="artworkModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="artworkModalTitle">Add Artwork</h3>
+                <button class="close-modal" onclick="closeArtworkModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="artworkForm">
+                    <div class="image-upload" id="imageUpload">
+                        <div class="upload-text">Click or drag images here to upload</div>
+                        <div style="font-size: 12px; color: #9ca3af;">Support: JPG, PNG, WebP (Max 5MB each)</div>
+                        <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+                    </div>
+                    <div id="uploadedImages" class="uploaded-images"></div>
+                    
+                    <div class="form-group">
+                        <label for="artworkTitle">Title</label>
+                        <input type="text" id="artworkTitle" name="title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkArtist">Artist</label>
+                        <input type="text" id="artworkArtist" name="artist" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="artworkYear">Year</label>
+                            <input type="text" id="artworkYear" name="year">
+                        </div>
+                        <div class="form-group">
+                            <label for="artworkOrientation">Orientation</label>
+                            <select id="artworkOrientation" name="orientation" style="width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                                <option value="landscape">Landscape</option>
+                                <option value="portrait">Portrait</option>
+                                <option value="square">Square</option>
+                                <option value="panoramic">Panoramic</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkDimensions">Dimensions</label>
+                        <input type="text" id="artworkDimensions" name="dimensions" placeholder="e.g., 24 x 36 inches">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkMedium">Medium</label>
+                        <input type="text" id="artworkMedium" name="medium" placeholder="e.g., Oil on canvas">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkPrice">Price (Optional)</label>
+                        <input type="text" id="artworkPrice" name="price" placeholder="e.g., $1,200">
+                    </div>
+                    
+                    <button type="submit" class="btn" id="artworkSubmitBtn">Add Artwork</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Artwork Modal -->
     <div class="modal" id="artworkModal">
         <div class="modal-content">
@@ -771,6 +1083,12 @@
             // Artwork form
             document.getElementById('artworkForm').addEventListener('submit', handleArtworkSubmit);
             
+            // Profile form
+            document.getElementById('profileForm').addEventListener('submit', handleProfileSubmit);
+            
+            // Profile picture upload
+            document.getElementById('profilePictureInput').addEventListener('change', handleProfilePictureUpload);
+            
             // Image upload
             const imageUpload = document.getElementById('imageUpload');
             const imageInput = document.getElementById('imageInput');
@@ -787,6 +1105,114 @@
             
             document.getElementById('artworkModal').addEventListener('click', function(e) {
                 if (e.target === this) closeArtworkModal();
+            });
+            
+            document.getElementById('profileModal').addEventListener('click', function(e) {
+                if (e.target === this) closeProfileModal();
+            });
+        }
+
+        async function handleProfilePictureUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Profile picture must be under 2MB');
+                return;
+            }
+            
+            try {
+                const compressedImage = await compressImage(file, 300, 0.8);
+                document.getElementById('profileAvatarPreview').src = compressedImage;
+            } catch (error) {
+                console.error('Error processing profile picture:', error);
+                alert('Error processing profile picture. Please try again.');
+            }
+        }
+
+        async function handleProfileSubmit(e) {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                submitBtn.textContent = 'Saving...';
+                submitBtn.disabled = true;
+                
+                const formData = new FormData(e.target);
+                const updateData = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    bio: formData.get('bio') || null
+                };
+                
+                // Add password if provided
+                const newPassword = formData.get('password');
+                if (newPassword && newPassword.trim()) {
+                    updateData.password = newPassword.trim();
+                }
+                
+                // Add profile picture if changed
+                const profileImage = document.getElementById('profileAvatarPreview').src;
+                if (profileImage && !profileImage.includes('data:image/svg+xml')) {
+                    updateData.profile_image = profileImage;
+                }
+                
+                // Update in database
+                const { data, error } = await supabase
+                    .from('curators')
+                    .update(updateData)
+                    .eq('id', currentCurator.id)
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                // Update current curator and localStorage
+                currentCurator = { ...currentCurator, ...data };
+                localStorage.setItem('currentCurator', JSON.stringify(currentCurator));
+                
+                // Update UI elements
+                const userAvatar = document.getElementById('userAvatar');
+                userAvatar.src = currentCurator.profile_image || generateAvatarPlaceholder(currentCurator.name);
+                
+                alert('Profile updated successfully!');
+                closeProfileModal();
+                
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Error updating profile: ' + error.message);
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        function compressImage(file, maxWidth = 300, quality = 0.8) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = function() {
+                    let { width, height } = img;
+                    
+                    if (width > maxWidth) {
+                        height = (height * maxWidth) / width;
+                        width = maxWidth;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    
+                    resolve(compressedDataUrl);
+                };
+                
+                img.src = URL.createObjectURL(file);
             });
         }
 
@@ -1310,7 +1736,112 @@
         }
 
         function viewProfile() {
-            alert('Profile editing feature coming soon!');
+            openProfileModal();
+        }
+
+        async function openProfileModal() {
+            // Populate profile form with current data
+            document.getElementById('profileName').value = currentCurator.name || '';
+            document.getElementById('profileEmail').value = currentCurator.email || '';
+            document.getElementById('profileBio').value = currentCurator.bio || '';
+            document.getElementById('profilePassword').value = '';
+            
+            // Set profile avatar
+            const profileAvatar = document.getElementById('profileAvatarPreview');
+            profileAvatar.src = currentCurator.profile_image || generateAvatarPlaceholder(currentCurator.name);
+            
+            // Update account status
+            updateProfileAccountStatus();
+            
+            // Load collections summary
+            await loadProfileCollectionsSummary();
+            
+            document.getElementById('profileModal').classList.add('show');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('show');
+        }
+
+        function updateProfileAccountStatus() {
+            const statusContainer = document.getElementById('profileAccountStatus');
+            
+            if (currentCurator.status === 'pending') {
+                statusContainer.innerHTML = `
+                    <div class="status-pending">
+                        <span class="status-icon">⏳</span>
+                        <div class="status-text">Account Pending Approval</div>
+                        <div class="status-description">Your collections will be public once approved by our team</div>
+                    </div>
+                `;
+            } else if (currentCurator.status === 'approved') {
+                statusContainer.innerHTML = `
+                    <div class="status-approved">
+                        <span class="status-icon">✅</span>
+                        <div class="status-text">Account Approved</div>
+                        <div class="status-description">Your collections are public and visible to all visitors</div>
+                    </div>
+                `;
+            } else {
+                statusContainer.innerHTML = `
+                    <div class="status-display">
+                        <span class="status-icon">❓</span>
+                        <div class="status-text">Status Unknown</div>
+                        <div class="status-description">Please contact support for assistance</div>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadProfileCollectionsSummary() {
+            const summaryContainer = document.getElementById('profileCollectionsSummary');
+            
+            if (collections.length === 0) {
+                summaryContainer.innerHTML = `
+                    <div class="collection-summary-card" onclick="createCollectionFromProfile()">
+                        <div class="collection-summary-name">Create Your First Collection</div>
+                        <div class="collection-summary-details">Start curating artworks</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Get artwork counts for collections
+            const collectionIds = collections.map(c => c.id);
+            const { data: artworks } = await supabase
+                .from('curator_artworks')
+                .select('collection_id')
+                .in('collection_id', collectionIds);
+            
+            const artworkCounts = {};
+            (artworks || []).forEach(artwork => {
+                artworkCounts[artwork.collection_id] = (artworkCounts[artwork.collection_id] || 0) + 1;
+            });
+            
+            summaryContainer.innerHTML = collections.map(collection => {
+                const artworkCount = artworkCounts[collection.id] || 0;
+                return `
+                    <div class="collection-summary-card" onclick="editCollectionFromProfile('${collection.id}')">
+                        <div class="collection-summary-name">${collection.name}</div>
+                        <div class="collection-summary-details">${collection.type} • ${artworkCount} artwork${artworkCount !== 1 ? 's' : ''}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function createCollectionFromProfile() {
+            closeProfileModal();
+            createCollection();
+        }
+
+        function editCollectionFromProfile(collectionId) {
+            closeProfileModal();
+            editCollection(collectionId);
+        }
+
+        function scrollToCollections() {
+            const collectionsSection = document.getElementById('collectionsGrid');
+            collectionsSection.scrollIntoView({ behavior: 'smooth' });
         }
 
         function generateAvatarPlaceholder(name) {

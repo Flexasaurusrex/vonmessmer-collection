@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Curators Corner - VonMesser Collection</title>
+    <meta content="Insights, articles, and perspectives from the art curation community" name="description"/>
+    
+    <!-- Favicon -->
+    <link href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNmZmZmZmYiLz4KICA8ZyBmaWxsPSIjMzMzIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iOCwyIDEwLDIgMTMsOSAxNiwyIDE4LDIgMTQsMTIgMTEsMTIiLz4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTksMiAyMSwyIDIzLDcgMjUsMiAyNywyIDI3LDEyIDI1LDEyIDI1LDUgMjMsOSAyMSw5IDIwLDUgMjAsMTIgMTksMTIiLz4KICA8L2c+CiAgPHRleHQgeD0iMTYiIHk9IjI3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiBzdHlsZT0iZm9udC1mYW1pbHk6IHNhbnMtc2VyaWY7IGZvbnQtc2l6ZTogNXB4OyBmb250LXdlaWdodDogNDAwOyBsZXR0ZXItc3BhY2luZzogMC41cHg7Ij5WTTwvdGV4dD4KPC9zdmc+Cg==" rel="icon" type="image/svg+xml"/>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet"/>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #2c2c2c;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #f0f0f0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            backdrop-filter: blur(10px);
+            padding: 25px 0;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .logo:hover {
+            opacity: 0.8;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 50px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #6b7280;
+            font-weight: 400;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #1f2937;
+        }
+        
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-toggle::after {
+            content: ' ▼';
+            font-size: 10px;
+            color: #9ca3af;
+            margin-left: 5px;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+            list-style: none;
+            padding: 8px 0;
+            margin: 8px 0 0 0;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-menu li {
+            display: block;
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: #4b5563;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 0;
+        }
+        
+        .dropdown-menu a:hover {
+            background: #f9fafb;
+            color: #1f2937;
+        }
+        
+        /* Hero */
+        .hero {
+            padding: 80px 0 60px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        }
+        
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            line-height: 0.9;
+            font-family: Impact, 'Arial Black', 'Helvetica Neue', Helvetica, sans-serif;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 16px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        
+        /* Admin Controls */
+        .admin-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+        }
+        
+        .admin-trigger {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-trigger:hover {
+            opacity: 0.8;
+            transform: scale(1.2);
+        }
+        
+        .admin-trigger svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Admin Panel */
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 400px;
+            height: 100vh;
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(253,253,253,0.95) 100%);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(240,240,240,0.8);
+            z-index: 2000;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+            box-shadow: -10px 0 40px rgba(0,0,0,0.12);
+        }
+        
+        .admin-panel.open {
+            right: 0;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .admin-title {
+            font-size: 16px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .close-admin {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        /* Form Styles */
+        .admin-form {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #4b5563;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1f2937;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(31,41,55,0.1);
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: 1px solid #1f2937;
+            background: #ffffff;
+            color: #1f2937;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            border-radius: 6px;
+        }
+        
+        .btn:hover {
+            background: #1f2937;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(31,41,55,0.2);
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 10px;
+            width: auto;
+        }
+        
+        .btn-danger {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background: #e74c3c;
+            color: #ffffff;
+        }
+        
+        /* Login Form */
+        .login-form {
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .login-form h3 {
+            font-size: 14px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            color: #666;
+        }
+        
+        .logout-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+            background: #f8f8f8;
+        }
+        
+        .user-email {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* Main Content */
+        main {
+            padding: 60px 0;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            margin-bottom: 40px;
+        }
+        
+        .back-link:hover {
+            border-color: #1f2937;
+            color: #1f2937;
+        }
+        
+        /* Articles Grid */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .article-card {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+        
+        .article-featured-image {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            background: #f8f8f8;
+        }
+        
+        .article-content {
+            padding: 30px;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #9ca3af;
+        }
+        
+        .article-date {
+            color: #6b7280;
+        }
+        
+        .article-author {
+            color: #4b5563;
+        }
+        
+        .article-category {
+            background: #f3f4f6;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #374151;
+        }
+        
+        .article-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        
+        .article-excerpt {
+            font-family: 'Crimson Text', serif;
+            font-size: 16px;
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .read-more {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #1f2937;
+            text-decoration: none;
+            border-bottom: 1px solid #1f2937;
+            transition: all 0.3s ease;
+        }
+        
+        .read-more:hover {
+            color: #4b5563;
+            border-bottom-color: #4b5563;
+        }
+        
+        /* Article Detail Modal */
+        .article-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .article-modal.show {
+            display: flex;
+        }
+        
+        .article-modal-content {
+            background: #ffffff;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            position: relative;
+        }
+        
+        .article-modal-header {
+            position: relative;
+            background: #f8f8f8;
+            padding: 40px;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .article-modal-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .article-modal-body {
+            padding: 40px;
+        }
+        
+        .article-modal-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .article-modal-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6b7280;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .article-modal-content-text {
+            font-family: 'Crimson Text', serif;
+            font-size: 18px;
+            color: #374151;
+            line-height: 1.8;
+        }
+        
+        .article-modal-content-text p {
+            margin-bottom: 24px;
+        }
+        
+        .article-modal-content-text h2,
+        .article-modal-content-text h3 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #1f2937;
+            margin: 32px 0 16px;
+        }
+        
+        .article-modal-content-text h2 {
+            font-size: 16px;
+        }
+        
+        .article-modal-content-text h3 {
+            font-size: 14px;
+        }
+        
+        .close-article-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .close-article-modal:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+        
+        /* Article Admin Controls */
+        .article-admin-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .article-card:hover .article-admin-controls {
+            opacity: 1;
+        }
+        
+        .article-admin-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            min-width: 32px;
+            text-align: center;
+        }
+        
+        .article-admin-btn:hover {
+            background: #333;
+            color: white;
+            border-color: #333;
+        }
+        
+        .article-admin-btn.danger:hover {
+            background: #e74c3c;
+            border-color: #e74c3c;
+        }
+        
+        /* Loading and Empty States */
+        .loading {
+            text-align: center;
+            padding: 120px 20px;
+            color: #6b7280;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .empty-articles {
+            text-align: center;
+            padding: 120px 20px;
+            color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+        
+        .empty-articles h3 {
+            font-size: 20px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .empty-articles p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            .nav-links {
+                gap: 25px;
+            }
+            
+            .nav-links a {
+                font-size: 13px;
+            }
+            
+            .hero {
+                padding: 60px 0 40px;
+            }
+            
+            .articles-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .article-content {
+                padding: 20px;
+            }
+            
+            .article-modal {
+                padding: 10px;
+            }
+            
+            .article-modal-header,
+            .article-modal-body {
+                padding: 20px;
+            }
+            
+            .admin-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a class="logo" href="index.html">
+                <svg height="38" viewbox="0 0 85 32" width="102" xmlns="http://www.w3.org/2000/svg">
+                    <g fill="#333" style="font-weight: 400;">
+                        <polygon points="24,3 27,3 32,17 35,3 38,3 31.5,19 28.5,19"></polygon>
+                        <polygon points="40,3 43,3 46,14 49,3 52,3 52,19 49.5,19 49.5,7 47.5,16 44.5,16 42.5,7 42.5,19 40,19"></polygon>
+                    </g>
+                    <text fill="#333" style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 6px; font-weight: 400; letter-spacing: 1.8px;" text-anchor="middle" x="42.5" y="29">VONMESSER</text>
+                </svg>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Physical Collection</a></li>
+                <li><a href="https://linktr.ee/flexasaurusrex" target="_blank">Digital Collection</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" href="#">Guest Curators</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="guest-curators.html">Browse All Curators</a></li>
+                        <li><a href="index.html#apply">Apply to Curate</a></li>
+                    </ul>
+                </li>
+                <li><a href="curators-corner.html" class="active">Curators Corner</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Curators Corner</h1>
+            <p>Insights, articles, and perspectives from the art curation community</p>
+        </div>
+    </section>
+
+    <!-- Admin Controls -->
+    <div class="admin-controls">
+        <div class="admin-trigger" onclick="toggleAdmin()">
+            <svg viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <polygon fill="#333" points="10,2 18,10 10,18 2,10" stroke="none"></polygon>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h3 class="admin-title">Article Admin</h3>
+            <button class="close-admin" onclick="toggleAdmin()">×</button>
+        </div>
+
+        <!-- Login Form -->
+        <div class="login-form" id="loginForm">
+            <h3>Admin Login</h3>
+            <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input id="loginEmail" required type="email"/>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input id="loginPassword" required type="password"/>
+            </div>
+            <button class="btn" onclick="login()">Login</button>
+        </div>
+
+        <!-- Admin Content -->
+        <div id="adminContent" style="display: none;">
+            <div class="logout-section">
+                <span class="user-email" id="userEmail"></span>
+                <button class="btn btn-small" onclick="logout()">Logout</button>
+            </div>
+
+            <form class="admin-form" id="articleForm">
+                <input id="editingId" type="hidden" value=""/>
+                
+                <div class="form-group">
+                    <label for="articleTitle">Article Title</label>
+                    <input id="articleTitle" required type="text"/>
+                </div>
+                
+                <div class="form-group">
+                    <label for="articleAuthor">Author</label>
+                    <input id="articleAuthor" required type="text"/>
+                </div>
+                
+                <div class="form-group">
+                    <label for="articleCategory">Category</label>
+                    <select id="articleCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="Curation">Curation</option>
+                        <option value="Art History">Art History</option>
+                        <option value="Contemporary Art">Contemporary Art</option>
+                        <option value="Exhibitions">Exhibitions</option>
+                        <option value="Artist Spotlight">Artist Spotlight</option>
+                        <option value="Market Insights">Market Insights</option>
+                        <option value="Opinion">Opinion</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="articleExcerpt">Excerpt</label>
+                    <textarea id="articleExcerpt" rows="3" placeholder="Brief description or teaser..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="articleContent">Article Content</label>
+                    <textarea id="articleContent" rows="12" placeholder="Write your article content here..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="featuredImage">Featured Image URL</label>
+                    <input id="featuredImage" type="url" placeholder="https://example.com/image.jpg"/>
+                </div>
+                
+                <button class="btn" type="submit">Publish Article</button>
+                <button class="btn" onclick="resetForm()" style="margin-top: 10px;" type="button">Clear Form</button>
+            </form>
+        </div>
+    </div>
+
+    <main>
+        <div class="container">
+            <a href="index.html" class="back-link">
+                ← Back to Collection
+            </a>
+            
+            <div id="articlesGrid" class="articles-grid">
+                <div class="loading">Loading articles...</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Article Detail Modal -->
+    <div class="article-modal" id="articleModal">
+        <div class="article-modal-content">
+            <button class="close-article-modal" onclick="closeArticleModal()">×</button>
+            <div class="article-modal-header">
+                <img id="modalFeaturedImage" class="article-modal-image" src="" alt="" style="display: none;">
+                <h1 id="modalTitle" class="article-modal-title"></h1>
+                <div class="article-modal-meta">
+                    <span id="modalAuthor"></span>
+                    <span id="modalDate"></span>
+                    <span id="modalCategory"></span>
+                </div>
+            </div>
+            <div class="article-modal-body">
+                <div id="modalContent" class="article-modal-content-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://qqkshpkbfixeyusqpsou.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let articles = [];
+        let isAuthenticated = false;
+        let isAdminMode = false;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthState();
+            loadArticles();
+        });
+
+        // Authentication functions
+        async function checkAuthState() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                isAuthenticated = true;
+                document.getElementById('userEmail').textContent = session.user.email;
+                showAdminContent();
+            } else {
+                isAuthenticated = false;
+                showLoginForm();
+            }
+        }
+
+        function showAdminContent() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('adminContent').style.display = 'none';
+        }
+
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                isAuthenticated = true;
+                document.getElementById('userEmail').textContent = data.user.email;
+                showAdminContent();
+                alert('Login successful!');
+                
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+                renderArticles(); // Re-render to show admin controls
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed: ' + error.message);
+            }
+        }
+
+        async function logout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+
+                isAuthenticated = false;
+                isAdminMode = false;
+                
+                showLoginForm();
+                const adminPanel = document.getElementById('adminPanel');
+                if (adminPanel.classList.contains('open')) {
+                    toggleAdmin();
+                }
+                renderArticles(); // Re-render to hide admin controls
+                alert('Logged out successfully');
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout failed: ' + error.message);
+            }
+        }
+
+        // Admin functions
+        function toggleAdmin() {
+            const panel = document.getElementById('adminPanel');
+            panel.classList.toggle('open');
+            isAdminMode = panel.classList.contains('open') && isAuthenticated;
+            renderArticles(); // Re-render to show/hide admin controls
+        }
+
+        // Article functions
+        async function loadArticles() {
+            try {
+                const { data, error } = await supabase
+                    .from('articles')
+                    .select('*')
+                    .eq('published', true)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                articles = data || [];
+                console.log('Loaded', articles.length, 'articles from database');
+                renderArticles();
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                // Create table if it doesn't exist and add sample article
+                createSampleArticle();
+            }
+        }
+
+        async function createSampleArticle() {
+            // Try to create a sample article for demonstration
+            const sampleArticle = {
+                title: "The Evolution of Art Curation in the Digital Age",
+                author: "VonMesser Collection",
+                category: "Curation",
+                excerpt: "Exploring how digital technologies are transforming the way we curate, display, and experience art in contemporary galleries and collections.",
+                content: `<p>The art world has undergone a profound transformation in the digital age, fundamentally altering how we approach curation, exhibition, and audience engagement. As collectors and curators, we find ourselves at the intersection of traditional practices and innovative technologies that are reshaping our field.</p>
+
+<h2>Digital Platforms and Virtual Galleries</h2>
+
+<p>The emergence of digital platforms has democratized access to art, allowing curators to reach global audiences without the constraints of physical space. Virtual galleries offer unprecedented flexibility in presentation, enabling curators to experiment with new forms of storytelling and thematic organization.</p>
+
+<p>This shift has also challenged traditional notions of the "white cube" gallery space, opening up possibilities for more dynamic and interactive presentations that would be impossible in physical venues.</p>
+
+<h2>Data-Driven Curation</h2>
+
+<p>Modern curation increasingly relies on data analytics to understand audience preferences and engagement patterns. This information helps curators make more informed decisions about which works to feature and how to organize exhibitions for maximum impact.</p>
+
+<p>However, the challenge lies in balancing data insights with curatorial intuition and artistic vision. The most successful digital-age curators are those who can synthesize quantitative feedback with their deep understanding of art and culture.</p>
+
+<h2>The Future of Curatorial Practice</h2>
+
+<p>As we look toward the future, it's clear that successful curation will require a hybrid approach that leverages both digital tools and traditional expertise. The role of the curator is evolving from gatekeeper to facilitator, helping audiences navigate an increasingly complex and abundant art landscape.</p>
+
+<p>The challenge—and opportunity—for today's curators is to harness these new technologies while maintaining the critical eye and cultural knowledge that has always been at the heart of great curation.</p>`,
+                featured_image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=400&fit=crop",
+                published: true,
+                created_at: new Date().toISOString()
+            };
+
+            try {
+                const { data, error } = await supabase
+                    .from('articles')
+                    .insert([sampleArticle])
+                    .select();
+
+                if (error) {
+                    console.error('Error creating sample article:', error);
+                    articles = [];
+                } else {
+                    articles = data || [];
+                    console.log('Created sample article');
+                }
+            } catch (error) {
+                console.error('Error with sample article:', error);
+                articles = [];
+            }
+            
+            renderArticles();
+        }
+
+        function renderArticles() {
+            const grid = document.getElementById('articlesGrid');
+            
+            if (articles.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-articles">
+                        <h3>No Articles Yet</h3>
+                        <p>Articles and insights from the art curation community will appear here.<br>Check back soon for new content!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = articles.map(article => {
+                const publishedDate = new Date(article.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                return `
+                    <div class="article-card" onclick="openArticleModal('${article.id}')">
+                        ${article.featured_image ? `<img class="article-featured-image" src="${article.featured_image}" alt="${article.title}">` : ''}
+                        
+                        ${isAdminMode && isAuthenticated ? `
+                            <div class="article-admin-controls">
+                                <button class="article-admin-btn" onclick="event.stopPropagation(); editArticle('${article.id}')" title="Edit">✎</button>
+                                <button class="article-admin-btn danger" onclick="event.stopPropagation(); deleteArticle('${article.id}')" title="Delete">×</button>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="article-content">
+                            <div class="article-meta">
+                                <span class="article-date">${publishedDate}</span>
+                                <span class="article-author">By ${article.author}</span>
+                                ${article.category ? `<span class="article-category">${article.category}</span>` : ''}
+                            </div>
+                            
+                            <h2 class="article-title">${article.title}</h2>
+                            
+                            ${article.excerpt ? `<p class="article-excerpt">${article.excerpt}</p>` : ''}
+                            
+                            <a href="#" class="read-more" onclick="event.preventDefault(); event.stopPropagation(); openArticleModal('${article.id}')">Read More</a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Article modal functions
+        function openArticleModal(id) {
+            const article = articles.find(a => a.id === id);
+            if (!article) return;
+            
+            document.getElementById('modalTitle').textContent = article.title;
+            document.getElementById('modalAuthor').textContent = `By ${article.author}`;
+            document.getElementById('modalDate').textContent = new Date(article.created_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('modalCategory').textContent = article.category || '';
+            
+            // Handle featured image
+            const modalImage = document.getElementById('modalFeaturedImage');
+            if (article.featured_image) {
+                modalImage.src = article.featured_image;
+                modalImage.alt = article.title;
+                modalImage.style.display = 'block';
+            } else {
+                modalImage.style.display = 'none';
+            }
+            
+            // Set content (assuming it might contain HTML)
+            document.getElementById('modalContent').innerHTML = article.content;
+            
+            document.getElementById('articleModal').classList.add('show');
+        }
+
+        function closeArticleModal() {
+            document.getElementById('articleModal').classList.remove('show');
+        }
+
+        // Form handling
+        document.getElementById('articleForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!isAuthenticated) {
+                alert('Please login to publish articles');
+                return;
+            }
+
+            const formData = {
+                title: document.getElementById('articleTitle').value,
+                author: document.getElementById('articleAuthor').value,
+                category: document.getElementById('articleCategory').value,
+                excerpt: document.getElementById('articleExcerpt').value,
+                content: document.getElementById('articleContent').value.replace(/\n/g, '<br>'),
+                featured_image: document.getElementById('featuredImage').value || null,
+                published: true
+            };
+
+            const submitBtn = document.querySelector('.btn[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                submitBtn.textContent = 'Publishing...';
+                submitBtn.disabled = true;
+
+                const editingId = document.getElementById('editingId').value;
+                if (editingId) {
+                    await updateArticle(editingId, formData);
+                } else {
+                    await saveArticle(formData);
+                }
+
+                resetForm();
+                alert('Article published successfully!');
+            } catch (error) {
+                console.error('Error saving article:', error);
+                alert('Failed to publish article: ' + error.message);
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        async function saveArticle(articleData) {
+            const { data, error } = await supabase
+                .from('articles')
+                .insert([articleData])
+                .select();
+
+            if (error) throw error;
+
+            console.log('Article saved:', data[0]);
+            await loadArticles();
+            return data[0];
+        }
+
+        async function updateArticle(id, articleData) {
+            const { data, error } = await supabase
+                .from('articles')
+                .update(articleData)
+                .eq('id', id)
+                .select();
+
+            if (error) throw error;
+
+            console.log('Article updated:', data[0]);
+            await loadArticles();
+            return data[0];
+        }
+
+        async function deleteArticle(id) {
+            if (!isAuthenticated) {
+                alert('Please login to delete articles');
+                return;
+            }
+
+            const article = articles.find(a => a.id === id);
+            if (!article) return;
+            
+            if (!confirm(`Are you sure you want to delete "${article.title}"?\n\nThis action cannot be undone.`)) return;
+
+            try {
+                const { error } = await supabase
+                    .from('articles')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                console.log('Article deleted:', article.title);
+                await loadArticles();
+                
+                alert(`"${article.title}" has been deleted.`);
+            } catch (error) {
+                console.error('Error deleting article:', error);
+                alert('Failed to delete article: ' + error.message);
+            }
+        }
+
+        function editArticle(id) {
+            const article = articles.find(a => a.id === id);
+            if (article) {
+                document.getElementById('editingId').value = id;
+                document.getElementById('articleTitle').value = article.title;
+                document.getElementById('articleAuthor').value = article.author;
+                document.getElementById('articleCategory').value = article.category || '';
+                document.getElementById('articleExcerpt').value = article.excerpt || '';
+                document.getElementById('articleContent').value = article.content.replace(/<br>/g, '\n');
+                document.getElementById('featuredImage').value = article.featured_image || '';
+                document.querySelector('.btn[type="submit"]').textContent = 'Update Article';
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('articleForm').reset();
+            document.getElementById('editingId').value = '';
+            document.querySelector('.btn[type="submit"]').textContent = 'Publish Article';
+        }
+
+        // Event listeners
+        document.getElementById('articleModal').addEventListener('click', function(e) {
+            if (e.target === this) closeArticleModal();
+        });
+
+        document.addEventListener('click', function(e) {
+            const adminPanel = document.getElementById('adminPanel');
+            const adminTrigger = document.querySelector('.admin-trigger');
+            
+            if (adminPanel.classList.contains('open') && 
+                !adminPanel.contains(e.target) && 
+                !adminTrigger.contains(e.target)) {
+                toggleAdmin();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('articleModal');
+            
+            if (modal.classList.contains('show')) {
+                if (e.key === 'Escape') closeArticleModal();
+            }
+        });
+    </script>
+</body>
+</html>

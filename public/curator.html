@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Guest Curators - VonMesser Collection</title>
-    <meta content="Discover our guest curators and their carefully curated collections" name="description"/>
+    <title id="pageTitle">Curator Collection - VonMesser Collection</title>
+    <meta content="Explore this curator's carefully selected collection" name="description" id="pageDescription"/>
     
     <!-- Favicon -->
     <link href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNmZmZmZmYiLz4KICA8ZyBmaWxsPSIjMzMzIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iOCwyIDEwLDIgMTMsOSAxNiwyIDE4LDIgMTQsMTIgMTEsMTIiLz4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTksMiAyMSwyIDIzLDcgMjUsMiAyNywyIDI3LDEyIDI1LDEyIDI1LDUgMjMsOSAyMSw5IDIwLDUgMjAsMTIgMTksMTIiLz4KICA8L2c+CiAgPHRleHQgeD0iMTYiIHk9IjI3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiBzdHlsZT0iZm9udC1mYW1pbHk6IHNhbnMtc2VyaWY7IGZvbnQtc2l6ZTogNXB4OyBmb250LXdlaWdodDogNDAwOyBsZXR0ZXItc3BhY2luZzogMC41cHg7Ij5WTTwvdGV4dD4KPC9zdmc+Cg==" rel="icon" type="image/svg+xml"/>
@@ -81,302 +81,408 @@
             transition: all 0.3s ease;
         }
         
-        .nav-links a:hover,
-        .nav-links a.active {
+        .nav-links a:hover {
             color: #1f2937;
         }
         
-        /* Dropdown Menu */
-        .dropdown {
-            position: relative;
-        }
-        
-        .dropdown-toggle::after {
-            content: ' ▼';
-            font-size: 10px;
-            color: #9ca3af;
-            margin-left: 5px;
-        }
-        
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-            min-width: 200px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-            z-index: 1001;
-            list-style: none;
-            padding: 8px 0;
-            margin: 8px 0 0 0;
-        }
-        
-        .dropdown:hover .dropdown-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        
-        .dropdown-menu li {
-            display: block;
-        }
-        
-        .dropdown-menu a {
-            display: block;
-            padding: 12px 20px;
-            color: #4b5563;
-            font-size: 13px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-radius: 0;
-        }
-        
-        .dropdown-menu a:hover {
-            background: #f9fafb;
-            color: #1f2937;
-        }
-        
-        /* Hero */
-        .hero {
-            padding: 80px 0 60px;
+        /* Curator Header */
+        .curator-header {
+            padding: 60px 0;
             text-align: center;
             border-bottom: 1px solid #f0f0f0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
         }
         
-        .hero h1 {
-            font-size: clamp(3rem, 8vw, 7rem);
-            font-weight: 900;
+        .curator-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .curator-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ffffff;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+        
+        .curator-details h1 {
+            font-size: 32px;
+            font-weight: 500;
             color: #1f2937;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            line-height: 0.9;
-            font-family: Impact, 'Arial Black', 'Helvetica Neue', Helvetica, sans-serif;
-            margin-bottom: 20px;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
         }
         
-        .hero p {
+        .curator-title {
             font-size: 16px;
             color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        
+        .collection-info {
+            text-align: center;
+        }
+        
+        .collection-name {
+            font-size: 24px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        
+        .collection-type {
+            font-size: 14px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .curator-bio {
+            font-size: 16px;
+            color: #4b5563;
+            line-height: 1.6;
+            text-align: center;
             max-width: 600px;
-            margin: 0 auto;
         }
         
-        /* Main Content */
-        main {
-            padding: 60px 0;
+        /* Navigation */
+        .page-nav {
+            padding: 30px 0;
         }
         
-        .curators-grid {
+        .nav-breadcrumbs {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6b7280;
+        }
+        
+        .nav-breadcrumbs a {
+            color: #6b7280;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-breadcrumbs a:hover {
+            color: #1f2937;
+        }
+        
+        .breadcrumb-separator {
+            color: #d1d5db;
+        }
+        
+        /* Gallery Grid */
+        .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
         }
         
-        .curator-card {
-            background: #ffffff;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            transition: all 0.4s ease;
+        .artwork-card {
             cursor: pointer;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.4s ease;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
         
-        .curator-card:hover {
+        .artwork-card.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .artwork-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.12);
         }
         
-        .curator-avatar {
+        .artwork-image {
             width: 100%;
-            height: 250px;
-            object-fit: cover;
             background: #f8f8f8;
+            overflow: hidden;
+            position: relative;
         }
         
-        .curator-info {
-            padding: 30px;
+        .artwork-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
         }
         
-        .curator-name {
-            font-size: 20px;
+        .artwork-image.landscape { aspect-ratio: 4/3; }
+        .artwork-image.portrait { aspect-ratio: 3/4; }
+        .artwork-image.square { aspect-ratio: 1/1; }
+        .artwork-image.panoramic { aspect-ratio: 16/9; }
+        
+        .artwork-info {
+            text-align: left;
+            padding: 20px;
+            background: #ffffff;
+        }
+        
+        .artwork-title {
+            font-size: 13px;
             font-weight: 500;
             color: #1f2937;
-            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-bottom: 8px;
+            line-height: 1.3;
         }
         
-        .curator-title {
-            font-size: 14px;
+        .artwork-artist {
+            font-size: 11px;
+            color: #4b5563;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+        
+        .artwork-details {
+            font-size: 11px;
             color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.4;
+        }
+        
+        .artwork-price {
+            margin-top: 8px;
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #ffffff;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        
+        .modal-image-container {
+            position: relative;
+            background: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 450px;
+            max-height: 70vh;
+            padding: 40px;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .modal-image {
+            max-width: 100%;
+            max-height: calc(70vh - 80px);
+            object-fit: contain;
+            cursor: zoom-in;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .modal-info {
+            padding: 40px;
+            background: #ffffff;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #1f2937;
+            line-height: 1.2;
+        }
+        
+        .modal-artist {
+            font-size: 16px;
+            color: #4b5563;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 15px;
         }
         
-        .curator-bio {
+        .modal-details {
             font-size: 14px;
-            color: #4b5563;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        
-        .curator-stats {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 20px;
-            border-top: 1px solid #f0f0f0;
-        }
-        
-        .collection-count {
-            font-size: 12px;
             color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            line-height: 1.6;
         }
         
-        .view-collections {
-            background: #1f2937;
-            color: #ffffff;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-size: 11px;
+        .modal-price {
+            font-size: 18px;
             font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #1f2937;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+        
+        /* Image navigation for multiple images */
+        .image-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            font-size: 18px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        .image-nav:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+        
+        .image-nav.prev {
+            left: 20px;
+        }
+        
+        .image-nav.next {
+            right: 20px;
+        }
+        
+        .image-nav:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .image-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
             cursor: pointer;
             transition: all 0.3s ease;
         }
         
-        .view-collections:hover {
-            background: #374151;
+        .dot.active {
+            background: rgba(255, 255, 255, 1);
         }
         
-        .collections-list {
-            margin-top: 15px;
-        }
-        
-        .collection-item {
-            display: block;
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            text-decoration: none;
-            color: #4b5563;
-            transition: all 0.3s ease;
-            font-size: 13px;
-        }
-        
-        .collection-item:hover {
-            background: #ffffff;
-            border-color: #1f2937;
-            color: #1f2937;
-        }
-        
-        .collection-name {
-            font-weight: 500;
-            margin-bottom: 2px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .collection-type {
-            font-size: 11px;
-            color: #9ca3af;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
+        /* Loading and Empty States */
         .loading {
             text-align: center;
-            padding: 60px;
+            padding: 120px 20px;
             color: #6b7280;
             font-size: 16px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         
-        .empty-state {
+        .empty-collection {
             text-align: center;
             padding: 120px 20px;
             color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
         
-        .empty-state h3 {
+        .empty-collection h3 {
             font-size: 20px;
             font-weight: 500;
             color: #1f2937;
-            margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-bottom: 15px;
         }
         
-        .empty-state p {
+        .empty-collection p {
             font-size: 16px;
             line-height: 1.6;
         }
         
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
-            background: rgba(255,255,255,0.9);
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            color: #6b7280;
-            text-decoration: none;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            margin-bottom: 40px;
-        }
-        
-        .back-link:hover {
-            border-color: #1f2937;
-            color: #1f2937;
-        }
-        
-        .apply-section {
+        .error-state {
             text-align: center;
-            margin-top: 30px;
+            padding: 120px 20px;
+            color: #ef4444;
         }
         
-        .apply-btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #1f2937;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            margin-bottom: 10px;
-        }
-        
-        .apply-btn:hover {
-            background: #374151;
-        }
-        
-        .apply-note {
-            font-size: 11px;
-            color: #9ca3af;
+        .error-state h3 {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -395,17 +501,43 @@
                 font-size: 13px;
             }
             
-            .hero {
-                padding: 60px 0 40px;
-            }
-            
-            .curators-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
+            .curator-header {
+                padding: 40px 0;
             }
             
             .curator-info {
+                gap: 15px;
+            }
+            
+            .curator-avatar {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .curator-details h1 {
+                font-size: 24px;
+            }
+            
+            .collection-name {
+                font-size: 20px;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .modal {
+                padding: 10px;
+            }
+            
+            .modal-info {
                 padding: 20px;
+            }
+            
+            .modal-image-container {
+                min-height: 250px;
+                max-height: 50vh;
             }
         }
     </style>
@@ -425,44 +557,73 @@
             <ul class="nav-links">
                 <li><a href="index.html">Physical Collection</a></li>
                 <li><a href="https://linktr.ee/flexasaurusrex" target="_blank">Digital Collection</a></li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle active" href="#">Guest Curators</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="guest-curators.html">Browse All Curators</a></li>
-                        <li><a href="index.html#apply" onclick="window.parent.openCuratorApplication && window.parent.openCuratorApplication(); return false;">Apply to Curate</a></li>
-                    </ul>
-                </li>
-                <li><a href="curators-corner.html">Curators Corner</a></li>
+                <li><a href="guest-curators.html">Guest Curators</a></li>
                 <li><a href="index.html#about">About</a></li>
                 <li><a href="index.html#contact">Contact</a></li>
             </ul>
         </nav>
     </header>
 
-    <section class="hero">
+    <!-- Curator Header -->
+    <section class="curator-header">
         <div class="container">
-            <h1>Guest Curators</h1>
-            <p>Discover unique perspectives from our community of curators</p>
-            <div class="apply-section">
-                <a href="index.html" class="apply-btn">Apply to Curate</a>
-                <p class="apply-note">
-                    Use Guest Curators → Apply to Curate in the menu
-                </p>
+            <div class="curator-info">
+                <img id="curatorAvatar" class="curator-avatar" src="" alt="">
+                <div class="curator-details">
+                    <h1 id="curatorName">Loading...</h1>
+                    <div class="curator-title">Curator</div>
+                </div>
+                <div class="collection-info">
+                    <div id="collectionName" class="collection-name">Loading Collection...</div>
+                    <div id="collectionType" class="collection-type">Collection</div>
+                </div>
+                <div id="curatorBio" class="curator-bio" style="display: none;"></div>
             </div>
         </div>
     </section>
 
+    <!-- Navigation -->
+    <section class="page-nav">
+        <div class="container">
+            <div class="nav-breadcrumbs">
+                <a href="index.html">Home</a>
+                <span class="breadcrumb-separator">→</span>
+                <a href="guest-curators.html">Guest Curators</a>
+                <span class="breadcrumb-separator">→</span>
+                <span id="breadcrumbCurator">Curator</span>
+                <span class="breadcrumb-separator">→</span>
+                <span id="breadcrumbCollection">Collection</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Gallery -->
     <main>
         <div class="container">
-            <a href="index.html" class="back-link">
-                ← Back to Main Collection
-            </a>
-            
-            <div id="curatorsGrid" class="curators-grid">
-                <div class="loading">Loading curators...</div>
+            <div id="galleryGrid" class="gallery-grid">
+                <div class="loading">Loading collection...</div>
             </div>
         </div>
     </main>
+
+    <!-- Artwork Modal -->
+    <div class="modal" id="artworkModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            <div class="modal-image-container">
+                <img alt="" class="modal-image" id="modalImage" src="">
+                <button class="image-nav prev" id="prevBtn" onclick="changeImage(-1)">‹</button>
+                <button class="image-nav next" id="nextBtn" onclick="changeImage(1)">›</button>
+                <div class="image-dots" id="imageDots"></div>
+            </div>
+            <div class="modal-info">
+                <h3 class="modal-title" id="modalTitle"></h3>
+                <div class="modal-artist" id="modalArtist"></div>
+                <div class="modal-details" id="modalDetails"></div>
+                <div class="modal-price" id="modalPrice" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Initialize Supabase
@@ -470,138 +631,250 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        let curators = [];
+        let curator = null;
+        let collection = null;
+        let artworks = [];
+        let currentModalImages = [];
+        let currentImageIndex = 0;
 
-        // Load and display curators on page load
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const curatorId = urlParams.get('curator');
+        const collectionId = urlParams.get('collection');
+
+        // Load page on DOM ready
         document.addEventListener('DOMContentLoaded', function() {
-            loadCurators();
+            if (!curatorId || !collectionId) {
+                showError('Invalid URL parameters. Please check the link and try again.');
+                return;
+            }
+            
+            loadCuratorPage();
         });
 
-        async function loadCurators() {
+        async function loadCuratorPage() {
             try {
-                console.log('Loading curators...');
+                await Promise.all([
+                    loadCurator(),
+                    loadCollection(),
+                    loadArtworks()
+                ]);
                 
-                // Load curators
-                const { data: curatorsData, error: curatorsError } = await supabase
-                    .from('curators')
-                    .select('*')
-                    .eq('status', 'approved')
-                    .order('created_at', { ascending: false });
-
-                if (curatorsError) {
-                    console.error('Curators error:', curatorsError);
-                    throw curatorsError;
-                }
+                updatePageContent();
+                renderGallery();
                 
-                curators = curatorsData || [];
-                console.log('Loaded curators:', curators);
-
-                // Load collections for each curator
-                if (curators.length > 0) {
-                    const curatorIds = curators.map(c => c.id);
-                    console.log('Loading collections for curator IDs:', curatorIds);
-                    
-                    const { data: collectionsData, error: collectionsError } = await supabase
-                        .from('curator_collections')
-                        .select('*')
-                        .in('curator_id', curatorIds)
-                        .order('created_at', { ascending: false });
-
-                    if (collectionsError) {
-                        console.warn('Could not load collections:', collectionsError);
-                    } else {
-                        console.log('Loaded collections:', collectionsData);
-                    }
-
-                    // Group collections by curator
-                    const collectionsByCurator = {};
-                    (collectionsData || []).forEach(collection => {
-                        if (!collectionsByCurator[collection.curator_id]) {
-                            collectionsByCurator[collection.curator_id] = [];
-                        }
-                        collectionsByCurator[collection.curator_id].push(collection);
-                    });
-
-                    // Add collections to curators
-                    curators = curators.map(curator => ({
-                        ...curator,
-                        collections: collectionsByCurator[curator.id] || []
-                    }));
-                }
-
-                console.log('Final curators with collections:', curators);
-                renderCurators();
             } catch (error) {
-                console.error('Error loading curators:', error);
-                renderError();
+                console.error('Error loading curator page:', error);
+                showError('Failed to load the curator collection. Please try again later.');
             }
         }
 
-        function renderCurators() {
-            const grid = document.getElementById('curatorsGrid');
+        async function loadCurator() {
+            const { data, error } = await supabase
+                .from('curators')
+                .select('*')
+                .eq('id', curatorId)
+                .eq('status', 'approved')
+                .single();
+
+            if (error) throw error;
+            curator = data;
+        }
+
+        async function loadCollection() {
+            const { data, error } = await supabase
+                .from('curator_collections')
+                .select('*')
+                .eq('id', collectionId)
+                .eq('curator_id', curatorId)
+                .single();
+
+            if (error) throw error;
+            collection = data;
+        }
+
+        async function loadArtworks() {
+            const { data, error } = await supabase
+                .from('curator_artworks')
+                .select('*')
+                .eq('collection_id', collectionId)
+                .order('display_order', { ascending: true, nullsLast: true })
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.warn('Could not load artworks:', error);
+                artworks = [];
+                return;
+            }
             
-            if (curators.length === 0) {
+            artworks = data || [];
+        }
+
+        function updatePageContent() {
+            if (!curator || !collection) return;
+            
+            // Update page title and meta
+            document.getElementById('pageTitle').textContent = `${curator.name} - ${collection.name} | VonMesser Collection`;
+            document.getElementById('pageDescription').setAttribute('content', 
+                `Explore ${curator.name}'s ${collection.type} collection: ${collection.name}`);
+            
+            // Update curator info
+            const defaultAvatar = generateAvatarPlaceholder(curator.name);
+            document.getElementById('curatorAvatar').src = curator.profile_image || defaultAvatar;
+            document.getElementById('curatorAvatar').alt = curator.name;
+            document.getElementById('curatorName').textContent = curator.name;
+            document.getElementById('collectionName').textContent = collection.name;
+            document.getElementById('collectionType').textContent = collection.type.toUpperCase() + ' Collection';
+            
+            // Show bio if available
+            if (curator.bio) {
+                document.getElementById('curatorBio').textContent = curator.bio;
+                document.getElementById('curatorBio').style.display = 'block';
+            }
+            
+            // Update breadcrumbs
+            document.getElementById('breadcrumbCurator').textContent = curator.name;
+            document.getElementById('breadcrumbCollection').textContent = collection.name;
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            
+            if (artworks.length === 0) {
                 grid.innerHTML = `
-                    <div class="empty-state">
-                        <h3>No Curators Yet</h3>
-                        <p>Be the first to join our curatorial community!</p>
+                    <div class="empty-collection">
+                        <h3>Collection Coming Soon</h3>
+                        <p>${curator.name} is still curating this collection.<br>Check back soon to see their selected works.</p>
                     </div>
                 `;
                 return;
             }
 
-            grid.innerHTML = curators.map(curator => {
-                const collections = curator.collections || [];
-                const defaultAvatar = generateAvatarPlaceholder(curator.name);
-                
-                return `
-                    <div class="curator-card">
-                        <img class="curator-avatar" 
-                             src="${curator.profile_image || defaultAvatar}" 
-                             alt="${curator.name}"
-                             onerror="this.src='${defaultAvatar}'">
-                        <div class="curator-info">
-                            <div class="curator-name">${curator.name}</div>
-                            <div class="curator-title">Curator</div>
-                            ${curator.bio ? `<div class="curator-bio">${curator.bio}</div>` : ''}
-                            
-                            ${collections.length > 0 ? `
-                                <div class="collections-list">
-                                    ${collections.map(collection => `
-                                        <a href="curator.html?curator=${curator.id}&collection=${collection.id}" class="collection-item">
-                                            <div class="collection-name">${collection.name}</div>
-                                            <div class="collection-type">${collection.type} Collection</div>
-                                        </a>
-                                    `).join('')}
-                                </div>
-                            ` : `
-                                <div class="curator-stats">
-                                    <span class="collection-count">No collections yet</span>
-                                </div>
-                            `}
+            grid.innerHTML = artworks.map((artwork, index) => `
+                <div class="artwork-card" onclick="openModal('${artwork.id}')">
+                    <div class="artwork-image ${artwork.orientation}">
+                        ${artwork.images && artwork.images.length > 0 ? 
+                            `<img src="${artwork.images[0]}" alt="${artwork.title}" onload="this.classList.add('loaded')">` 
+                            : '<div style="background:#f0f0f0;height:100%;display:flex;align-items:center;justify-content:center;color:#999;">No Image</div>'
+                        }
+                        ${artwork.images && artwork.images.length > 1 ? 
+                            `<div style="position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.8); padding: 4px 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px;">${artwork.images.length} Images</div>` 
+                            : ''
+                        }
+                    </div>
+                    <div class="artwork-info">
+                        <div class="artwork-title">${artwork.title}</div>
+                        <div class="artwork-details">
+                            <div class="artwork-artist">${artwork.artist}</div>
+                            <div>${artwork.year}</div>
+                            ${artwork.dimensions ? `<div style="margin-top: 3px;">${artwork.dimensions}</div>` : ''}
+                            ${artwork.medium ? `<div style="margin-top: 3px; font-style: italic;">${artwork.medium}</div>` : ''}
+                            ${artwork.price ? `<div class="artwork-price">${artwork.price}</div>` : ''}
                         </div>
                     </div>
-                `;
-            }).join('');
+                </div>
+            `).join('');
 
-            // Debug: Log the generated HTML to console
-            console.log('Rendered curators:', curators.length);
-            curators.forEach(curator => {
-                console.log(`Curator ${curator.name} has ${curator.collections?.length || 0} collections`);
-                if (curator.collections) {
-                    curator.collections.forEach(collection => {
-                        console.log(`  - Collection: ${collection.name} (ID: ${collection.id})`);
-                    });
-                }
-            });
+            // Animate cards in
+            setTimeout(() => {
+                document.querySelectorAll('.artwork-card').forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('animate-in');
+                    }, index * 50);
+                });
+            }, 100);
         }
 
-        function renderError() {
-            const grid = document.getElementById('curatorsGrid');
+        function openModal(id) {
+            const artwork = artworks.find(a => a.id === id);
+            if (!artwork) return;
+            
+            currentModalImages = artwork.images || [];
+            currentImageIndex = 0;
+            
+            updateModalImage();
+            
+            document.getElementById('modalTitle').textContent = artwork.title;
+            document.getElementById('modalArtist').textContent = artwork.artist;
+            
+            let details = artwork.year;
+            if (artwork.dimensions) {
+                details += ` • ${artwork.dimensions}`;
+            }
+            if (artwork.medium) {
+                details += `\n${artwork.medium}`;
+            }
+            document.getElementById('modalDetails').innerHTML = details.replace('\n', '<br><em style="font-style: italic; color: #999;">') + (artwork.medium ? '</em>' : '');
+            
+            const priceElement = document.getElementById('modalPrice');
+            if (artwork.price) {
+                priceElement.textContent = artwork.price;
+                priceElement.style.display = 'block';
+            } else {
+                priceElement.style.display = 'none';
+            }
+            
+            setupImageNavigation();
+            document.getElementById('artworkModal').classList.add('show');
+        }
+
+        function updateModalImage() {
+            if (currentModalImages.length > 0) {
+                document.getElementById('modalImage').src = currentModalImages[currentImageIndex];
+            }
+        }
+
+        function setupImageNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const dotsContainer = document.getElementById('imageDots');
+            
+            if (currentModalImages.length <= 1) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                dotsContainer.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'block';
+                nextBtn.style.display = 'block';
+                dotsContainer.style.display = 'flex';
+                
+                dotsContainer.innerHTML = currentModalImages.map((_, index) => 
+                    `<div class="dot ${index === currentImageIndex ? 'active' : ''}" onclick="goToImage(${index})"></div>`
+                ).join('');
+                
+                prevBtn.disabled = currentImageIndex === 0;
+                nextBtn.disabled = currentImageIndex === currentModalImages.length - 1;
+            }
+        }
+
+        function changeImage(direction) {
+            currentImageIndex += direction;
+            if (currentImageIndex < 0) currentImageIndex = 0;
+            if (currentImageIndex >= currentModalImages.length) currentImageIndex = currentModalImages.length - 1;
+            
+            updateModalImage();
+            setupImageNavigation();
+        }
+
+        function goToImage(index) {
+            currentImageIndex = index;
+            updateModalImage();
+            setupImageNavigation();
+        }
+
+        function closeModal() {
+            document.getElementById('artworkModal').classList.remove('show');
+        }
+
+        function showError(message) {
+            const grid = document.getElementById('galleryGrid');
             grid.innerHTML = `
-                <div class="empty-state">
-                    <h3>Unable to Load Curators</h3>
-                    <p>Please check your connection and try again.</p>
+                <div class="error-state">
+                    <h3>Oops!</h3>
+                    <p>${message}</p>
+                    <a href="guest-curators.html" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: #1f2937; color: white; text-decoration: none; border-radius: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
+                        Browse All Curators
+                    </a>
                 </div>
             `;
         }
@@ -616,16 +889,20 @@
             `)}`;
         }
 
-        // Make openCuratorApplication available globally for links
-        window.openCuratorApplication = function() {
-            // If this page is in an iframe or has a parent with the function
-            if (window.parent && window.parent.openCuratorApplication) {
-                window.parent.openCuratorApplication();
-            } else {
-                // Redirect to index page where the application form is
-                window.location.href = 'index.html';
+        // Event listeners
+        document.getElementById('artworkModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('artworkModal');
+            
+            if (modal.classList.contains('show')) {
+                if (e.key === 'ArrowLeft') changeImage(-1);
+                else if (e.key === 'ArrowRight') changeImage(1);
+                else if (e.key === 'Escape') closeModal();
             }
-        };
+        });
     </script>
 </body>
 </html>

@@ -719,34 +719,43 @@
 
         async function loadCuratorPage() {
             try {
+                console.log('Loading curator page with params:', { curatorId, collectionId });
+                
                 await Promise.all([
                     loadCurator(),
                     loadCollection(),
                     loadArtworks()
                 ]);
                 
+                console.log('Loaded data:', { curator, collection, artworks });
                 updatePageContent();
                 renderGallery();
                 
             } catch (error) {
                 console.error('Error loading curator page:', error);
-                showError('Failed to load the curator collection. Please try again later.');
+                console.log('Debug info:', { curatorId, collectionId, curator, collection });
+                showError(`Failed to load the curator collection. Error: ${error.message}`);
             }
         }
 
         async function loadCurator() {
+            console.log('Loading curator with ID:', curatorId);
             const { data, error } = await supabase
                 .from('curators')
                 .select('*')
                 .eq('id', curatorId)
-                .eq('status', 'approved')
                 .single();
 
-            if (error) throw error;
+            console.log('Curator query result:', { data, error });
+            if (error) {
+                console.error('Curator load error:', error);
+                throw new Error(`Curator not found: ${error.message}`);
+            }
             curator = data;
         }
 
         async function loadCollection() {
+            console.log('Loading collection with ID:', collectionId, 'for curator:', curatorId);
             const { data, error } = await supabase
                 .from('curator_collections')
                 .select('*')
@@ -754,7 +763,11 @@
                 .eq('curator_id', curatorId)
                 .single();
 
-            if (error) throw error;
+            console.log('Collection query result:', { data, error });
+            if (error) {
+                console.error('Collection load error:', error);
+                throw new Error(`Collection not found: ${error.message}`);
+            }
             collection = data;
         }
 

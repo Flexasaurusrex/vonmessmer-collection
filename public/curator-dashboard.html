@@ -618,7 +618,8 @@
                 <button type="submit" class="btn" id="registerBtn">Create Account</button>
                 <div id="registerError" class="error-message hidden"></div>
                 <div id="registerSuccess" class="hidden" style="color: #10b981; font-size: 12px; margin-top: 8px; text-align: center;">
-                    Account created! Waiting for approval. You'll be able to log in once approved.
+                    ✅ Account created! You can now log in and start creating collections.<br>
+                    Your collections will be public once approved by the admin.
                 </div>
                 <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #6b7280;">
                     Already have an account? 
@@ -892,6 +893,19 @@
             userAvatar.src = currentCurator.profile_image || generateAvatarPlaceholder(currentCurator.name);
             userAvatar.alt = currentCurator.name;
             
+            // Show approval status if pending
+            const dashboardTitle = document.querySelector('.dashboard-title');
+            if (currentCurator.status === 'pending') {
+                dashboardTitle.innerHTML = `
+                    My Collections
+                    <div style="font-size: 14px; font-weight: 400; color: #f59e0b; margin-top: 8px; text-transform: none; letter-spacing: normal;">
+                        ⏳ Account pending approval - collections will be public once approved
+                    </div>
+                `;
+            } else {
+                dashboardTitle.textContent = 'My Collections';
+            }
+            
             await loadCollections();
         }
 
@@ -909,7 +923,7 @@
             const password = document.getElementById('loginPassword').value;
             
             try {
-                // Check login credentials
+                // Check login credentials (allow both pending and approved curators to log in)
                 const { data: curator, error } = await supabase
                     .from('curators')
                     .select('*')
@@ -921,8 +935,9 @@
                     throw new Error('Invalid email or password');
                 }
                 
-                if (curator.status !== 'approved') {
-                    throw new Error('Your account is pending approval. Please wait for admin approval.');
+                // Allow both pending and approved curators to log in
+                if (curator.status !== 'approved' && curator.status !== 'pending') {
+                    throw new Error('Your account has been suspended. Please contact support.');
                 }
                 
                 currentCurator = curator;

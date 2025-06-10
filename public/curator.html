@@ -420,6 +420,29 @@
             border-top: 1px solid #e5e7eb;
         }
         
+        .modal-curator-notes {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+        
+        .modal-artist-links {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+        
+        .modal-artist-links a {
+            color: #1f2937;
+            text-decoration: underline;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .modal-artist-links a:hover {
+            color: #4b5563;
+        }
+        
         .close-modal {
             position: absolute;
             top: 20px;
@@ -686,6 +709,8 @@
                 <div class="modal-artist" id="modalArtist"></div>
                 <div class="modal-details" id="modalDetails"></div>
                 <div class="modal-price" id="modalPrice" style="display: none;"></div>
+                <div class="modal-curator-notes" id="modalCuratorNotes" style="display: none;"></div>
+                <div class="modal-artist-links" id="modalArtistLinks" style="display: none;"></div>
             </div>
         </div>
     </div>
@@ -884,12 +909,70 @@
             }
             document.getElementById('modalDetails').innerHTML = details.replace('\n', '<br><em style="font-style: italic; color: #999;">') + (artwork.medium ? '</em>' : '');
             
+            // Handle price
             const priceElement = document.getElementById('modalPrice');
             if (artwork.price) {
                 priceElement.textContent = artwork.price;
                 priceElement.style.display = 'block';
             } else {
                 priceElement.style.display = 'none';
+            }
+            
+            // Handle curator notes
+            const curatorNotesElement = document.getElementById('modalCuratorNotes');
+            if (artwork.curator_notes && artwork.curator_notes.trim()) {
+                curatorNotesElement.innerHTML = `
+                    <strong style="color: #1f2937; text-transform: uppercase; letter-spacing: 1px; font-size: 12px;">Curator's Notes:</strong>
+                    <p style="margin-top: 8px; line-height: 1.6; color: #4b5563;">${artwork.curator_notes}</p>
+                `;
+                curatorNotesElement.style.display = 'block';
+            } else {
+                curatorNotesElement.style.display = 'none';
+            }
+            
+            // Handle artist links
+            const artistLinksElement = document.getElementById('modalArtistLinks');
+            if (artwork.artist_links && artwork.artist_links.trim()) {
+                const links = artwork.artist_links.split('\n').filter(link => link.trim());
+                if (links.length > 0) {
+                    const linksHtml = links.map(link => {
+                        const cleanLink = link.trim();
+                        let displayText = cleanLink;
+                        
+                        // Extract domain for display
+                        try {
+                            const url = new URL(cleanLink.startsWith('http') ? cleanLink : 'https://' + cleanLink);
+                            if (url.hostname.includes('instagram.com')) {
+                                displayText = 'Instagram';
+                            } else if (url.hostname.includes('twitter.com') || url.hostname.includes('x.com')) {
+                                displayText = 'Twitter/X';
+                            } else if (url.hostname.includes('facebook.com')) {
+                                displayText = 'Facebook';
+                            } else if (url.hostname.includes('linkedin.com')) {
+                                displayText = 'LinkedIn';
+                            } else if (url.hostname.includes('tiktok.com')) {
+                                displayText = 'TikTok';
+                            } else {
+                                displayText = url.hostname.replace('www.', '');
+                            }
+                        } catch (e) {
+                            // Use original link if URL parsing fails
+                        }
+                        
+                        const href = cleanLink.startsWith('http') ? cleanLink : 'https://' + cleanLink;
+                        return `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color: #1f2937; text-decoration: underline; margin-right: 15px; font-size: 13px;">${displayText}</a>`;
+                    }).join('');
+                    
+                    artistLinksElement.innerHTML = `
+                        <strong style="color: #1f2937; text-transform: uppercase; letter-spacing: 1px; font-size: 12px;">Artist Links:</strong>
+                        <div style="margin-top: 8px;">${linksHtml}</div>
+                    `;
+                    artistLinksElement.style.display = 'block';
+                } else {
+                    artistLinksElement.style.display = 'none';
+                }
+            } else {
+                artistLinksElement.style.display = 'none';
             }
             
             setupImageNavigation();

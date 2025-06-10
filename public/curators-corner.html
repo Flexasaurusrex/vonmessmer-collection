@@ -697,6 +697,31 @@
             border-radius: 0 0 6px 6px;
         }
         
+        /* Read Time Display */
+        .read-time-display {
+            padding: 12px;
+            background: #f9fafb;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 45px;
+        }
+        
+        .read-time-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: #4b5563;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .read-time-text.has-content {
+            color: #1f2937;
+        }
+        
         /* Loading and Empty States */
         .loading {
             text-align: center;
@@ -1046,15 +1071,10 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="readTime">Estimated Read Time</label>
-                            <select id="readTime">
-                                <option value="2 min read">2 min read</option>
-                                <option value="3 min read">3 min read</option>
-                                <option value="5 min read" selected>5 min read</option>
-                                <option value="7 min read">7 min read</option>
-                                <option value="10 min read">10 min read</option>
-                                <option value="15 min read">15 min read</option>
-                            </select>
+                            <label>Estimated Read Time</label>
+                            <div class="read-time-display" id="readTimeDisplay">
+                                <span class="read-time-text">Start writing to see read time...</span>
+                            </div>
                         </div>
                     </div>
                     
@@ -1182,10 +1202,59 @@
                 }
             });
             
+            // Update read time as user types
+            editor.addEventListener('input', updateReadTime);
+            
             // Initialize with a paragraph
             if (!editor.innerHTML.trim()) {
                 editor.innerHTML = '<p></p>';
                 setCursorToEnd(editor);
+            }
+        }
+
+        function calculateReadTime(text) {
+            // Remove HTML tags and get plain text
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = text;
+            const plainText = tempDiv.textContent || tempDiv.innerText || '';
+            
+            // Count words (split by whitespace and filter empty strings)
+            const words = plainText.trim().split(/\s+/).filter(word => word.length > 0);
+            const wordCount = words.length;
+            
+            // Average reading speed: 225 words per minute
+            const wordsPerMinute = 225;
+            const minutes = Math.ceil(wordCount / wordsPerMinute);
+            
+            // Return formatted string
+            if (minutes === 0) {
+                return 'Less than 1 min read';
+            } else if (minutes === 1) {
+                return '1 min read';
+            } else {
+                return `${minutes} min read`;
+            }
+        }
+
+        function updateReadTime() {
+            const editor = document.getElementById('articleContent');
+            const readTimeDisplay = document.getElementById('readTimeDisplay');
+            const readTimeText = readTimeDisplay.querySelector('.read-time-text');
+            
+            const content = getEditorContent();
+            const readTime = calculateReadTime(content);
+            
+            // Check if there's actual content
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+            const plainText = tempDiv.textContent || tempDiv.innerText || '';
+            
+            if (plainText.trim().length > 0) {
+                readTimeText.textContent = readTime;
+                readTimeText.classList.add('has-content');
+            } else {
+                readTimeText.textContent = 'Start writing to see read time...';
+                readTimeText.classList.remove('has-content');
             }
         }
 
@@ -1633,7 +1702,6 @@
                 const authorBio = document.getElementById('authorBio').value;
                 const title = document.getElementById('articleTitle').value;
                 const category = document.getElementById('articleCategory').value;
-                const readTime = document.getElementById('readTime').value;
                 const excerpt = document.getElementById('articleExcerpt').value;
                 const content = getEditorContent(); // Get rich HTML content
 
@@ -1643,6 +1711,9 @@
                     alert('Please write some content for your article.');
                     return;
                 }
+
+                // Calculate read time automatically
+                const readTime = calculateReadTime(content);
 
                 // Generate author avatar if none provided
                 const finalAuthorPfp = authorProfilePicture || generateAvatarPlaceholder(authorName);
@@ -1654,7 +1725,7 @@
                     author_bio: authorBio || null,
                     author_profile_picture: finalAuthorPfp,
                     category: category,
-                    read_time: readTime,
+                    read_time: readTime, // Auto-calculated read time
                     excerpt: excerpt,
                     content: content, // Rich HTML content
                     featured_image: featuredImage || null,
@@ -1690,6 +1761,11 @@
             
             // Reset rich editor
             setEditorContent('<p></p>');
+            
+            // Reset read time display
+            const readTimeText = document.querySelector('.read-time-text');
+            readTimeText.textContent = 'Start writing to see read time...';
+            readTimeText.classList.remove('has-content');
             
             // Reset image previews
             document.getElementById('authorPfpPreview').style.display = 'none';

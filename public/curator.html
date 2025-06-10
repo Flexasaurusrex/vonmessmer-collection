@@ -85,6 +85,63 @@
             color: #1f2937;
         }
         
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-toggle::after {
+            content: ' ▼';
+            font-size: 10px;
+            color: #9ca3af;
+            margin-left: 5px;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+            list-style: none;
+            padding: 8px 0;
+            margin: 8px 0 0 0;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-menu li {
+            display: block;
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: #4b5563;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 0;
+        }
+        
+        .dropdown-menu a:hover {
+            background: #f9fafb;
+            color: #1f2937;
+        }
+        
         /* Curator Header */
         .curator-header {
             padding: 60px 0;
@@ -557,7 +614,14 @@
             <ul class="nav-links">
                 <li><a href="index.html">Physical Collection</a></li>
                 <li><a href="https://linktr.ee/flexasaurusrex" target="_blank">Digital Collection</a></li>
-                <li><a href="guest-curators.html">Guest Curators</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" href="#">Guest Curators</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="guest-curators.html">Browse All Curators</a></li>
+                        <li><a href="index.html#apply" onclick="openCuratorApplication(); return false;">Apply to Curate</a></li>
+                    </ul>
+                </li>
+                <li><a href="curators-corner.html">Curators Corner</a></li>
                 <li><a href="index.html#about">About</a></li>
                 <li><a href="index.html#contact">Contact</a></li>
             </ul>

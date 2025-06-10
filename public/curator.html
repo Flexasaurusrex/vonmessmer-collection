@@ -372,14 +372,6 @@
             padding: 40px;
             border-radius: 12px 12px 0 0;
             overflow: auto;
-            cursor: grab;
-        }
-        
-        .modal-image-container.zoomed {
-            cursor: move;
-            align-items: flex-start;
-            justify-content: flex-start;
-            padding: 20px;
         }
         
         .modal-image {
@@ -389,17 +381,13 @@
             cursor: zoom-in;
             transition: transform 0.3s ease;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            display: block;
         }
         
         .modal-image.zoomed {
             cursor: zoom-out;
             transform: scale(2.5);
-            transform-origin: top left;
             max-width: none;
             max-height: none;
-            min-width: 250%;
-            min-height: 250%;
         }
         
         .modal-info {
@@ -759,4 +747,403 @@
     <script>
         // Initialize Supabase
         const supabaseUrl = 'https://qqkshpkbfixeyusqpsou.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3F
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let curator = null;
+        let collection = null;
+        let artworks = [];
+        let currentModalImages = [];
+        let currentImageIndex = 0;
+        let isImageZoomed = false;
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const curatorId = urlParams.get('curator');
+        const collectionId = urlParams.get('collection');
+
+        // Load page on DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!curatorId || !collectionId) {
+                showError('Invalid URL parameters. Please check the link and try again.');
+                return;
+            }
+            
+            loadCuratorPage();
+        });
+
+        async function loadCuratorPage() {
+            try {
+                console.log('Loading curator page with params:', { curatorId, collectionId });
+                
+                await Promise.all([
+                    loadCurator(),
+                    loadCollection(),
+                    loadArtworks()
+                ]);
+                
+                console.log('Loaded data:', { curator, collection, artworks });
+                updatePageContent();
+                renderGallery();
+                
+            } catch (error) {
+                console.error('Error loading curator page:', error);
+                console.log('Debug info:', { curatorId, collectionId, curator, collection });
+                showError(`Failed to load the curator collection. Error: ${error.message}`);
+            }
+        }
+
+        async function loadCurator() {
+            console.log('Loading curator with ID:', curatorId);
+            const { data, error } = await supabase
+                .from('curators')
+                .select('*')
+                .eq('id', curatorId)
+                .single();
+
+            console.log('Curator query result:', { data, error });
+            if (error) {
+                console.error('Curator load error:', error);
+                throw new Error(`Curator not found: ${error.message}`);
+            }
+            curator = data;
+        }
+
+        async function loadCollection() {
+            console.log('Loading collection with ID:', collectionId, 'for curator:', curatorId);
+            const { data, error } = await supabase
+                .from('curator_collections')
+                .select('*')
+                .eq('id', collectionId)
+                .eq('curator_id', curatorId)
+                .single();
+
+            console.log('Collection query result:', { data, error });
+            if (error) {
+                console.error('Collection load error:', error);
+                throw new Error(`Collection not found: ${error.message}`);
+            }
+            collection = data;
+        }
+
+        async function loadArtworks() {
+            const { data, error } = await supabase
+                .from('curator_artworks')
+                .select('*')
+                .eq('collection_id', collectionId)
+                .order('display_order', { ascending: true, nullsLast: true })
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.warn('Could not load artworks:', error);
+                artworks = [];
+                return;
+            }
+            
+            artworks = data || [];
+        }
+
+        function updatePageContent() {
+            if (!curator || !collection) return;
+            
+            // Update page title and meta
+            document.getElementById('pageTitle').textContent = `${curator.name} - ${collection.name} | VonMesser Collection`;
+            document.getElementById('pageDescription').setAttribute('content', 
+                `Explore ${curator.name}'s ${collection.type} collection: ${collection.name}`);
+            
+            // Update curator info
+            const defaultAvatar = generateAvatarPlaceholder(curator.name);
+            document.getElementById('curatorAvatar').src = curator.profile_image || defaultAvatar;
+            document.getElementById('curatorAvatar').alt = curator.name;
+            document.getElementById('curatorName').textContent = curator.name;
+            document.getElementById('collectionName').textContent = collection.name;
+            document.getElementById('collectionType').textContent = collection.type.toUpperCase() + ' Collection';
+            
+            // Show bio if available
+            if (curator.bio) {
+                document.getElementById('curatorBio').textContent = curator.bio;
+                document.getElementById('curatorBio').style.display = 'block';
+            }
+            
+            // Update breadcrumbs
+            document.getElementById('breadcrumbCurator').textContent = curator.name;
+            document.getElementById('breadcrumbCollection').textContent = collection.name;
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            
+            if (artworks.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-collection">
+                        <h3>Collection Coming Soon</h3>
+                        <p>${curator.name} is still curating this collection.<br>Check back soon to see their selected works.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = artworks.map((artwork, index) => `
+                <div class="artwork-card" onclick="openModal('${artwork.id}')">
+                    <div class="artwork-image ${artwork.orientation}">
+                        ${artwork.images && artwork.images.length > 0 ? 
+                            `<img src="${artwork.images[0]}" alt="${artwork.title}" onload="this.classList.add('loaded')">` 
+                            : '<div style="background:#f0f0f0;height:100%;display:flex;align-items:center;justify-content:center;color:#999;">No Image</div>'
+                        }
+                        ${artwork.images && artwork.images.length > 1 ? 
+                            `<div style="position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.8); padding: 4px 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px;">${artwork.images.length} Images</div>` 
+                            : ''
+                        }
+                    </div>
+                    <div class="artwork-info">
+                        <div class="artwork-title">${artwork.title}</div>
+                        <div class="artwork-details">
+                            <div class="artwork-artist">${artwork.artist}</div>
+                            <div>${artwork.year}</div>
+                            ${artwork.dimensions ? `<div style="margin-top: 3px;">${artwork.dimensions}</div>` : ''}
+                            ${artwork.medium ? `<div style="margin-top: 3px; font-style: italic;">${artwork.medium}</div>` : ''}
+                            ${artwork.price ? `<div class="artwork-price">${artwork.price}</div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Animate cards in
+            setTimeout(() => {
+                document.querySelectorAll('.artwork-card').forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('animate-in');
+                    }, index * 50);
+                });
+            }, 100);
+        }
+
+        function openModal(id) {
+            const artwork = artworks.find(a => a.id === id);
+            if (!artwork) return;
+            
+            currentModalImages = artwork.images || [];
+            currentImageIndex = 0;
+            
+            updateModalImage();
+            
+            document.getElementById('modalTitle').textContent = artwork.title;
+            document.getElementById('modalArtist').textContent = artwork.artist;
+            
+            let details = artwork.year;
+            if (artwork.dimensions) {
+                details += ` • ${artwork.dimensions}`;
+            }
+            if (artwork.medium) {
+                details += `\n${artwork.medium}`;
+            }
+            document.getElementById('modalDetails').innerHTML = details.replace('\n', '<br><em style="font-style: italic; color: #999;">') + (artwork.medium ? '</em>' : '');
+            
+            // Handle price
+            const priceElement = document.getElementById('modalPrice');
+            if (artwork.price) {
+                priceElement.textContent = artwork.price;
+                priceElement.style.display = 'block';
+            } else {
+                priceElement.style.display = 'none';
+            }
+            
+            // Handle curator notes
+            const curatorNotesElement = document.getElementById('modalCuratorNotes');
+            if (artwork.curator_notes && artwork.curator_notes.trim()) {
+                curatorNotesElement.innerHTML = `
+                    <strong style="color: #1f2937; text-transform: uppercase; letter-spacing: 1px; font-size: 12px;">Curator's Notes:</strong>
+                    <p style="margin-top: 8px; line-height: 1.6; color: #4b5563;">${artwork.curator_notes}</p>
+                `;
+                curatorNotesElement.style.display = 'block';
+            } else {
+                curatorNotesElement.style.display = 'none';
+            }
+            
+            // Handle artist links
+            const artistLinksElement = document.getElementById('modalArtistLinks');
+            if (artwork.artist_links && artwork.artist_links.trim()) {
+                const links = artwork.artist_links.split('\n').filter(link => link.trim());
+                if (links.length > 0) {
+                    const linksHtml = links.map(link => {
+                        const cleanLink = link.trim();
+                        let displayText = cleanLink;
+                        
+                        // Extract domain for display
+                        try {
+                            const url = new URL(cleanLink.startsWith('http') ? cleanLink : 'https://' + cleanLink);
+                            if (url.hostname.includes('instagram.com')) {
+                                displayText = 'Instagram';
+                            } else if (url.hostname.includes('twitter.com') || url.hostname.includes('x.com')) {
+                                displayText = 'Twitter/X';
+                            } else if (url.hostname.includes('facebook.com')) {
+                                displayText = 'Facebook';
+                            } else if (url.hostname.includes('linkedin.com')) {
+                                displayText = 'LinkedIn';
+                            } else if (url.hostname.includes('tiktok.com')) {
+                                displayText = 'TikTok';
+                            } else {
+                                displayText = url.hostname.replace('www.', '');
+                            }
+                        } catch (e) {
+                            // Use original link if URL parsing fails
+                        }
+                        
+                        const href = cleanLink.startsWith('http') ? cleanLink : 'https://' + cleanLink;
+                        return `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color: #1f2937; text-decoration: underline; margin-right: 15px; font-size: 13px;">${displayText}</a>`;
+                    }).join('');
+                    
+                    artistLinksElement.innerHTML = `
+                        <strong style="color: #1f2937; text-transform: uppercase; letter-spacing: 1px; font-size: 12px;">Artist Links:</strong>
+                        <div style="margin-top: 8px;">${linksHtml}</div>
+                    `;
+                    artistLinksElement.style.display = 'block';
+                } else {
+                    artistLinksElement.style.display = 'none';
+                }
+            } else {
+                artistLinksElement.style.display = 'none';
+            }
+            
+            setupImageNavigation();
+            setupImageZoom();
+            document.getElementById('artworkModal').classList.add('show');
+        }
+
+        function setupImageZoom() {
+            const modalImage = document.getElementById('modalImage');
+            const zoomHint = document.querySelector('.zoom-hint');
+            isImageZoomed = false;
+            modalImage.classList.remove('zoomed');
+            zoomHint.textContent = 'Click to zoom';
+            
+            // Remove any existing event listeners
+            modalImage.replaceWith(modalImage.cloneNode(true));
+            
+            // Add zoom click event listener
+            const newModalImage = document.getElementById('modalImage');
+            newModalImage.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent modal from closing
+                toggleImageZoom();
+            });
+        }
+
+        function toggleImageZoom() {
+            const modalImage = document.getElementById('modalImage');
+            const zoomHint = document.querySelector('.zoom-hint');
+            isImageZoomed = !isImageZoomed;
+            
+            if (isImageZoomed) {
+                modalImage.classList.add('zoomed');
+                zoomHint.textContent = 'Click to zoom out';
+            } else {
+                modalImage.classList.remove('zoomed');
+                zoomHint.textContent = 'Click to zoom';
+            }
+        }
+
+        function updateModalImage() {
+            if (currentModalImages.length > 0) {
+                const modalImage = document.getElementById('modalImage');
+                const zoomHint = document.querySelector('.zoom-hint');
+                modalImage.src = currentModalImages[currentImageIndex];
+                
+                // Reset zoom state when changing images
+                isImageZoomed = false;
+                modalImage.classList.remove('zoomed');
+                zoomHint.textContent = 'Click to zoom';
+            }
+        }
+
+        function setupImageNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const dotsContainer = document.getElementById('imageDots');
+            
+            if (currentModalImages.length <= 1) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                dotsContainer.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'block';
+                nextBtn.style.display = 'block';
+                dotsContainer.style.display = 'flex';
+                
+                dotsContainer.innerHTML = currentModalImages.map((_, index) => 
+                    `<div class="dot ${index === currentImageIndex ? 'active' : ''}" onclick="goToImage(${index})"></div>`
+                ).join('');
+                
+                prevBtn.disabled = currentImageIndex === 0;
+                nextBtn.disabled = currentImageIndex === currentModalImages.length - 1;
+            }
+        }
+
+        function changeImage(direction) {
+            currentImageIndex += direction;
+            if (currentImageIndex < 0) currentImageIndex = 0;
+            if (currentImageIndex >= currentModalImages.length) currentImageIndex = currentModalImages.length - 1;
+            
+            updateModalImage();
+            setupImageNavigation();
+            setupImageZoom(); // Re-setup zoom for new image
+        }
+
+        function goToImage(index) {
+            currentImageIndex = index;
+            updateModalImage();
+            setupImageNavigation();
+            setupImageZoom(); // Re-setup zoom for new image
+        }
+
+        function closeModal() {
+            document.getElementById('artworkModal').classList.remove('show');
+            // Reset zoom state when closing modal
+            isImageZoomed = false;
+            document.getElementById('modalImage').classList.remove('zoomed');
+            document.querySelector('.zoom-hint').textContent = 'Click to zoom';
+        }
+
+        function showError(message) {
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = `
+                <div class="error-state">
+                    <h3>Oops!</h3>
+                    <p>${message}</p>
+                    <a href="guest-curators.html" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: #1f2937; color: white; text-decoration: none; border-radius: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
+                        Browse All Curators
+                    </a>
+                </div>
+            `;
+        }
+
+        function generateAvatarPlaceholder(name) {
+            const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            return `data:image/svg+xml;base64,${btoa(`
+                <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="300" height="300" fill="#f8f8f8"/>
+                    <text x="150" y="160" text-anchor="middle" fill="#6b7280" font-size="48" font-family="Inter">${initials}</text>
+                </svg>
+            `)}`;
+        }
+
+        // Event listeners
+        document.getElementById('artworkModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('artworkModal');
+            
+            if (modal.classList.contains('show')) {
+                if (e.key === 'ArrowLeft') changeImage(-1);
+                else if (e.key === 'ArrowRight') changeImage(1);
+                else if (e.key === 'Escape') closeModal();
+                else if (e.key === ' ' || e.key === 'z' || e.key === 'Z') {
+                    e.preventDefault(); // Prevent page scroll for spacebar
+                    toggleImageZoom();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

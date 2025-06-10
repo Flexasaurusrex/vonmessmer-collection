@@ -1278,7 +1278,7 @@
 <body>
 <header>
 <nav class="container">
-<a class="logo" href="#">
+<a class="logo" href="index.html">
 <svg height="38" viewbox="0 0 85 32" width="102" xmlns="http://www.w3.org/2000/svg">
 <!-- VM monogram -->
 <g fill="#333" style="font-weight: 400;">
@@ -1297,7 +1297,7 @@
 </svg>
 </a>
 <ul class="nav-links">
-<li><a href="https://www.vonmesser.xyz/public/">Physical Collection</a></li>
+<li><a href="index.html">Physical Collection</a></li>
 <li><a href="https://linktr.ee/flexasaurusrex" rel="noopener noreferrer" target="_blank">Digital Collection</a></li>
 <li class="dropdown">
 <a class="dropdown-toggle" href="#">Guest Curators</a>
@@ -1306,6 +1306,7 @@
 <li><a href="#" onclick="openCuratorApplication(); return false;">Apply to Curate</a></li>
 </ul>
 </li>
+<li><a href="curators-corner.html">Curators Corner</a></li>
 <li><a href="#about">About</a></li>
 <li><a href="#contact">Contact</a></li>
 </ul>
@@ -1849,7 +1850,7 @@
                     .insert([{
                         name: name,
                         email: email,
-                        password: password, // In production, hash this
+                        password: password,
                         bio: bio,
                         profile_image: profileImage,
                         status: 'pending'
@@ -2424,17 +2425,6 @@
 
         function closeZoom() {
             document.getElementById('zoomModal').classList.remove('show');
-        }
-
-        // Scroll to section function
-        function scrollToSection(sectionId) {
-            const section = document.getElementById(sectionId);
-            if (section) {
-                section.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
         }
 
         // Event listeners

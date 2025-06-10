@@ -1,63 +1,1858 @@
-<!-- FIND THIS section in guest-curators.html: -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Curator Dashboard - VonMesser Collection</title>
+    <meta content="Manage your curated collections and artworks" name="description"/>
+    
+    <!-- Favicon -->
+    <link href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNmZmZmZmYiLz4KICA8ZyBmaWxsPSIjMzMzIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iOCwyIDEwLDIgMTMsOSAxNiwyIDE4LDIgMTQsMTIgMTEsMTIiLz4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTksMiAyMSwyIDIzLDcgMjUsMiAyNywyIDI3LDEyIDI1LDEyIDI1LDUgMjMsOSAyMSw5IDIwLDUgMjAsMTIgMTksMTIiLz4KICA8L2c+CiAgPHRleHQgeD0iMTYiIHk9IjI3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiBzdHlsZT0iZm9udC1mYW1pbHk6IHNhbnMtc2VyaWY7IGZvbnQtc2l6ZTogNXB4OyBmb250LXdlaWdodDogNDAwOyBsZXR0ZXItc3BhY2luZzogMC41cHg7Ij5WTTwvdGV4dD4KPC9zdmc+Cg==" rel="icon" type="image/svg+xml"/>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #2c2c2c;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #f0f0f0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            backdrop-filter: blur(10px);
+            padding: 25px 0;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .logo:hover {
+            opacity: 0.8;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 50px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #6b7280;
+            font-weight: 400;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #1f2937;
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            border-color: #1f2937;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+            padding: 8px 0;
+            margin: 8px 0 0 0;
+        }
+        
+        .user-menu:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: #4b5563;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-menu a:hover {
+            background: #f9fafb;
+            color: #1f2937;
+        }
+        
+        /* Login Form */
+        .login-container {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+        }
+        
+        .login-form {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .login-form h2 {
+            font-size: 24px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #1f2937;
+            box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.1);
+        }
+        
+        .btn {
+            background: #1f2937;
+            color: #ffffff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background: #374151;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 8px;
+            text-align: center;
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            padding: 60px 0;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-title {
+            font-size: 32px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .dashboard-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn-secondary {
+            background: #ffffff;
+            color: #1f2937;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #1f2937;
+        }
+        
+        .collections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .collection-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .collection-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        
+        .collection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+        
+        .collection-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        
+        .collection-type {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .collection-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 10px;
+            min-width: auto;
+        }
+        
+        .artwork-count {
+            font-size: 14px;
+            color: #4b5563;
+            margin-bottom: 20px;
+        }
+        
+        .artwork-preview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .artwork-thumbnail {
+            aspect-ratio: 1;
+            background: #f3f4f6;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .artwork-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .empty-thumbnail {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 10px;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #ffffff;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        
+        .modal-header {
+            padding: 30px 30px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 5px;
+            transition: color 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            color: #1f2937;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .image-upload {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .image-upload:hover {
+            border-color: #1f2937;
+            background: #f9fafb;
+        }
+        
+        .image-upload.dragover {
+            border-color: #1f2937;
+            background: #f0f9ff;
+        }
+        
+        .upload-text {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .uploaded-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .uploaded-image {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #f3f4f6;
+        }
+        
+        .uploaded-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+            
+            .dashboard-actions {
+                width: 100%;
+            }
+            
+            .btn {
+                flex: 1;
+            }
+            
+            .collections-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal {
+                padding: 20px;
+            }
+            
+            .modal-content {
+                max-height: 95vh;
+            }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Profile Modal Styles */
+        .profile-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .profile-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .profile-header-info {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+            align-items: start;
+        }
+        
+        .profile-avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ffffff;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+        
+        .avatar-upload {
+            background: #1f2937;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .avatar-upload:hover {
+            background: #374151;
+            transform: translateY(-2px);
+        }
+        
+        .profile-basic-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .status-display {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+        }
+        
+        .status-approved {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+        }
+        
+        .status-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .status-text {
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .status-description {
+            font-size: 12px;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+        
+        .collections-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .collection-summary-card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .collection-summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .collection-summary-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .collection-summary-details {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .profile-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .profile-actions .btn {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        /* Mobile Responsive for Profile Modal */
+        @media (max-width: 768px) {
+            .profile-header-info {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .collections-summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-actions {
+                flex-direction: column;
+            }
+            
+            .profile-actions .btn {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a class="logo" href="index.html">
+                <svg height="38" viewbox="0 0 85 32" width="102" xmlns="http://www.w3.org/2000/svg">
+                    <g fill="#333" style="font-weight: 400;">
+                        <polygon points="24,3 27,3 32,17 35,3 38,3 31.5,19 28.5,19"></polygon>
+                        <polygon points="40,3 43,3 46,14 49,3 52,3 52,19 49.5,19 49.5,7 47.5,16 44.5,16 42.5,7 42.5,19 40,19"></polygon>
+                    </g>
+                    <text fill="#333" style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; font-size: 6px; font-weight: 400; letter-spacing: 1.8px;" text-anchor="middle" x="42.5" y="29">VONMESSER</text>
+                </svg>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Physical Collection</a></li>
+                <li><a href="https://linktr.ee/flexasaurusrex" target="_blank">Digital Collection</a></li>
+                <li><a href="guest-curators.html">Guest Curators</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li class="user-menu hidden" id="userMenu">
+                    <img id="userAvatar" class="user-avatar" src="" alt="">
+                    <div class="dropdown-menu">
+                        <a href="#" onclick="viewProfile()">View Profile</a>
+                        <a href="#" onclick="logout()">Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
 
-<section class="hero">
-    <div class="container">
-        <h1>Guest Curators</h1>
-        <p>Discover unique perspectives from our community of curators</p>
-        <div class="apply-section">
-            <a href="index.html" class="apply-btn">Apply to Curate</a>
-            <p class="apply-note">
-                Use Guest Curators → Apply to Curate in the menu
-            </p>
+    <!-- Login/Register Forms -->
+    <section id="loginSection" class="login-container">
+        <div class="container">
+            <!-- Login Form -->
+            <form class="login-form" id="loginForm">
+                <h2>Curator Login</h2>
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+                <button type="submit" class="btn" id="loginBtn">Login</button>
+                <div id="loginError" class="error-message hidden"></div>
+                <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #6b7280;">
+                    Don't have an account? 
+                    <a href="#" onclick="showRegisterForm()" style="color: #1f2937; text-decoration: underline;">Sign up here</a>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form class="login-form hidden" id="registerForm">
+                <h2>Create Curator Account</h2>
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerBio">Bio (Optional)</label>
+                    <textarea id="registerBio" name="bio" rows="3" style="width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 6px; resize: vertical;" placeholder="Tell us about your curatorial experience..."></textarea>
+                </div>
+                <button type="submit" class="btn" id="registerBtn">Create Account</button>
+                <div id="registerError" class="error-message hidden"></div>
+                <div id="registerSuccess" class="hidden" style="color: #10b981; font-size: 12px; margin-top: 8px; text-align: center;">
+                    ✅ Account created! You can now log in and start creating collections.<br>
+                    Your collections will be public once approved by the admin.
+                </div>
+                <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #6b7280;">
+                    Already have an account? 
+                    <a href="#" onclick="showLoginForm()" style="color: #1f2937; text-decoration: underline;">Login here</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboardSection" class="dashboard hidden">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">My Collections</h1>
+                <div class="dashboard-actions">
+                    <button class="btn btn-secondary" onclick="createCollection()">New Collection</button>
+                </div>
+            </div>
+            <div id="collectionsGrid" class="collections-grid">
+                <!-- Collections will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Collection Modal -->
+    <div class="modal" id="collectionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="collectionModalTitle">New Collection</h3>
+                <button class="close-modal" onclick="closeCollectionModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="collectionForm">
+                    <div class="form-group">
+                        <label for="collectionName">Collection Name</label>
+                        <input type="text" id="collectionName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="collectionType">Collection Type</label>
+                        <select id="collectionType" name="type" style="width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                            <option value="painting">Painting</option>
+                            <option value="sculpture">Sculpture</option>
+                            <option value="photography">Photography</option>
+                            <option value="mixed">Mixed Media</option>
+                            <option value="digital">Digital Art</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="collectionDescription">Description (Optional)</label>
+                        <textarea id="collectionDescription" name="description" rows="3" style="width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 6px; resize: vertical;"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Save Collection</button>
+                </form>
+            </div>
         </div>
     </div>
-</section>
 
-<!-- REPLACE WITH THIS cleaner version: -->
-
-<section class="hero">
-    <div class="container">
-        <h1>Guest Curators</h1>
-        <p>Discover unique perspectives from our community of curators</p>
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3 class="modal-title">My Profile</h3>
+                <button class="close-modal" onclick="closeProfileModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-sections">
+                    <!-- Profile Information Section -->
+                    <div class="profile-section">
+                        <h4 class="section-title">Profile Information</h4>
+                        <form id="profileForm">
+                            <div class="profile-header-info">
+                                <div class="profile-avatar-section">
+                                    <img id="profileAvatarPreview" class="profile-avatar-large" src="" alt="Profile Picture">
+                                    <div class="avatar-upload" onclick="document.getElementById('profilePictureInput').click()">
+                                        <span>Change Photo</span>
+                                        <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                                    </div>
+                                </div>
+                                <div class="profile-basic-info">
+                                    <div class="form-group">
+                                        <label for="profileName">Full Name</label>
+                                        <input type="text" id="profileName" name="name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="profileEmail">Email</label>
+                                        <input type="email" id="profileEmail" name="email" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profileBio">Bio</label>
+                                <textarea id="profileBio" name="bio" rows="4" placeholder="Tell us about your curatorial background and interests..."></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profilePassword">New Password (leave blank to keep current)</label>
+                                <input type="password" id="profilePassword" name="password" placeholder="Enter new password">
+                            </div>
+                            
+                            <button type="submit" class="btn">Save Profile Changes</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Account Status Section -->
+                    <div class="profile-section">
+                        <h4 class="section-title">Account Status</h4>
+                        <div class="status-display" id="profileAccountStatus">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Collections Management -->
+                    <div class="profile-section">
+                        <h4 class="section-title">My Collections</h4>
+                        <div class="collections-summary" id="profileCollectionsSummary">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                        <div class="profile-actions">
+                            <button class="btn btn-secondary" onclick="createCollectionFromProfile()">Create New Collection</button>
+                            <button class="btn btn-secondary" onclick="closeProfileModal(); scrollToCollections()">Manage All Collections</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</section>
+    <div class="modal" id="artworkModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="artworkModalTitle">Add Artwork</h3>
+                <button class="close-modal" onclick="closeArtworkModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="artworkForm">
+                    <div class="image-upload" id="imageUpload">
+                        <div class="upload-text">Click or drag images here to upload</div>
+                        <div style="font-size: 12px; color: #9ca3af;">Support: JPG, PNG, WebP (Max 5MB each)</div>
+                        <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+                    </div>
+                    <div id="uploadedImages" class="uploaded-images"></div>
+                    
+                    <div class="form-group">
+                        <label for="artworkTitle">Title</label>
+                        <input type="text" id="artworkTitle" name="title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkArtist">Artist</label>
+                        <input type="text" id="artworkArtist" name="artist" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="artworkYear">Year</label>
+                            <input type="text" id="artworkYear" name="year">
+                        </div>
+                        <div class="form-group">
+                            <label for="artworkOrientation">Orientation</label>
+                            <select id="artworkOrientation" name="orientation" style="width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                                <option value="landscape">Landscape</option>
+                                <option value="portrait">Portrait</option>
+                                <option value="square">Square</option>
+                                <option value="panoramic">Panoramic</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkDimensions">Dimensions</label>
+                        <input type="text" id="artworkDimensions" name="dimensions" placeholder="e.g., 24 x 36 inches">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkMedium">Medium</label>
+                        <input type="text" id="artworkMedium" name="medium" placeholder="e.g., Oil on canvas">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkPrice">Price (Optional)</label>
+                        <input type="text" id="artworkPrice" name="price" placeholder="e.g., $1,200">
+                    </div>
+                    
+                    <button type="submit" class="btn" id="artworkSubmitBtn">Add Artwork</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
-<!-- ALSO REMOVE these CSS styles from the <style> section: -->
+    <!-- Artwork Modal -->
+    <div class="modal" id="artworkModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="artworkModalTitle">Add Artwork</h3>
+                <button class="close-modal" onclick="closeArtworkModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="artworkForm">
+                    <div class="image-upload" id="imageUpload">
+                        <div class="upload-text">Click or drag images here to upload</div>
+                        <div style="font-size: 12px; color: #9ca3af;">Support: JPG, PNG, WebP (Max 5MB each)</div>
+                        <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+                    </div>
+                    <div id="uploadedImages" class="uploaded-images"></div>
+                    
+                    <div class="form-group">
+                        <label for="artworkTitle">Title</label>
+                        <input type="text" id="artworkTitle" name="title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkArtist">Artist</label>
+                        <input type="text" id="artworkArtist" name="artist" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="artworkYear">Year</label>
+                            <input type="text" id="artworkYear" name="year">
+                        </div>
+                        <div class="form-group">
+                            <label for="artworkOrientation">Orientation</label>
+                            <select id="artworkOrientation" name="orientation" style="width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                                <option value="landscape">Landscape</option>
+                                <option value="portrait">Portrait</option>
+                                <option value="square">Square</option>
+                                <option value="panoramic">Panoramic</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkDimensions">Dimensions</label>
+                        <input type="text" id="artworkDimensions" name="dimensions" placeholder="e.g., 24 x 36 inches">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkMedium">Medium</label>
+                        <input type="text" id="artworkMedium" name="medium" placeholder="e.g., Oil on canvas">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkPrice">Price (Optional)</label>
+                        <input type="text" id="artworkPrice" name="price" placeholder="e.g., $1,200">
+                    </div>
+                    
+                    <button type="submit" class="btn" id="artworkSubmitBtn">Add Artwork</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
-.apply-section {
-    text-align: center;
-    margin-top: 30px;
-}
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://qqkshpkbfixeyusqpsou.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-.apply-btn {
-    display: inline-block;
-    padding: 12px 24px;
-    background: #1f2937;
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-    margin-bottom: 10px;
-}
+        let currentCurator = null;
+        let collections = [];
+        let currentCollection = null;
+        let uploadedImageUrls = [];
 
-.apply-btn:hover {
-    background: #374151;
-}
+        // Check authentication on load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            setupEventListeners();
+        });
 
-.apply-note {
-    font-size: 11px;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
+        function setupEventListeners() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Register form
+            document.getElementById('registerForm').addEventListener('submit', handleRegister);
+            
+            // Collection form
+            document.getElementById('collectionForm').addEventListener('submit', handleCollectionSubmit);
+            
+            // Artwork form
+            document.getElementById('artworkForm').addEventListener('submit', handleArtworkSubmit);
+            
+            // Profile form
+            document.getElementById('profileForm').addEventListener('submit', handleProfileSubmit);
+            
+            // Profile picture upload
+            document.getElementById('profilePictureInput').addEventListener('change', handleProfilePictureUpload);
+            
+            // Image upload
+            const imageUpload = document.getElementById('imageUpload');
+            const imageInput = document.getElementById('imageInput');
+            
+            imageUpload.addEventListener('click', () => imageInput.click());
+            imageUpload.addEventListener('dragover', handleDragOver);
+            imageUpload.addEventListener('drop', handleFileDrop);
+            imageInput.addEventListener('change', handleFileSelect);
+            
+            // Modal close on outside click
+            document.getElementById('collectionModal').addEventListener('click', function(e) {
+                if (e.target === this) closeCollectionModal();
+            });
+            
+            document.getElementById('artworkModal').addEventListener('click', function(e) {
+                if (e.target === this) closeArtworkModal();
+            });
+            
+            document.getElementById('profileModal').addEventListener('click', function(e) {
+                if (e.target === this) closeProfileModal();
+            });
+        }
 
-<!-- AND REMOVE this mobile CSS from the @media (max-width: 768px) section: -->
+        async function handleProfilePictureUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Profile picture must be under 2MB');
+                return;
+            }
+            
+            try {
+                const compressedImage = await compressImage(file, 300, 0.8);
+                document.getElementById('profileAvatarPreview').src = compressedImage;
+            } catch (error) {
+                console.error('Error processing profile picture:', error);
+                alert('Error processing profile picture. Please try again.');
+            }
+        }
 
-.submit-article-btn {
-    position: static;
-    margin: 20px auto 0;
-    display: flex;
-}
+        async function handleProfileSubmit(e) {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                submitBtn.textContent = 'Saving...';
+                submitBtn.disabled = true;
+                
+                const formData = new FormData(e.target);
+                const updateData = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    bio: formData.get('bio') || null
+                };
+                
+                // Add password if provided
+                const newPassword = formData.get('password');
+                if (newPassword && newPassword.trim()) {
+                    updateData.password = newPassword.trim();
+                }
+                
+                // Add profile picture if changed
+                const profileImage = document.getElementById('profileAvatarPreview').src;
+                if (profileImage && !profileImage.includes('data:image/svg+xml')) {
+                    updateData.profile_image = profileImage;
+                }
+                
+                // Update in database
+                const { data, error } = await supabase
+                    .from('curators')
+                    .update(updateData)
+                    .eq('id', currentCurator.id)
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                // Update current curator and localStorage
+                currentCurator = { ...currentCurator, ...data };
+                localStorage.setItem('currentCurator', JSON.stringify(currentCurator));
+                
+                // Update UI elements
+                const userAvatar = document.getElementById('userAvatar');
+                userAvatar.src = currentCurator.profile_image || generateAvatarPlaceholder(currentCurator.name);
+                
+                alert('Profile updated successfully!');
+                closeProfileModal();
+                
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Error updating profile: ' + error.message);
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        function compressImage(file, maxWidth = 300, quality = 0.8) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = function() {
+                    let { width, height } = img;
+                    
+                    if (width > maxWidth) {
+                        height = (height * maxWidth) / width;
+                        width = maxWidth;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    
+                    resolve(compressedDataUrl);
+                };
+                
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        function showRegisterForm() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        function showLoginForm() {
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            const registerBtn = document.getElementById('registerBtn');
+            const errorDiv = document.getElementById('registerError');
+            const successDiv = document.getElementById('registerSuccess');
+            
+            registerBtn.disabled = true;
+            registerBtn.textContent = 'Creating Account...';
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const bio = document.getElementById('registerBio').value;
+            
+            try {
+                // Check if email already exists
+                const { data: existingCurator } = await supabase
+                    .from('curators')
+                    .select('email')
+                    .eq('email', email)
+                    .single();
+                
+                if (existingCurator) {
+                    throw new Error('An account with this email already exists');
+                }
+                
+                // Create new curator account
+                const { data: newCurator, error } = await supabase
+                    .from('curators')
+                    .insert({
+                        name: name,
+                        email: email,
+                        password: password,
+                        bio: bio || null,
+                        status: 'pending'
+                    })
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                // Auto-login the new curator immediately
+                currentCurator = newCurator;
+                localStorage.setItem('currentCurator', JSON.stringify(newCurator));
+                
+                // Go straight to dashboard
+                await loadDashboard();
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                errorDiv.textContent = error.message || 'Registration failed. Please try again.';
+                errorDiv.classList.remove('hidden');
+                registerBtn.disabled = false;
+                registerBtn.textContent = 'Create Account';
+            }
+        }
+
+        async function checkAuth() {
+            const storedCurator = localStorage.getItem('currentCurator');
+            if (storedCurator) {
+                try {
+                    currentCurator = JSON.parse(storedCurator);
+                    
+                    // Verify curator still exists and get current status
+                    const { data: updatedCurator, error } = await supabase
+                        .from('curators')
+                        .select('*')
+                        .eq('id', currentCurator.id)
+                        .single();
+                    
+                    if (!error && updatedCurator) {
+                        currentCurator = updatedCurator;
+                        localStorage.setItem('currentCurator', JSON.stringify(updatedCurator));
+                        await loadDashboard();
+                    } else {
+                        // Curator no longer exists, clear cache
+                        localStorage.removeItem('currentCurator');
+                        showLogin();
+                    }
+                } catch (error) {
+                    console.error('Error verifying curator:', error);
+                    localStorage.removeItem('currentCurator');
+                    showLogin();
+                }
+            } else {
+                showLogin();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('userMenu').classList.add('hidden');
+        }
+
+        async function loadDashboard() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            document.getElementById('userMenu').classList.remove('hidden');
+            
+            // Fetch current curator status from database to get latest approval status
+            try {
+                const { data: updatedCurator, error } = await supabase
+                    .from('curators')
+                    .select('*')
+                    .eq('id', currentCurator.id)
+                    .single();
+                
+                if (!error && updatedCurator) {
+                    // Update current curator with latest data
+                    currentCurator = updatedCurator;
+                    // Update localStorage with latest data
+                    localStorage.setItem('currentCurator', JSON.stringify(updatedCurator));
+                }
+            } catch (error) {
+                console.error('Error fetching updated curator status:', error);
+            }
+            
+            // Update user avatar
+            const userAvatar = document.getElementById('userAvatar');
+            userAvatar.src = currentCurator.profile_image || generateAvatarPlaceholder(currentCurator.name);
+            userAvatar.alt = currentCurator.name;
+            
+            // Show approval status if pending
+            const dashboardTitle = document.querySelector('.dashboard-title');
+            if (currentCurator.status === 'pending') {
+                dashboardTitle.innerHTML = `
+                    My Collections
+                    <div style="font-size: 14px; font-weight: 400; color: #f59e0b; margin-top: 8px; text-transform: none; letter-spacing: normal;">
+                        ⏳ Account pending approval - collections will be public once approved
+                    </div>
+                `;
+            } else {
+                dashboardTitle.textContent = 'My Collections';
+            }
+            
+            await loadCollections();
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const loginBtn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('loginError');
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Signing in...';
+            errorDiv.classList.add('hidden');
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                // Check login credentials - allow any curator to log in
+                const { data: curator, error } = await supabase
+                    .from('curators')
+                    .select('*')
+                    .eq('email', email)
+                    .eq('password', password)
+                    .single();
+                
+                if (error || !curator) {
+                    throw new Error('Invalid email or password');
+                }
+                
+                // Set current curator and log them in regardless of status
+                currentCurator = curator;
+                localStorage.setItem('currentCurator', JSON.stringify(curator));
+                
+                await loadDashboard();
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                errorDiv.textContent = error.message || 'Login failed. Please check your credentials.';
+                errorDiv.classList.remove('hidden');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentCurator');
+            currentCurator = null;
+            showLogin();
+            document.getElementById('loginForm').reset();
+            document.getElementById('registerForm').reset();
+            showLoginForm(); // Show login form by default
+        }
+
+        async function loadCollections() {
+            try {
+                const { data, error } = await supabase
+                    .from('curator_collections')
+                    .select('*')
+                    .eq('curator_id', currentCurator.id)
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                collections = data || [];
+                await renderCollections();
+                
+            } catch (error) {
+                console.error('Error loading collections:', error);
+            }
+        }
+
+        async function renderCollections() {
+            const grid = document.getElementById('collectionsGrid');
+            
+            if (collections.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px; color: #6b7280;">
+                        <h3 style="font-size: 18px; margin-bottom: 15px; color: #1f2937;">No Collections Yet</h3>
+                        <p>Create your first collection to start curating artworks.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Load artwork counts for each collection
+            const collectionIds = collections.map(c => c.id);
+            const { data: artworks } = await supabase
+                .from('curator_artworks')
+                .select('collection_id, images')
+                .in('collection_id', collectionIds);
+            
+            const artworksByCollection = {};
+            (artworks || []).forEach(artwork => {
+                if (!artworksByCollection[artwork.collection_id]) {
+                    artworksByCollection[artwork.collection_id] = [];
+                }
+                artworksByCollection[artwork.collection_id].push(artwork);
+            });
+            
+            grid.innerHTML = collections.map(collection => {
+                const collectionArtworks = artworksByCollection[collection.id] || [];
+                const artworkCount = collectionArtworks.length;
+                
+                // Debug: log the IDs to make sure they're valid
+                console.log(`Collection: ${collection.name}, Curator ID: ${currentCurator.id}, Collection ID: ${collection.id}`);
+                
+                return `
+                    <div class="collection-card">
+                        <div class="collection-header">
+                            <div>
+                                <div class="collection-name">${collection.name}</div>
+                                <div class="collection-type">${collection.type} Collection</div>
+                            </div>
+                            <div class="collection-actions">
+                                <button class="btn btn-small" onclick="addArtwork('${collection.id}')">Add Art</button>
+                                <button class="btn btn-secondary btn-small" onclick="editCollection('${collection.id}')">Edit</button>
+                            </div>
+                        </div>
+                        
+                        <div class="artwork-count">${artworkCount} artwork${artworkCount !== 1 ? 's' : ''}</div>
+                        
+                        <div class="artwork-preview">
+                            ${Array.from({length: 4}).map((_, index) => {
+                                const artwork = collectionArtworks[index];
+                                if (artwork && artwork.images && artwork.images.length > 0) {
+                                    return `
+                                        <div class="artwork-thumbnail">
+                                            <img src="${artwork.images[0]}" alt="Artwork ${index + 1}">
+                                        </div>
+                                    `;
+                                } else {
+                                    return `
+                                        <div class="artwork-thumbnail">
+                                            <div class="empty-thumbnail">+</div>
+                                        </div>
+                                    `;
+                                }
+                            }).join('')}
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="viewPublicPage('${currentCurator.id}', '${collection.id}')" 
+                                    class="btn btn-secondary" style="flex: 1;">
+                                View Public Page
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function viewPublicPage(curatorId, collectionId) {
+            // Debug: log the parameters
+            console.log('Opening public page with:', { curatorId, collectionId });
+            
+            // Construct the URL properly
+            const url = `curator.html?curator=${encodeURIComponent(curatorId)}&collection=${encodeURIComponent(collectionId)}`;
+            console.log('Generated URL:', url);
+            
+            // Open in a new tab so they can keep working on their dashboard
+            window.open(url, '_blank');
+        }
+
+        function createCollection() {
+            currentCollection = null;
+            document.getElementById('collectionModalTitle').textContent = 'New Collection';
+            document.getElementById('collectionForm').reset();
+            document.getElementById('collectionModal').classList.add('show');
+        }
+
+        function editCollection(collectionId) {
+            currentCollection = collections.find(c => c.id === collectionId);
+            if (!currentCollection) return;
+            
+            document.getElementById('collectionModalTitle').textContent = 'Edit Collection';
+            document.getElementById('collectionName').value = currentCollection.name;
+            document.getElementById('collectionType').value = currentCollection.type;
+            document.getElementById('collectionDescription').value = currentCollection.description || '';
+            document.getElementById('collectionModal').classList.add('show');
+        }
+
+        function closeCollectionModal() {
+            document.getElementById('collectionModal').classList.remove('show');
+        }
+
+        async function handleCollectionSubmit(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const collectionData = {
+                name: formData.get('name'),
+                type: formData.get('type'),
+                description: formData.get('description'),
+                curator_id: currentCurator.id
+            };
+            
+            try {
+                let result;
+                if (currentCollection) {
+                    // Update existing collection
+                    result = await supabase
+                        .from('curator_collections')
+                        .update(collectionData)
+                        .eq('id', currentCollection.id)
+                        .select()
+                        .single();
+                } else {
+                    // Create new collection
+                    result = await supabase
+                        .from('curator_collections')
+                        .insert(collectionData)
+                        .select()
+                        .single();
+                }
+                
+                if (result.error) throw result.error;
+                
+                closeCollectionModal();
+                await loadCollections();
+                
+            } catch (error) {
+                console.error('Error saving collection:', error);
+                alert('Error saving collection. Please try again.');
+            }
+        }
+
+        function addArtwork(collectionId) {
+            currentCollection = collections.find(c => c.id === collectionId);
+            if (!currentCollection) return;
+            
+            document.getElementById('artworkModalTitle').textContent = `Add Artwork to ${currentCollection.name}`;
+            document.getElementById('artworkForm').reset();
+            document.getElementById('uploadedImages').innerHTML = '';
+            uploadedImageUrls = [];
+            document.getElementById('artworkModal').classList.add('show');
+        }
+
+        function closeArtworkModal() {
+            document.getElementById('artworkModal').classList.remove('show');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleFileDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+            uploadFiles(files);
+        }
+
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            uploadFiles(files);
+        }
+
+        async function uploadFiles(files) {
+            const uploadContainer = document.getElementById('uploadedImages');
+            
+            for (const file of files) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert(`File ${file.name} is too large. Maximum size is 5MB.`);
+                    continue;
+                }
+                
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'uploaded-image';
+                imageContainer.innerHTML = `
+                    <div class="loading-overlay">Uploading...</div>
+                `;
+                uploadContainer.appendChild(imageContainer);
+                
+                try {
+                    // Create a data URL for immediate preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        imageContainer.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                    
+                    // For demo purposes, we'll simulate upload by using data URLs
+                    // In production, you'd upload to Supabase Storage or another service
+                    const dataUrl = await new Promise(resolve => {
+                        const reader = new FileReader();
+                        reader.onload = e => resolve(e.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                    
+                    uploadedImageUrls.push(dataUrl);
+                    
+                    imageContainer.innerHTML = `
+                        <img src="${dataUrl}" alt="Uploaded image">
+                        <button class="remove-image" onclick="removeImage(${uploadedImageUrls.length - 1})">×</button>
+                    `;
+                    
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    imageContainer.innerHTML = `
+                        <div style="padding: 20px; color: #ef4444; font-size: 12px; text-align: center;">
+                            Upload failed
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        function removeImage(index) {
+            uploadedImageUrls.splice(index, 1);
+            renderUploadedImages();
+        }
+
+        function renderUploadedImages() {
+            const container = document.getElementById('uploadedImages');
+            container.innerHTML = uploadedImageUrls.map((url, index) => `
+                <div class="uploaded-image">
+                    <img src="${url}" alt="Uploaded image">
+                    <button class="remove-image" onclick="removeImage(${index})">×</button>
+                </div>
+            `).join('');
+        }
+
+        async function handleArtworkSubmit(e) {
+            e.preventDefault();
+            
+            if (uploadedImageUrls.length === 0) {
+                alert('Please upload at least one image.');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('artworkSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Adding Artwork...';
+            
+            const formData = new FormData(e.target);
+            const artworkData = {
+                collection_id: currentCollection.id,
+                title: formData.get('title'),
+                artist: formData.get('artist'),
+                year: formData.get('year'),
+                orientation: formData.get('orientation'),
+                dimensions: formData.get('dimensions'),
+                medium: formData.get('medium'),
+                price: formData.get('price'),
+                images: uploadedImageUrls
+            };
+            
+            try {
+                const { error } = await supabase
+                    .from('curator_artworks')
+                    .insert(artworkData);
+                
+                if (error) throw error;
+                
+                closeArtworkModal();
+                await loadCollections(); // Refresh to show new artwork count
+                
+            } catch (error) {
+                console.error('Error adding artwork:', error);
+                alert('Error adding artwork. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Add Artwork';
+            }
+        }
+
+        function viewProfile() {
+            openProfileModal();
+        }
+
+        async function openProfileModal() {
+            // Populate profile form with current data
+            document.getElementById('profileName').value = currentCurator.name || '';
+            document.getElementById('profileEmail').value = currentCurator.email || '';
+            document.getElementById('profileBio').value = currentCurator.bio || '';
+            document.getElementById('profilePassword').value = '';
+            
+            // Set profile avatar
+            const profileAvatar = document.getElementById('profileAvatarPreview');
+            profileAvatar.src = currentCurator.profile_image || generateAvatarPlaceholder(currentCurator.name);
+            
+            // Update account status
+            updateProfileAccountStatus();
+            
+            // Load collections summary
+            await loadProfileCollectionsSummary();
+            
+            document.getElementById('profileModal').classList.add('show');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('show');
+        }
+
+        function updateProfileAccountStatus() {
+            const statusContainer = document.getElementById('profileAccountStatus');
+            
+            if (currentCurator.status === 'pending') {
+                statusContainer.innerHTML = `
+                    <div class="status-pending">
+                        <span class="status-icon">⏳</span>
+                        <div class="status-text">Account Pending Approval</div>
+                        <div class="status-description">Your collections will be public once approved by our team</div>
+                    </div>
+                `;
+            } else if (currentCurator.status === 'approved') {
+                statusContainer.innerHTML = `
+                    <div class="status-approved">
+                        <span class="status-icon">✅</span>
+                        <div class="status-text">Account Approved</div>
+                        <div class="status-description">Your collections are public and visible to all visitors</div>
+                    </div>
+                `;
+            } else {
+                statusContainer.innerHTML = `
+                    <div class="status-display">
+                        <span class="status-icon">❓</span>
+                        <div class="status-text">Status Unknown</div>
+                        <div class="status-description">Please contact support for assistance</div>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadProfileCollectionsSummary() {
+            const summaryContainer = document.getElementById('profileCollectionsSummary');
+            
+            if (collections.length === 0) {
+                summaryContainer.innerHTML = `
+                    <div class="collection-summary-card" onclick="createCollectionFromProfile()">
+                        <div class="collection-summary-name">Create Your First Collection</div>
+                        <div class="collection-summary-details">Start curating artworks</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Get artwork counts for collections
+            const collectionIds = collections.map(c => c.id);
+            const { data: artworks } = await supabase
+                .from('curator_artworks')
+                .select('collection_id')
+                .in('collection_id', collectionIds);
+            
+            const artworkCounts = {};
+            (artworks || []).forEach(artwork => {
+                artworkCounts[artwork.collection_id] = (artworkCounts[artwork.collection_id] || 0) + 1;
+            });
+            
+            summaryContainer.innerHTML = collections.map(collection => {
+                const artworkCount = artworkCounts[collection.id] || 0;
+                return `
+                    <div class="collection-summary-card" onclick="editCollectionFromProfile('${collection.id}')">
+                        <div class="collection-summary-name">${collection.name}</div>
+                        <div class="collection-summary-details">${collection.type} • ${artworkCount} artwork${artworkCount !== 1 ? 's' : ''}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function createCollectionFromProfile() {
+            closeProfileModal();
+            createCollection();
+        }
+
+        function editCollectionFromProfile(collectionId) {
+            closeProfileModal();
+            editCollection(collectionId);
+        }
+
+        function scrollToCollections() {
+            const collectionsSection = document.getElementById('collectionsGrid');
+            collectionsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateAvatarPlaceholder(name) {
+            const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            return `data:image/svg+xml;base64,${btoa(`
+                <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="64" height="64" fill="#f8f8f8"/>
+                    <text x="32" y="40" text-anchor="middle" fill="#6b7280" font-size="16" font-family="Inter">${initials}</text>
+                </svg>
+            `)}`;
+        }
+    </script>
+</body>
+</html>

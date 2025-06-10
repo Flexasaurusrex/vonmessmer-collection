@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title id="pageTitle">Curator Collection - VonMesser Collection</title>
-    <meta content="Explore this curator's carefully selected collection" name="description" id="pageDescription"/>
+    <title>Curator Dashboard - VonMesser Collection</title>
+    <meta content="Manage your curated collections and artworks" name="description"/>
     
     <!-- Favicon -->
     <link href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIGZpbGw9IiNmZmZmZmYiLz4KICA8ZyBmaWxsPSIjMzMzIj4KICAgIDxwb2x5Z29uIHBvaW50cz0iOCwyIDEwLDIgMTMsOSAxNiwyIDE4LDIgMTQsMTIgMTEsMTIiLz4KICAgIDxwb2x5Z29uIHBvaW50cz0iMTksMiAyMSwyIDIzLDcgMjUsMiAyNywyIDI3LDEyIDI1LDEyIDI1LDUgMjMsOSAyMSw5IDIwLDUgMjAsMTIgMTksMTIiLz4KICA8L2c+CiAgPHRleHQgeD0iMTYiIHk9IjI3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMzMzIiBzdHlsZT0iZm9udC1mYW1pbHk6IHNhbnMtc2VyaWY7IGZvbnQtc2l6ZTogNXB4OyBmb250LXdlaWdodDogNDAwOyBsZXR0ZXItc3BhY2luZzogMC41cHg7Ij5WTTwvdGV4dD4KPC9zdmc+Cg==" rel="icon" type="image/svg+xml"/>
@@ -15,7 +15,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     
     <style>
         * {
@@ -81,27 +81,32 @@
             transition: all 0.3s ease;
         }
         
-        .nav-links a:hover,
-        .nav-links a.active {
+        .nav-links a:hover {
             color: #1f2937;
         }
         
-        /* Dropdown Menu */
-        .dropdown {
+        .user-menu {
             position: relative;
         }
         
-        .dropdown-toggle::after {
-            content: ' ▼';
-            font-size: 10px;
-            color: #9ca3af;
-            margin-left: 5px;
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            border-color: #1f2937;
         }
         
         .dropdown-menu {
             position: absolute;
             top: 100%;
-            left: 0;
+            right: 0;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid #e5e7eb;
@@ -113,19 +118,14 @@
             transform: translateY(-10px);
             transition: all 0.3s ease;
             z-index: 1001;
-            list-style: none;
             padding: 8px 0;
             margin: 8px 0 0 0;
         }
         
-        .dropdown:hover .dropdown-menu {
+        .user-menu:hover .dropdown-menu {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
-        }
-        
-        .dropdown-menu li {
-            display: block;
         }
         
         .dropdown-menu a {
@@ -135,7 +135,6 @@
             font-size: 13px;
             text-decoration: none;
             transition: all 0.3s ease;
-            border-radius: 0;
         }
         
         .dropdown-menu a:hover {
@@ -143,55 +142,159 @@
             color: #1f2937;
         }
         
-        /* Curator Header */
-        .curator-header {
-            padding: 60px 0;
-            text-align: center;
-            border-bottom: 1px solid #f0f0f0;
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-        }
-        
-        .curator-info {
+        /* Login Form */
+        .login-container {
+            min-height: 60vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 20px;
-            max-width: 800px;
-            margin: 0 auto;
+            justify-content: center;
+            padding: 60px 0;
         }
         
-        .curator-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #ffffff;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        .login-form {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            max-width: 400px;
+            width: 100%;
         }
         
-        .curator-details h1 {
-            font-size: 32px;
+        .login-form h2 {
+            font-size: 24px;
             font-weight: 500;
             color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: #374151;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 8px;
         }
         
-        .curator-title {
-            font-size: 16px;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
         
-        .collection-info {
+        .form-group input:focus {
+            outline: none;
+            border-color: #1f2937;
+            box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.1);
+        }
+        
+        .btn {
+            background: #1f2937;
+            color: #ffffff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background: #374151;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 8px;
             text-align: center;
         }
         
+        /* Dashboard */
+        .dashboard {
+            padding: 60px 0;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-title {
+            font-size: 32px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .dashboard-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn-secondary {
+            background: #ffffff;
+            color: #1f2937;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #1f2937;
+        }
+        
+        .collections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .collection-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .collection-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        
+        .collection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+        
         .collection-name {
-            font-size: 24px;
+            font-size: 18px;
             font-weight: 500;
             color: #1f2937;
             text-transform: uppercase;
@@ -200,134 +303,55 @@
         }
         
         .collection-type {
-            font-size: 14px;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .curator-bio {
-            font-size: 16px;
-            color: #4b5563;
-            line-height: 1.6;
-            text-align: center;
-            max-width: 600px;
-        }
-        
-        /* Navigation */
-        .page-nav {
-            padding: 30px 0;
-        }
-        
-        .nav-breadcrumbs {
-            display: flex;
-            align-items: center;
-            gap: 15px;
             font-size: 12px;
+            color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #6b7280;
         }
         
-        .nav-breadcrumbs a {
-            color: #6b7280;
-            text-decoration: none;
-            transition: color 0.3s ease;
+        .collection-actions {
+            display: flex;
+            gap: 8px;
         }
         
-        .nav-breadcrumbs a:hover {
-            color: #1f2937;
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 10px;
+            min-width: auto;
         }
         
-        .breadcrumb-separator {
-            color: #d1d5db;
+        .artwork-count {
+            font-size: 14px;
+            color: #4b5563;
+            margin-bottom: 20px;
         }
         
-        /* Gallery Grid */
-        .gallery-grid {
+        .artwork-preview {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
         }
         
-        .artwork-card {
-            cursor: pointer;
-            position: relative;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.4s ease;
-            border-radius: 8px;
+        .artwork-thumbnail {
+            aspect-ratio: 1;
+            background: #f3f4f6;
+            border-radius: 4px;
             overflow: hidden;
-            background: #ffffff;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
         }
         
-        .artwork-card.animate-in {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .artwork-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-        }
-        
-        .artwork-image {
-            width: 100%;
-            background: #f8f8f8;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .artwork-image img {
+        .artwork-thumbnail img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: opacity 0.3s ease;
         }
         
-        .artwork-image.landscape { aspect-ratio: 4/3; }
-        .artwork-image.portrait { aspect-ratio: 3/4; }
-        .artwork-image.square { aspect-ratio: 1/1; }
-        .artwork-image.panoramic { aspect-ratio: 16/9; }
-        
-        .artwork-info {
-            text-align: left;
-            padding: 20px;
-            background: #ffffff;
-        }
-        
-        .artwork-title {
-            font-size: 13px;
-            font-weight: 500;
-            color: #1f2937;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            line-height: 1.3;
-        }
-        
-        .artwork-artist {
-            font-size: 11px;
-            color: #4b5563;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 3px;
-        }
-        
-        .artwork-details {
-            font-size: 11px;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            line-height: 1.4;
-        }
-        
-        .artwork-price {
-            margin-top: 8px;
-            color: #374151;
-            font-weight: 500;
+        .empty-thumbnail {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 10px;
         }
         
         /* Modal Styles */
@@ -352,195 +376,129 @@
         
         .modal-content {
             background: #ffffff;
-            max-width: 900px;
+            max-width: 600px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            position: relative;
             border-radius: 12px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.15);
         }
         
-        .modal-image-container {
-            position: relative;
-            background: #f8f8f8;
+        .modal-header {
+            padding: 30px 30px 0;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            min-height: 450px;
-            max-height: 70vh;
-            padding: 40px;
-            border-radius: 12px 12px 0 0;
-        }
-        
-        .modal-image {
-            max-width: 100%;
-            max-height: calc(70vh - 80px);
-            object-fit: contain;
-            cursor: zoom-in;
-            transition: transform 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        
-        .modal-info {
-            padding: 40px;
-            background: #ffffff;
         }
         
         .modal-title {
             font-size: 20px;
             font-weight: 500;
-            margin-bottom: 10px;
+            color: #1f2937;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #1f2937;
-            line-height: 1.2;
-        }
-        
-        .modal-artist {
-            font-size: 16px;
-            color: #4b5563;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-        }
-        
-        .modal-details {
-            font-size: 14px;
-            color: #6b7280;
-            line-height: 1.6;
-        }
-        
-        .modal-price {
-            font-size: 18px;
-            font-weight: 500;
-            color: #1f2937;
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid #e5e7eb;
         }
         
         .close-modal {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.9);
+            background: none;
             border: none;
-            padding: 15px;
+            font-size: 24px;
             cursor: pointer;
-            font-size: 18px;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
+            color: #6b7280;
+            padding: 5px;
+            transition: color 0.3s ease;
         }
         
         .close-modal:hover {
-            background: rgba(255, 255, 255, 1);
-            transform: scale(1.1);
-        }
-        
-        /* Image navigation for multiple images */
-        .image-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            padding: 15px 20px;
-            cursor: pointer;
-            font-size: 18px;
-            color: #333;
-            transition: all 0.3s ease;
-        }
-        
-        .image-nav:hover {
-            background: rgba(255, 255, 255, 1);
-        }
-        
-        .image-nav.prev {
-            left: 20px;
-        }
-        
-        .image-nav.next {
-            right: 20px;
-        }
-        
-        .image-nav:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-        
-        .image-dots {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-        }
-        
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .dot.active {
-            background: rgba(255, 255, 255, 1);
-        }
-        
-        /* Loading and Empty States */
-        .loading {
-            text-align: center;
-            padding: 120px 20px;
-            color: #6b7280;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .empty-collection {
-            text-align: center;
-            padding: 120px 20px;
-            color: #6b7280;
-            max-width: 600px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        }
-        
-        .empty-collection h3 {
-            font-size: 20px;
-            font-weight: 500;
             color: #1f2937;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
         }
         
-        .empty-collection p {
-            font-size: 16px;
-            line-height: 1.6;
+        .modal-body {
+            padding: 30px;
         }
         
-        .error-state {
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .image-upload {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 40px 20px;
             text-align: center;
-            padding: 120px 20px;
-            color: #ef4444;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
         }
         
-        .error-state h3 {
-            font-size: 20px;
-            font-weight: 500;
-            margin-bottom: 15px;
+        .image-upload:hover {
+            border-color: #1f2937;
+            background: #f9fafb;
+        }
+        
+        .image-upload.dragover {
+            border-color: #1f2937;
+            background: #f0f9ff;
+        }
+        
+        .upload-text {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .uploaded-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .uploaded-image {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #f3f4f6;
+        }
+        
+        .uploaded-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #6b7280;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -551,52 +509,39 @@
                 padding: 0 20px;
             }
             
-            .nav-links {
-                gap: 25px;
-            }
-            
-            .nav-links a {
-                font-size: 13px;
-            }
-            
-            .curator-header {
-                padding: 40px 0;
-            }
-            
-            .curator-info {
-                gap: 15px;
-            }
-            
-            .curator-avatar {
-                width: 100px;
-                height: 100px;
-            }
-            
-            .curator-details h1 {
-                font-size: 24px;
-            }
-            
-            .collection-name {
-                font-size: 20px;
-            }
-            
-            .gallery-grid {
-                grid-template-columns: 1fr;
+            .dashboard-header {
+                flex-direction: column;
                 gap: 20px;
+                align-items: flex-start;
+            }
+            
+            .dashboard-actions {
+                width: 100%;
+            }
+            
+            .btn {
+                flex: 1;
+            }
+            
+            .collections-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
             }
             
             .modal {
-                padding: 10px;
-            }
-            
-            .modal-info {
                 padding: 20px;
             }
             
-            .modal-image-container {
-                min-height: 250px;
-                max-height: 50vh;
+            .modal-content {
+                max-height: 95vh;
             }
+        }
+        
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -615,77 +560,183 @@
             <ul class="nav-links">
                 <li><a href="index.html">Physical Collection</a></li>
                 <li><a href="https://linktr.ee/flexasaurusrex" target="_blank">Digital Collection</a></li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle active" href="#">Guest Curators</a>
-                    <ul class="dropdown-menu">
-                        <li><a href="guest-curators.html">Browse All Curators</a></li>
-                        <li><a href="index.html#apply" onclick="window.parent.openCuratorApplication && window.parent.openCuratorApplication(); return false;">Apply to Curate</a></li>
-                        <li><a href="curator-dashboard.html">Curator Login</a></li>
-                    </ul>
-                </li>
+                <li><a href="guest-curators.html">Guest Curators</a></li>
                 <li><a href="index.html#about">About</a></li>
                 <li><a href="index.html#contact">Contact</a></li>
+                <li class="user-menu hidden" id="userMenu">
+                    <img id="userAvatar" class="user-avatar" src="" alt="">
+                    <div class="dropdown-menu">
+                        <a href="#" onclick="viewProfile()">View Profile</a>
+                        <a href="#" onclick="logout()">Logout</a>
+                    </div>
+                </li>
             </ul>
         </nav>
     </header>
 
-    <!-- Curator Header -->
-    <section class="curator-header">
+    <!-- Login/Register Forms -->
+    <section id="loginSection" class="login-container">
         <div class="container">
-            <div class="curator-info">
-                <img id="curatorAvatar" class="curator-avatar" src="" alt="">
-                <div class="curator-details">
-                    <h1 id="curatorName">Loading...</h1>
-                    <div class="curator-title">Curator</div>
+            <!-- Login Form -->
+            <form class="login-form" id="loginForm">
+                <h2>Curator Login</h2>
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" name="email" required>
                 </div>
-                <div class="collection-info">
-                    <div id="collectionName" class="collection-name">Loading Collection...</div>
-                    <div id="collectionType" class="collection-type">Collection</div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required>
                 </div>
-                <div id="curatorBio" class="curator-bio" style="display: none;"></div>
+                <button type="submit" class="btn" id="loginBtn">Login</button>
+                <div id="loginError" class="error-message hidden"></div>
+                <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #6b7280;">
+                    Don't have an account? 
+                    <a href="#" onclick="showRegisterForm()" style="color: #1f2937; text-decoration: underline;">Sign up here</a>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form class="login-form hidden" id="registerForm">
+                <h2>Create Curator Account</h2>
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerBio">Bio (Optional)</label>
+                    <textarea id="registerBio" name="bio" rows="3" style="width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 6px; resize: vertical;" placeholder="Tell us about your curatorial experience..."></textarea>
+                </div>
+                <button type="submit" class="btn" id="registerBtn">Create Account</button>
+                <div id="registerError" class="error-message hidden"></div>
+                <div id="registerSuccess" class="hidden" style="color: #10b981; font-size: 12px; margin-top: 8px; text-align: center;">
+                    ✅ Account created! You can now log in and start creating collections.<br>
+                    Your collections will be public once approved by the admin.
+                </div>
+                <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #6b7280;">
+                    Already have an account? 
+                    <a href="#" onclick="showLoginForm()" style="color: #1f2937; text-decoration: underline;">Login here</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboardSection" class="dashboard hidden">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">My Collections</h1>
+                <div class="dashboard-actions">
+                    <button class="btn btn-secondary" onclick="createCollection()">New Collection</button>
+                </div>
+            </div>
+            <div id="collectionsGrid" class="collections-grid">
+                <!-- Collections will be loaded here -->
             </div>
         </div>
     </section>
 
-    <!-- Navigation -->
-    <section class="page-nav">
-        <div class="container">
-            <div class="nav-breadcrumbs">
-                <a href="index.html">Home</a>
-                <span class="breadcrumb-separator">→</span>
-                <a href="guest-curators.html">Guest Curators</a>
-                <span class="breadcrumb-separator">→</span>
-                <span id="breadcrumbCurator">Curator</span>
-                <span class="breadcrumb-separator">→</span>
-                <span id="breadcrumbCollection">Collection</span>
+    <!-- Collection Modal -->
+    <div class="modal" id="collectionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="collectionModalTitle">New Collection</h3>
+                <button class="close-modal" onclick="closeCollectionModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="collectionForm">
+                    <div class="form-group">
+                        <label for="collectionName">Collection Name</label>
+                        <input type="text" id="collectionName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="collectionType">Collection Type</label>
+                        <select id="collectionType" name="type" style="width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                            <option value="painting">Painting</option>
+                            <option value="sculpture">Sculpture</option>
+                            <option value="photography">Photography</option>
+                            <option value="mixed">Mixed Media</option>
+                            <option value="digital">Digital Art</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="collectionDescription">Description (Optional)</label>
+                        <textarea id="collectionDescription" name="description" rows="3" style="width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 6px; resize: vertical;"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Save Collection</button>
+                </form>
             </div>
         </div>
-    </section>
-
-    <!-- Main Gallery -->
-    <main>
-        <div class="container">
-            <div id="galleryGrid" class="gallery-grid">
-                <div class="loading">Loading collection...</div>
-            </div>
-        </div>
-    </main>
+    </div>
 
     <!-- Artwork Modal -->
     <div class="modal" id="artworkModal">
         <div class="modal-content">
-            <button class="close-modal" onclick="closeModal()">×</button>
-            <div class="modal-image-container">
-                <img alt="" class="modal-image" id="modalImage" src="">
-                <button class="image-nav prev" id="prevBtn" onclick="changeImage(-1)">‹</button>
-                <button class="image-nav next" id="nextBtn" onclick="changeImage(1)">›</button>
-                <div class="image-dots" id="imageDots"></div>
+            <div class="modal-header">
+                <h3 class="modal-title" id="artworkModalTitle">Add Artwork</h3>
+                <button class="close-modal" onclick="closeArtworkModal()">×</button>
             </div>
-            <div class="modal-info">
-                <h3 class="modal-title" id="modalTitle"></h3>
-                <div class="modal-artist" id="modalArtist"></div>
-                <div class="modal-details" id="modalDetails"></div>
-                <div class="modal-price" id="modalPrice" style="display: none;"></div>
+            <div class="modal-body">
+                <form id="artworkForm">
+                    <div class="image-upload" id="imageUpload">
+                        <div class="upload-text">Click or drag images here to upload</div>
+                        <div style="font-size: 12px; color: #9ca3af;">Support: JPG, PNG, WebP (Max 5MB each)</div>
+                        <input type="file" id="imageInput" multiple accept="image/*" style="display: none;">
+                    </div>
+                    <div id="uploadedImages" class="uploaded-images"></div>
+                    
+                    <div class="form-group">
+                        <label for="artworkTitle">Title</label>
+                        <input type="text" id="artworkTitle" name="title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkArtist">Artist</label>
+                        <input type="text" id="artworkArtist" name="artist" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="artworkYear">Year</label>
+                            <input type="text" id="artworkYear" name="year">
+                        </div>
+                        <div class="form-group">
+                            <label for="artworkOrientation">Orientation</label>
+                            <select id="artworkOrientation" name="orientation" style="width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                                <option value="landscape">Landscape</option>
+                                <option value="portrait">Portrait</option>
+                                <option value="square">Square</option>
+                                <option value="panoramic">Panoramic</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkDimensions">Dimensions</label>
+                        <input type="text" id="artworkDimensions" name="dimensions" placeholder="e.g., 24 x 36 inches">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkMedium">Medium</label>
+                        <input type="text" id="artworkMedium" name="medium" placeholder="e.g., Oil on canvas">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="artworkPrice">Price (Optional)</label>
+                        <input type="text" id="artworkPrice" name="price" placeholder="e.g., $1,200">
+                    </div>
+                    
+                    <button type="submit" class="btn" id="artworkSubmitBtn">Add Artwork</button>
+                </form>
             </div>
         </div>
     </div>
@@ -696,278 +747,547 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxa3NocGtiZml4ZXl1c3Fwc291Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5Mjc1ODksImV4cCI6MjA2NDUwMzU4OX0.EhAV5EvXDIRPJcp3ipBSqqo6xY6rh8Jghe__XZ4659U';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        let curator = null;
-        let collection = null;
-        let artworks = [];
-        let currentModalImages = [];
-        let currentImageIndex = 0;
+        let currentCurator = null;
+        let collections = [];
+        let currentCollection = null;
+        let uploadedImageUrls = [];
 
-        // Get URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const curatorId = urlParams.get('curator');
-        const collectionId = urlParams.get('collection');
-
-        // Load page on DOM ready
+        // Check authentication on load
         document.addEventListener('DOMContentLoaded', function() {
-            if (!curatorId || !collectionId) {
-                showError('Invalid URL parameters. Please check the link and try again.');
-                return;
-            }
-            
-            loadCuratorPage();
+            checkAuth();
+            setupEventListeners();
         });
 
-        async function loadCuratorPage() {
+        function setupEventListeners() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Register form
+            document.getElementById('registerForm').addEventListener('submit', handleRegister);
+            
+            // Collection form
+            document.getElementById('collectionForm').addEventListener('submit', handleCollectionSubmit);
+            
+            // Artwork form
+            document.getElementById('artworkForm').addEventListener('submit', handleArtworkSubmit);
+            
+            // Image upload
+            const imageUpload = document.getElementById('imageUpload');
+            const imageInput = document.getElementById('imageInput');
+            
+            imageUpload.addEventListener('click', () => imageInput.click());
+            imageUpload.addEventListener('dragover', handleDragOver);
+            imageUpload.addEventListener('drop', handleFileDrop);
+            imageInput.addEventListener('change', handleFileSelect);
+            
+            // Modal close on outside click
+            document.getElementById('collectionModal').addEventListener('click', function(e) {
+                if (e.target === this) closeCollectionModal();
+            });
+            
+            document.getElementById('artworkModal').addEventListener('click', function(e) {
+                if (e.target === this) closeArtworkModal();
+            });
+        }
+
+        function showRegisterForm() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        function showLoginForm() {
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            const registerBtn = document.getElementById('registerBtn');
+            const errorDiv = document.getElementById('registerError');
+            const successDiv = document.getElementById('registerSuccess');
+            
+            registerBtn.disabled = true;
+            registerBtn.textContent = 'Creating Account...';
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const bio = document.getElementById('registerBio').value;
+            
             try {
-                await Promise.all([
-                    loadCurator(),
-                    loadCollection(),
-                    loadArtworks()
-                ]);
+                // Check if email already exists
+                const { data: existingCurator } = await supabase
+                    .from('curators')
+                    .select('email')
+                    .eq('email', email)
+                    .single();
                 
-                updatePageContent();
-                renderGallery();
+                if (existingCurator) {
+                    throw new Error('An account with this email already exists');
+                }
+                
+                // Create new curator account
+                const { data: newCurator, error } = await supabase
+                    .from('curators')
+                    .insert({
+                        name: name,
+                        email: email,
+                        password: password,
+                        bio: bio || null,
+                        status: 'pending'
+                    })
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                // Auto-login the new curator immediately
+                currentCurator = newCurator;
+                localStorage.setItem('currentCurator', JSON.stringify(newCurator));
+                
+                // Go straight to dashboard
+                await loadDashboard();
                 
             } catch (error) {
-                console.error('Error loading curator page:', error);
-                showError('Failed to load the curator collection. Please try again later.');
+                console.error('Registration error:', error);
+                errorDiv.textContent = error.message || 'Registration failed. Please try again.';
+                errorDiv.classList.remove('hidden');
+                registerBtn.disabled = false;
+                registerBtn.textContent = 'Create Account';
             }
         }
 
-        async function loadCurator() {
-            const { data, error } = await supabase
-                .from('curators')
-                .select('*')
-                .eq('id', curatorId)
-                // Remove status filter - allow both pending and approved curators to be viewed
-                .single();
-
-            if (error) throw error;
-            curator = data;
+        async function checkAuth() {
+            const storedCurator = localStorage.getItem('currentCurator');
+            if (storedCurator) {
+                try {
+                    currentCurator = JSON.parse(storedCurator);
+                    await loadDashboard();
+                } catch (error) {
+                    console.error('Invalid stored curator data:', error);
+                    localStorage.removeItem('currentCurator');
+                    showLogin();
+                }
+            } else {
+                showLogin();
+            }
         }
 
-        async function loadCollection() {
-            const { data, error } = await supabase
-                .from('curator_collections')
-                .select('*')
-                .eq('id', collectionId)
-                .eq('curator_id', curatorId)
-                .single();
-
-            if (error) throw error;
-            collection = data;
+        function showLogin() {
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('userMenu').classList.add('hidden');
         }
 
-        async function loadArtworks() {
-            const { data, error } = await supabase
-                .from('curator_artworks')
-                .select('*')
-                .eq('collection_id', collectionId)
-                .order('display_order', { ascending: true, nullsLast: true })
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                console.warn('Could not load artworks:', error);
-                artworks = [];
-                return;
+        async function loadDashboard() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            document.getElementById('userMenu').classList.remove('hidden');
+            
+            // Update user avatar
+            const userAvatar = document.getElementById('userAvatar');
+            userAvatar.src = currentCurator.profile_image || generateAvatarPlaceholder(currentCurator.name);
+            userAvatar.alt = currentCurator.name;
+            
+            // Show approval status if pending
+            const dashboardTitle = document.querySelector('.dashboard-title');
+            if (currentCurator.status === 'pending') {
+                dashboardTitle.innerHTML = `
+                    My Collections
+                    <div style="font-size: 14px; font-weight: 400; color: #f59e0b; margin-top: 8px; text-transform: none; letter-spacing: normal;">
+                        ⏳ Account pending approval - collections will be public once approved
+                    </div>
+                `;
+            } else {
+                dashboardTitle.textContent = 'My Collections';
             }
             
-            artworks = data || [];
+            await loadCollections();
         }
 
-        function updatePageContent() {
-            if (!curator || !collection) return;
+        async function handleLogin(e) {
+            e.preventDefault();
             
-            // Update page title and meta
-            document.getElementById('pageTitle').textContent = `${curator.name} - ${collection.name} | VonMesser Collection`;
-            document.getElementById('pageDescription').setAttribute('content', 
-                `Explore ${curator.name}'s ${collection.type} collection: ${collection.name}`);
+            const loginBtn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('loginError');
             
-            // Update curator info
-            const defaultAvatar = generateAvatarPlaceholder(curator.name);
-            document.getElementById('curatorAvatar').src = curator.profile_image || defaultAvatar;
-            document.getElementById('curatorAvatar').alt = curator.name;
-            document.getElementById('curatorName').textContent = curator.name;
-            document.getElementById('collectionName').textContent = collection.name;
-            document.getElementById('collectionType').textContent = collection.type.toUpperCase() + ' Collection';
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Signing in...';
+            errorDiv.classList.add('hidden');
             
-            // Show bio if available
-            if (curator.bio) {
-                document.getElementById('curatorBio').textContent = curator.bio;
-                document.getElementById('curatorBio').style.display = 'block';
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                // Check login credentials - allow any curator to log in
+                const { data: curator, error } = await supabase
+                    .from('curators')
+                    .select('*')
+                    .eq('email', email)
+                    .eq('password', password)
+                    .single();
+                
+                if (error || !curator) {
+                    throw new Error('Invalid email or password');
+                }
+                
+                // Set current curator and log them in regardless of status
+                currentCurator = curator;
+                localStorage.setItem('currentCurator', JSON.stringify(curator));
+                
+                await loadDashboard();
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                errorDiv.textContent = error.message || 'Login failed. Please check your credentials.';
+                errorDiv.classList.remove('hidden');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login';
             }
-            
-            // Update breadcrumbs
-            document.getElementById('breadcrumbCurator').textContent = curator.name;
-            document.getElementById('breadcrumbCollection').textContent = collection.name;
         }
 
-        function renderGallery() {
-            const grid = document.getElementById('galleryGrid');
+        function logout() {
+            localStorage.removeItem('currentCurator');
+            currentCurator = null;
+            showLogin();
+            document.getElementById('loginForm').reset();
+            document.getElementById('registerForm').reset();
+            showLoginForm(); // Show login form by default
+        }
+
+        async function loadCollections() {
+            try {
+                const { data, error } = await supabase
+                    .from('curator_collections')
+                    .select('*')
+                    .eq('curator_id', currentCurator.id)
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                collections = data || [];
+                await renderCollections();
+                
+            } catch (error) {
+                console.error('Error loading collections:', error);
+            }
+        }
+
+        async function renderCollections() {
+            const grid = document.getElementById('collectionsGrid');
             
-            if (artworks.length === 0) {
+            if (collections.length === 0) {
                 grid.innerHTML = `
-                    <div class="empty-collection">
-                        <h3>Collection Coming Soon</h3>
-                        <p>${curator.name} is still curating this collection.<br>Check back soon to see their selected works.</p>
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px; color: #6b7280;">
+                        <h3 style="font-size: 18px; margin-bottom: 15px; color: #1f2937;">No Collections Yet</h3>
+                        <p>Create your first collection to start curating artworks.</p>
                     </div>
                 `;
                 return;
             }
-
-            grid.innerHTML = artworks.map((artwork, index) => `
-                <div class="artwork-card" onclick="openModal('${artwork.id}')">
-                    <div class="artwork-image ${artwork.orientation}">
-                        ${artwork.images && artwork.images.length > 0 ? 
-                            `<img src="${artwork.images[0]}" alt="${artwork.title}" onload="this.classList.add('loaded')">` 
-                            : '<div style="background:#f0f0f0;height:100%;display:flex;align-items:center;justify-content:center;color:#999;">No Image</div>'
-                        }
-                        ${artwork.images && artwork.images.length > 1 ? 
-                            `<div style="position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.8); padding: 4px 8px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px;">${artwork.images.length} Images</div>` 
-                            : ''
-                        }
-                    </div>
-                    <div class="artwork-info">
-                        <div class="artwork-title">${artwork.title}</div>
-                        <div class="artwork-details">
-                            <div class="artwork-artist">${artwork.artist}</div>
-                            <div>${artwork.year}</div>
-                            ${artwork.dimensions ? `<div style="margin-top: 3px;">${artwork.dimensions}</div>` : ''}
-                            ${artwork.medium ? `<div style="margin-top: 3px; font-style: italic;">${artwork.medium}</div>` : ''}
-                            ${artwork.price ? `<div class="artwork-price">${artwork.price}</div>` : ''}
+            
+            // Load artwork counts for each collection
+            const collectionIds = collections.map(c => c.id);
+            const { data: artworks } = await supabase
+                .from('curator_artworks')
+                .select('collection_id, images')
+                .in('collection_id', collectionIds);
+            
+            const artworksByCollection = {};
+            (artworks || []).forEach(artwork => {
+                if (!artworksByCollection[artwork.collection_id]) {
+                    artworksByCollection[artwork.collection_id] = [];
+                }
+                artworksByCollection[artwork.collection_id].push(artwork);
+            });
+            
+            grid.innerHTML = collections.map(collection => {
+                const collectionArtworks = artworksByCollection[collection.id] || [];
+                const artworkCount = collectionArtworks.length;
+                
+                // Debug: log the IDs to make sure they're valid
+                console.log(`Collection: ${collection.name}, Curator ID: ${currentCurator.id}, Collection ID: ${collection.id}`);
+                
+                return `
+                    <div class="collection-card">
+                        <div class="collection-header">
+                            <div>
+                                <div class="collection-name">${collection.name}</div>
+                                <div class="collection-type">${collection.type} Collection</div>
+                            </div>
+                            <div class="collection-actions">
+                                <button class="btn btn-small" onclick="addArtwork('${collection.id}')">Add Art</button>
+                                <button class="btn btn-secondary btn-small" onclick="editCollection('${collection.id}')">Edit</button>
+                            </div>
+                        </div>
+                        
+                        <div class="artwork-count">${artworkCount} artwork${artworkCount !== 1 ? 's' : ''}</div>
+                        
+                        <div class="artwork-preview">
+                            ${Array.from({length: 4}).map((_, index) => {
+                                const artwork = collectionArtworks[index];
+                                if (artwork && artwork.images && artwork.images.length > 0) {
+                                    return `
+                                        <div class="artwork-thumbnail">
+                                            <img src="${artwork.images[0]}" alt="Artwork ${index + 1}">
+                                        </div>
+                                    `;
+                                } else {
+                                    return `
+                                        <div class="artwork-thumbnail">
+                                            <div class="empty-thumbnail">+</div>
+                                        </div>
+                                    `;
+                                }
+                            }).join('')}
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="viewPublicPage('${currentCurator.id}', '${collection.id}')" 
+                                    class="btn btn-secondary" style="flex: 1;">
+                                View Public Page
+                            </button>
                         </div>
                     </div>
-                </div>
-            `).join('');
-
-            // Animate cards in
-            setTimeout(() => {
-                document.querySelectorAll('.artwork-card').forEach((card, index) => {
-                    setTimeout(() => {
-                        card.classList.add('animate-in');
-                    }, index * 50);
-                });
-            }, 100);
+                `;
+            }).join('');
         }
 
-        function openModal(id) {
-            const artwork = artworks.find(a => a.id === id);
-            if (!artwork) return;
+        function viewPublicPage(curatorId, collectionId) {
+            // Debug: log the parameters
+            console.log('Opening public page with:', { curatorId, collectionId });
             
-            currentModalImages = artwork.images || [];
-            currentImageIndex = 0;
+            // Construct the URL properly
+            const url = `curator.html?curator=${encodeURIComponent(curatorId)}&collection=${encodeURIComponent(collectionId)}`;
+            console.log('Generated URL:', url);
             
-            updateModalImage();
+            // Open in a new tab so they can keep working on their dashboard
+            window.open(url, '_blank');
+        }
+
+        function createCollection() {
+            currentCollection = null;
+            document.getElementById('collectionModalTitle').textContent = 'New Collection';
+            document.getElementById('collectionForm').reset();
+            document.getElementById('collectionModal').classList.add('show');
+        }
+
+        function editCollection(collectionId) {
+            currentCollection = collections.find(c => c.id === collectionId);
+            if (!currentCollection) return;
             
-            document.getElementById('modalTitle').textContent = artwork.title;
-            document.getElementById('modalArtist').textContent = artwork.artist;
+            document.getElementById('collectionModalTitle').textContent = 'Edit Collection';
+            document.getElementById('collectionName').value = currentCollection.name;
+            document.getElementById('collectionType').value = currentCollection.type;
+            document.getElementById('collectionDescription').value = currentCollection.description || '';
+            document.getElementById('collectionModal').classList.add('show');
+        }
+
+        function closeCollectionModal() {
+            document.getElementById('collectionModal').classList.remove('show');
+        }
+
+        async function handleCollectionSubmit(e) {
+            e.preventDefault();
             
-            let details = artwork.year;
-            if (artwork.dimensions) {
-                details += ` • ${artwork.dimensions}`;
+            const formData = new FormData(e.target);
+            const collectionData = {
+                name: formData.get('name'),
+                type: formData.get('type'),
+                description: formData.get('description'),
+                curator_id: currentCurator.id
+            };
+            
+            try {
+                let result;
+                if (currentCollection) {
+                    // Update existing collection
+                    result = await supabase
+                        .from('curator_collections')
+                        .update(collectionData)
+                        .eq('id', currentCollection.id)
+                        .select()
+                        .single();
+                } else {
+                    // Create new collection
+                    result = await supabase
+                        .from('curator_collections')
+                        .insert(collectionData)
+                        .select()
+                        .single();
+                }
+                
+                if (result.error) throw result.error;
+                
+                closeCollectionModal();
+                await loadCollections();
+                
+            } catch (error) {
+                console.error('Error saving collection:', error);
+                alert('Error saving collection. Please try again.');
             }
-            if (artwork.medium) {
-                details += `\n${artwork.medium}`;
-            }
-            document.getElementById('modalDetails').innerHTML = details.replace('\n', '<br><em style="font-style: italic; color: #999;">') + (artwork.medium ? '</em>' : '');
+        }
+
+        function addArtwork(collectionId) {
+            currentCollection = collections.find(c => c.id === collectionId);
+            if (!currentCollection) return;
             
-            const priceElement = document.getElementById('modalPrice');
-            if (artwork.price) {
-                priceElement.textContent = artwork.price;
-                priceElement.style.display = 'block';
-            } else {
-                priceElement.style.display = 'none';
-            }
-            
-            setupImageNavigation();
+            document.getElementById('artworkModalTitle').textContent = `Add Artwork to ${currentCollection.name}`;
+            document.getElementById('artworkForm').reset();
+            document.getElementById('uploadedImages').innerHTML = '';
+            uploadedImageUrls = [];
             document.getElementById('artworkModal').classList.add('show');
         }
 
-        function updateModalImage() {
-            if (currentModalImages.length > 0) {
-                document.getElementById('modalImage').src = currentModalImages[currentImageIndex];
-            }
-        }
-
-        function setupImageNavigation() {
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const dotsContainer = document.getElementById('imageDots');
-            
-            if (currentModalImages.length <= 1) {
-                prevBtn.style.display = 'none';
-                nextBtn.style.display = 'none';
-                dotsContainer.style.display = 'none';
-            } else {
-                prevBtn.style.display = 'block';
-                nextBtn.style.display = 'block';
-                dotsContainer.style.display = 'flex';
-                
-                dotsContainer.innerHTML = currentModalImages.map((_, index) => 
-                    `<div class="dot ${index === currentImageIndex ? 'active' : ''}" onclick="goToImage(${index})"></div>`
-                ).join('');
-                
-                prevBtn.disabled = currentImageIndex === 0;
-                nextBtn.disabled = currentImageIndex === currentModalImages.length - 1;
-            }
-        }
-
-        function changeImage(direction) {
-            currentImageIndex += direction;
-            if (currentImageIndex < 0) currentImageIndex = 0;
-            if (currentImageIndex >= currentModalImages.length) currentImageIndex = currentModalImages.length - 1;
-            
-            updateModalImage();
-            setupImageNavigation();
-        }
-
-        function goToImage(index) {
-            currentImageIndex = index;
-            updateModalImage();
-            setupImageNavigation();
-        }
-
-        function closeModal() {
+        function closeArtworkModal() {
             document.getElementById('artworkModal').classList.remove('show');
         }
 
-        function showError(message) {
-            const grid = document.getElementById('galleryGrid');
-            grid.innerHTML = `
-                <div class="error-state">
-                    <h3>Oops!</h3>
-                    <p>${message}</p>
-                    <a href="guest-curators.html" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: #1f2937; color: white; text-decoration: none; border-radius: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">
-                        Browse All Curators
-                    </a>
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleFileDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+            uploadFiles(files);
+        }
+
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            uploadFiles(files);
+        }
+
+        async function uploadFiles(files) {
+            const uploadContainer = document.getElementById('uploadedImages');
+            
+            for (const file of files) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert(`File ${file.name} is too large. Maximum size is 5MB.`);
+                    continue;
+                }
+                
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'uploaded-image';
+                imageContainer.innerHTML = `
+                    <div class="loading-overlay">Uploading...</div>
+                `;
+                uploadContainer.appendChild(imageContainer);
+                
+                try {
+                    // Create a data URL for immediate preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        imageContainer.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                    
+                    // For demo purposes, we'll simulate upload by using data URLs
+                    // In production, you'd upload to Supabase Storage or another service
+                    const dataUrl = await new Promise(resolve => {
+                        const reader = new FileReader();
+                        reader.onload = e => resolve(e.target.result);
+                        reader.readAsDataURL(file);
+                    });
+                    
+                    uploadedImageUrls.push(dataUrl);
+                    
+                    imageContainer.innerHTML = `
+                        <img src="${dataUrl}" alt="Uploaded image">
+                        <button class="remove-image" onclick="removeImage(${uploadedImageUrls.length - 1})">×</button>
+                    `;
+                    
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    imageContainer.innerHTML = `
+                        <div style="padding: 20px; color: #ef4444; font-size: 12px; text-align: center;">
+                            Upload failed
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        function removeImage(index) {
+            uploadedImageUrls.splice(index, 1);
+            renderUploadedImages();
+        }
+
+        function renderUploadedImages() {
+            const container = document.getElementById('uploadedImages');
+            container.innerHTML = uploadedImageUrls.map((url, index) => `
+                <div class="uploaded-image">
+                    <img src="${url}" alt="Uploaded image">
+                    <button class="remove-image" onclick="removeImage(${index})">×</button>
                 </div>
-            `;
+            `).join('');
+        }
+
+        async function handleArtworkSubmit(e) {
+            e.preventDefault();
+            
+            if (uploadedImageUrls.length === 0) {
+                alert('Please upload at least one image.');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('artworkSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Adding Artwork...';
+            
+            const formData = new FormData(e.target);
+            const artworkData = {
+                collection_id: currentCollection.id,
+                title: formData.get('title'),
+                artist: formData.get('artist'),
+                year: formData.get('year'),
+                orientation: formData.get('orientation'),
+                dimensions: formData.get('dimensions'),
+                medium: formData.get('medium'),
+                price: formData.get('price'),
+                images: uploadedImageUrls
+            };
+            
+            try {
+                const { error } = await supabase
+                    .from('curator_artworks')
+                    .insert(artworkData);
+                
+                if (error) throw error;
+                
+                closeArtworkModal();
+                await loadCollections(); // Refresh to show new artwork count
+                
+            } catch (error) {
+                console.error('Error adding artwork:', error);
+                alert('Error adding artwork. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Add Artwork';
+            }
+        }
+
+        function viewProfile() {
+            alert('Profile editing feature coming soon!');
         }
 
         function generateAvatarPlaceholder(name) {
             const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
             return `data:image/svg+xml;base64,${btoa(`
-                <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="300" height="300" fill="#f8f8f8"/>
-                    <text x="150" y="160" text-anchor="middle" fill="#6b7280" font-size="48" font-family="Inter">${initials}</text>
+                <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="64" height="64" fill="#f8f8f8"/>
+                    <text x="32" y="40" text-anchor="middle" fill="#6b7280" font-size="16" font-family="Inter">${initials}</text>
                 </svg>
             `)}`;
         }
-
-        // Event listeners
-        document.getElementById('artworkModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
-
-        document.addEventListener('keydown', function(e) {
-            const modal = document.getElementById('artworkModal');
-            
-            if (modal.classList.contains('show')) {
-                if (e.key === 'ArrowLeft') changeImage(-1);
-                else if (e.key === 'ArrowRight') changeImage(1);
-                else if (e.key === 'Escape') closeModal();
-            }
-        });
     </script>
 </body>
 </html>

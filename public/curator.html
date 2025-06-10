@@ -371,6 +371,7 @@
             max-height: 70vh;
             padding: 40px;
             border-radius: 12px 12px 0 0;
+            overflow: auto;
         }
         
         .modal-image {
@@ -380,6 +381,13 @@
             cursor: zoom-in;
             transition: transform 0.3s ease;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .modal-image.zoomed {
+            cursor: zoom-out;
+            transform: scale(2.5);
+            max-width: none;
+            max-height: none;
         }
         
         .modal-info {
@@ -495,6 +503,26 @@
         .image-nav:disabled {
             opacity: 0.3;
             cursor: not-allowed;
+        }
+        
+        .zoom-hint {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .modal-image-container:hover .zoom-hint {
+            opacity: 1;
         }
         
         .image-dots {
@@ -703,6 +731,7 @@
                 <button class="image-nav prev" id="prevBtn" onclick="changeImage(-1)">‹</button>
                 <button class="image-nav next" id="nextBtn" onclick="changeImage(1)">›</button>
                 <div class="image-dots" id="imageDots"></div>
+                <div class="zoom-hint">Click to zoom</div>
             </div>
             <div class="modal-info">
                 <h3 class="modal-title" id="modalTitle"></h3>
@@ -726,6 +755,7 @@
         let artworks = [];
         let currentModalImages = [];
         let currentImageIndex = 0;
+        let isImageZoomed = false;
 
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
@@ -976,12 +1006,52 @@
             }
             
             setupImageNavigation();
+            setupImageZoom();
             document.getElementById('artworkModal').classList.add('show');
+        }
+
+        function setupImageZoom() {
+            const modalImage = document.getElementById('modalImage');
+            const zoomHint = document.querySelector('.zoom-hint');
+            isImageZoomed = false;
+            modalImage.classList.remove('zoomed');
+            zoomHint.textContent = 'Click to zoom';
+            
+            // Remove any existing event listeners
+            modalImage.replaceWith(modalImage.cloneNode(true));
+            
+            // Add zoom click event listener
+            const newModalImage = document.getElementById('modalImage');
+            newModalImage.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent modal from closing
+                toggleImageZoom();
+            });
+        }
+
+        function toggleImageZoom() {
+            const modalImage = document.getElementById('modalImage');
+            const zoomHint = document.querySelector('.zoom-hint');
+            isImageZoomed = !isImageZoomed;
+            
+            if (isImageZoomed) {
+                modalImage.classList.add('zoomed');
+                zoomHint.textContent = 'Click to zoom out';
+            } else {
+                modalImage.classList.remove('zoomed');
+                zoomHint.textContent = 'Click to zoom';
+            }
         }
 
         function updateModalImage() {
             if (currentModalImages.length > 0) {
-                document.getElementById('modalImage').src = currentModalImages[currentImageIndex];
+                const modalImage = document.getElementById('modalImage');
+                const zoomHint = document.querySelector('.zoom-hint');
+                modalImage.src = currentModalImages[currentImageIndex];
+                
+                // Reset zoom state when changing images
+                isImageZoomed = false;
+                modalImage.classList.remove('zoomed');
+                zoomHint.textContent = 'Click to zoom';
             }
         }
 
@@ -1015,16 +1085,22 @@
             
             updateModalImage();
             setupImageNavigation();
+            setupImageZoom(); // Re-setup zoom for new image
         }
 
         function goToImage(index) {
             currentImageIndex = index;
             updateModalImage();
             setupImageNavigation();
+            setupImageZoom(); // Re-setup zoom for new image
         }
 
         function closeModal() {
             document.getElementById('artworkModal').classList.remove('show');
+            // Reset zoom state when closing modal
+            isImageZoomed = false;
+            document.getElementById('modalImage').classList.remove('zoomed');
+            document.querySelector('.zoom-hint').textContent = 'Click to zoom';
         }
 
         function showError(message) {
@@ -1062,6 +1138,10 @@
                 if (e.key === 'ArrowLeft') changeImage(-1);
                 else if (e.key === 'ArrowRight') changeImage(1);
                 else if (e.key === 'Escape') closeModal();
+                else if (e.key === ' ' || e.key === 'z' || e.key === 'Z') {
+                    e.preventDefault(); // Prevent page scroll for spacebar
+                    toggleImageZoom();
+                }
             }
         });
     </script>

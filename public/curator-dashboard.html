@@ -830,7 +830,7 @@
                 }
                 
                 // Create new curator account
-                const { error } = await supabase
+                const { data: newCurator, error } = await supabase
                     .from('curators')
                     .insert({
                         name: name,
@@ -838,24 +838,23 @@
                         password: password,
                         bio: bio || null,
                         status: 'pending'
-                    });
+                    })
+                    .select()
+                    .single();
                 
                 if (error) throw error;
                 
-                // Show success message
-                successDiv.classList.remove('hidden');
-                document.getElementById('registerForm').reset();
+                // Auto-login the new curator immediately
+                currentCurator = newCurator;
+                localStorage.setItem('currentCurator', JSON.stringify(newCurator));
                 
-                // Switch to login form after 3 seconds
-                setTimeout(() => {
-                    showLoginForm();
-                }, 3000);
+                // Go straight to dashboard
+                await loadDashboard();
                 
             } catch (error) {
                 console.error('Registration error:', error);
                 errorDiv.textContent = error.message || 'Registration failed. Please try again.';
                 errorDiv.classList.remove('hidden');
-            } finally {
                 registerBtn.disabled = false;
                 registerBtn.textContent = 'Create Account';
             }
@@ -923,7 +922,7 @@
             const password = document.getElementById('loginPassword').value;
             
             try {
-                // Check login credentials (allow both pending and approved curators to log in)
+                // Check login credentials - allow any curator to log in
                 const { data: curator, error } = await supabase
                     .from('curators')
                     .select('*')
@@ -935,11 +934,7 @@
                     throw new Error('Invalid email or password');
                 }
                 
-                // Allow both pending and approved curators to log in
-                if (curator.status !== 'approved' && curator.status !== 'pending') {
-                    throw new Error('Your account has been suspended. Please contact support.');
-                }
-                
+                // Set current curator and log them in regardless of status
                 currentCurator = curator;
                 localStorage.setItem('currentCurator', JSON.stringify(curator));
                 

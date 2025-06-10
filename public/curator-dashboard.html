@@ -266,6 +266,17 @@
             border-color: #1f2937;
         }
         
+        .btn-secondary.delete-btn {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+        
+        .btn-secondary.delete-btn:hover {
+            background: #dc2626;
+            border-color: #dc2626;
+        }
+        
         .collections-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -855,6 +866,29 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteConfirmModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Delete Collection</h3>
+                <button class="close-modal" onclick="closeDeleteConfirmModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: 20px 0;">
+                    <div style="font-size: 48px; color: #ef4444; margin-bottom: 20px;">⚠️</div>
+                    <h4 style="font-size: 18px; color: #1f2937; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Are you sure?</h4>
+                    <p style="color: #6b7280; margin-bottom: 25px; line-height: 1.6;">
+                        This will permanently delete the collection "<strong id="deleteCollectionName"></strong>" and all artworks within it. This action cannot be undone.
+                    </p>
+                    <div style="display: flex; gap: 15px; justify-content: center;">
+                        <button class="btn btn-secondary" onclick="closeDeleteConfirmModal()" style="flex: 1; max-width: 150px;">Cancel</button>
+                        <button class="btn" onclick="confirmDeleteCollection()" id="confirmDeleteBtn" style="background: #ef4444; border-color: #ef4444; flex: 1; max-width: 150px;">Delete Forever</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Profile Modal -->
     <div class="modal" id="profileModal">
         <div class="modal-content" style="max-width: 900px;">
@@ -1009,6 +1043,7 @@
         let collections = [];
         let currentCollection = null;
         let uploadedImageUrls = [];
+        let collectionToDelete = null;
 
         // Check authentication on load
         document.addEventListener('DOMContentLoaded', function() {
@@ -1055,6 +1090,10 @@
             
             document.getElementById('profileModal').addEventListener('click', function(e) {
                 if (e.target === this) closeProfileModal();
+            });
+            
+            document.getElementById('deleteConfirmModal').addEventListener('click', function(e) {
+                if (e.target === this) closeDeleteConfirmModal();
             });
         }
 
@@ -1321,6 +1360,7 @@
                             <div class="collection-actions">
                                 <button class="btn btn-small" onclick="addArtwork('${collection.id}')">Add Art</button>
                                 <button class="btn btn-secondary btn-small" onclick="editCollection('${collection.id}')">Edit</button>
+                                <button class="btn btn-secondary btn-small delete-btn" onclick="deleteCollection('${collection.id}', '${collection.name}')">Delete</button>
                             </div>
                         </div>
                         
@@ -1369,6 +1409,76 @@
             document.getElementById('collectionModalTitle').textContent = 'New Collection';
             document.getElementById('collectionForm').reset();
             document.getElementById('collectionModal').classList.add('show');
+        }
+
+        function deleteCollection(collectionId, collectionName) {
+            collectionToDelete = collectionId;
+            document.getElementById('deleteCollectionName').textContent = collectionName;
+            document.getElementById('deleteConfirmModal').classList.add('show');
+        }
+
+        function closeDeleteConfirmModal() {
+            document.getElementById('deleteConfirmModal').classList.remove('show');
+            collectionToDelete = null;
+        }
+
+        async function confirmDeleteCollection() {
+            if (!collectionToDelete) return;
+            
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            const originalText = confirmBtn.textContent;
+            
+            try {
+                confirmBtn.textContent = 'Deleting...';
+                confirmBtn.disabled = true;
+                
+                // First, delete all artworks in the collection
+                const { error: artworksError } = await supabase
+                    .from('curator_artworks')
+                    .delete()
+                    .eq('collection_id', collectionToDelete);
+                
+                if (artworksError) {
+                    console.warn('Error deleting artworks:', artworksError);
+                    // Continue with collection deletion even if artwork deletion fails
+                }
+                
+                // Then delete the collection itself
+                const { error: collectionError } = await supabase
+                    .from('curator_collections')
+                    .delete()
+                    .eq('id', collectionToDelete)
+                    .eq('curator_id', currentCurator.id); // Security: only delete own collections
+                
+                if (collectionError) throw collectionError;
+                
+                // Close modal and refresh collections
+                closeDeleteConfirmModal();
+                await loadCollections();
+                
+                // Show success message briefly
+                const successMsg = document.createElement('div');
+                successMsg.style.cssText = `
+                    position: fixed; top: 20px; right: 20px; z-index: 9999;
+                    background: #10b981; color: white; padding: 15px 20px;
+                    border-radius: 8px; font-size: 14px; font-weight: 500;
+                    text-transform: uppercase; letter-spacing: 1px;
+                    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+                `;
+                successMsg.textContent = 'Collection deleted successfully';
+                document.body.appendChild(successMsg);
+                
+                setTimeout(() => {
+                    successMsg.remove();
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Error deleting collection:', error);
+                alert('Error deleting collection: ' + error.message);
+            } finally {
+                confirmBtn.textContent = originalText;
+                confirmBtn.disabled = false;
+            }
         }
 
         function editCollection(collectionId) {

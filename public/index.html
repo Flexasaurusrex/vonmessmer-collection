@@ -1197,43 +1197,59 @@
             font-style: italic;
         }
         
-        /* Experience Section - Force 2x2 Grid */
-        .experience-section {
-            margin-top: 60px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 30px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .experience-item {
-            text-align: center;
-            padding: 30px 20px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 12px;
-            border: 1px solid #f0f0f0;
-        }
-        
-        .experience-number {
-            font-family: 'Inter', sans-serif;
-            font-size: 32px;
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 8px;
-        }
-        
-        .experience-label {
-            font-family: 'Inter', sans-serif;
-            font-size: 11px;
-            font-weight: 500;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
+        /* Experience Section - 2x2 Grid */
+.experience-section {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 30px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.experience-item {
+    text-align: center;
+    padding: 30px 20px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    border: 1px solid #f0f0f0;
+}
+
+.experience-number {
+    font-family: 'Inter', sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.experience-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+    .experience-section {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        max-width: 350px;
+    }
+    
+    .experience-item {
+        padding: 20px 15px;
+    }
+    
+    .experience-number {
+        font-size: 28px;
+    }
+}
+       
         /* Contact Section */
         .contact-section {
             border-top: 1px solid #e5e7eb;
@@ -1811,8 +1827,12 @@
 <div class="experience-label">Artworks Curated</div>
 </div>
 <div class="experience-item">
-<div class="experience-number">50+</div>
+<div class="experience-number">100+</div>
 <div class="experience-label">Artists Represented</div>
+</div>
+<div class="experience-item">
+<div class="experience-number">85k+</div>
+<div class="experience-label">Digital Works Distributed</div>
 </div>
 </div>
 <div class="edit-about" id="editAboutBtn" style="display: none;">

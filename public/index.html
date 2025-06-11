@@ -1208,6 +1208,13 @@
             margin-right: auto;
         }
         
+        @media (min-width: 769px) {
+            .experience-section {
+                grid-template-columns: repeat(4, 1fr);
+                max-width: 900px;
+            }
+        }
+        
         .experience-item {
             text-align: center;
             padding: 30px 20px;
@@ -1501,6 +1508,10 @@
             
             .experience-item {
                 padding: 20px 15px;
+            }
+            
+            .experience-number {
+                font-size: 28px;
             }
         }
     </style>

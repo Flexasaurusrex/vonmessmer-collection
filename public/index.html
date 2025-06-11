@@ -31,7 +31,7 @@
 <!-- Google Fonts for Clean Typography -->
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet"/>
 <style>
         * {
             margin: 0;
@@ -1019,20 +1019,234 @@
             justify-content: center;
         }
         
-        /* About & Contact Sections */
-        .about-section, .contact-section {
+        /* Enhanced About Section */
+        .about-section {
+            border-top: 1px solid #e5e7eb;
+            padding: 100px 0;
+            background: linear-gradient(135deg, #fafafa 0%, #f8f9fa 100%);
+            position: relative;
+        }
+        
+        .about-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, #e5e7eb 50%, transparent 100%);
+        }
+        
+        .about-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
+        
+        .about-header {
+            margin-bottom: 60px;
+        }
+        
+        .about-content h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 50px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+        }
+        
+        .about-content h2::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, #6b7280 50%, transparent 100%);
+        }
+        
+        /* Profile Section */
+        .profile-section {
+            margin-bottom: 60px;
+        }
+        
+        .profile-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+        
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ffffff;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #6b7280;
+            text-align: center;
+            line-height: 1.2;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 auto;
+        }
+        
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .profile-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 24px;
+            font-weight: 500;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        
+        .profile-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Bio Text */
+        .about-text {
+            font-family: 'Crimson Text', serif;
+            font-size: 18px;
+            color: #4b5563;
+            line-height: 1.8;
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .about-text p {
+            margin-bottom: 32px;
+        }
+        
+        .about-text p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Decorative Divider */
+        .text-divider {
+            width: 60px;
+            height: 1px;
+            background: #d1d5db;
+            margin: 40px auto;
+            position: relative;
+        }
+        
+        .text-divider::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 4px;
+            background: #6b7280;
+            border-radius: 50%;
+        }
+        
+        /* Philosophy Section */
+        .philosophy-section {
+            margin-top: 80px;
+            padding-top: 60px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .philosophy-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+        
+        .philosophy-text {
+            font-family: 'Crimson Text', serif;
+            font-size: 16px;
+            color: #4b5563;
+            line-height: 1.7;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            font-style: italic;
+        }
+        
+        /* Experience Section */
+        .experience-section {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .experience-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .experience-number {
+            font-family: 'Inter', sans-serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .experience-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Contact Section */
+        .contact-section {
             border-top: 1px solid #e5e7eb;
             padding: 80px 0;
             background: #fafafa;
         }
         
-        .about-content, .contact-content {
+        .contact-content {
             max-width: 700px;
             margin: 0 auto;
             text-align: center;
         }
         
-        .about-content h2, .contact-content h2 {
+        .contact-content h2 {
             font-family: 'Inter', sans-serif;
             font-size: 13px;
             font-weight: 500;
@@ -1040,27 +1254,6 @@
             margin-bottom: 40px;
             letter-spacing: 2px;
             text-transform: uppercase;
-        }
-        
-        .about-text {
-            font-family: 'Crimson Text', serif;
-            font-size: 18px;
-            color: #4b5563;
-            line-height: 1.8;
-            text-align: left;
-        }
-        
-        .about-text p {
-            margin-bottom: 24px;
-        }
-        
-        .about-text p:last-child {
-            margin-bottom: 0;
-        }
-        
-        .edit-about {
-            margin-top: 40px;
-            text-align: center;
         }
         
         .contact-content p {
@@ -1272,6 +1465,34 @@
                 padding: 12px 20px;
                 border-radius: 25px;
             }
+            
+            /* About section mobile */
+            .about-section {
+                padding: 60px 0;
+            }
+            
+            .profile-image {
+                width: 100px;
+                height: 100px;
+                font-size: 12px;
+            }
+            
+            .profile-name {
+                font-size: 20px;
+            }
+            
+            .about-text {
+                font-size: 16px;
+            }
+            
+            .experience-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .experience-item {
+                padding: 20px 15px;
+            }
         }
     </style>
 </head>
@@ -1399,11 +1620,42 @@
 <button class="btn" type="submit">Add Artwork</button>
 <button class="btn" onclick="resetForm()" style="margin-top: 10px;" type="button">Clear Form</button>
 </form>
+
+<!-- Profile Settings Section -->
 <div class="admin-form" style="border-top: 1px solid #f0f0f0; padding-top: 30px; margin-top: 30px;">
-<h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 20px;">About Section</h4>
+<h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 20px;">Profile Settings</h4>
+<div class="form-group">
+<label for="profileName">Profile Name</label>
+<input id="profileName" placeholder="Your full name" type="text"/>
+</div>
+<div class="form-group">
+<label for="profileTitle">Profile Title</label>
+<input id="profileTitle" placeholder="e.g., Collector & Curator" type="text"/>
+</div>
+<div class="form-group">
+<label>Profile Picture</label>
+<div class="file-upload" onclick="document.getElementById('profilePictureUpload').click()">
+<input accept="image/*" id="profilePictureUpload" style="display: none;" type="file"/>
+<div class="upload-text">Click to upload profile picture</div>
+<div style="font-size: 10px; color: #999; margin-top: 8px; text-transform: none; letter-spacing: 0;">
+                            JPG, PNG, WebP (Max 2MB) - Square format recommended
+                        </div>
+</div>
+<div id="profilePicturePreview" style="margin-top: 15px; text-align: center;"></div>
+</div>
+<button class="btn" onclick="saveProfile()" type="button">Update Profile</button>
+</div>
+
+<!-- About Content Section -->
+<div class="admin-form" style="border-top: 1px solid #f0f0f0; padding-top: 30px; margin-top: 30px;">
+<h4 style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 20px;">About Content</h4>
 <div class="form-group">
 <label for="aboutText">About Text</label>
 <textarea id="aboutText" placeholder="Write about yourself as a collector and curator..." rows="8"></textarea>
+</div>
+<div class="form-group">
+<label for="philosophyText">Curatorial Philosophy (Optional)</label>
+<textarea id="philosophyText" placeholder="Share your curatorial philosophy..." rows="3"></textarea>
 </div>
 <button class="btn" onclick="saveAbout()" type="button">Update About</button>
 </div>
@@ -1509,13 +1761,45 @@
 </div>
 </div>
 </main>
+
+<!-- Enhanced About Section -->
 <section class="about-section" id="about">
 <div class="container">
 <div class="about-content">
+<div class="about-header">
 <h2>About</h2>
-<div class="about-text" id="aboutContent">
-<p>Welcome to the VonMesser Collection, a carefully curated assembly of contemporary and classical works that explore the intersection of traditional artistry and modern expression.</p>
+<div class="profile-section">
+<div class="profile-container">
+<div class="profile-image" id="profileImageDisplay">
+                                Ludwig<br>VonMesser
+                            </div>
+</div>
+<div class="profile-name" id="profileNameDisplay">Ludwig VonMesser</div>
+<div class="profile-title" id="profileTitleDisplay">Collector & Curator</div>
+</div>
+</div>
+<div class="about-text" id="aboutContentDisplay">
+<p>A life long collector and passionate curator as well as artist. I'm on a mission to build a meaningful and well connected curatorial network to showcase, discuss and connect us across the physical and digital art space.</p>
+<div class="text-divider"></div>
 <p>As a collector and curator, I am drawn to pieces that challenge conventional boundaries while honoring the fundamental principles of artistic excellence. Each work in this collection has been selected for its unique voice, technical mastery, and ability to engage in dialogue with both historical precedent and contemporary discourse.</p>
+</div>
+<div class="philosophy-section" id="philosophySection" style="display: none;">
+<div class="philosophy-title">Curatorial Philosophy</div>
+<div class="philosophy-text" id="philosophyDisplay"></div>
+</div>
+<div class="experience-section">
+<div class="experience-item">
+<div class="experience-number">15+</div>
+<div class="experience-label">Years Collecting</div>
+</div>
+<div class="experience-item">
+<div class="experience-number">200+</div>
+<div class="experience-label">Artworks Curated</div>
+</div>
+<div class="experience-item">
+<div class="experience-number">50+</div>
+<div class="experience-label">Artists Represented</div>
+</div>
 </div>
 <div class="edit-about" id="editAboutBtn" style="display: none;">
 <button class="btn btn-small" onclick="editAbout()">Edit About</button>
@@ -1523,6 +1807,7 @@
 </div>
 </div>
 </section>
+
 <section class="contact-section" id="contact">
 <div class="container">
 <div class="contact-content">
@@ -1553,12 +1838,21 @@
         let animationObserver = null;
         let imageObserver = null;
         let hasUnsavedChanges = false;
+        
+        // Profile data
+        let profileData = {
+            name: 'Ludwig VonMesser',
+            title: 'Collector & Curator',
+            image: null
+        };
+        let philosophyText = '';
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             checkAuthState();
             loadArtworks();
             loadAbout();
+            loadProfile();
             initializeAnimations();
             initializeLazyLoading();
             setupSearchAndFilters();
@@ -1955,12 +2249,183 @@
             if (isAdminMode) {
                 document.getElementById('editAboutBtn').style.display = 'block';
                 document.getElementById('aboutText').value = aboutText;
+                document.getElementById('philosophyText').value = philosophyText;
+                updateProfileForm();
             } else {
                 document.getElementById('editAboutBtn').style.display = 'none';
                 document.getElementById('curationControls').classList.remove('show');
             }
             
             renderGallery();
+        }
+
+        // Profile Management Functions
+        async function loadProfile() {
+            try {
+                const { data, error } = await supabase
+                    .from('profile')
+                    .select('*')
+                    .order('updated_at', { ascending: false })
+                    .limit(1);
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    profileData = data[0];
+                    updateProfileDisplay();
+                    updateProfileForm();
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+
+        function updateProfileDisplay() {
+            const profileImageEl = document.getElementById('profileImageDisplay');
+            const profileNameEl = document.getElementById('profileNameDisplay');
+            const profileTitleEl = document.getElementById('profileTitleDisplay');
+
+            if (profileData.image) {
+                profileImageEl.innerHTML = `<img src="${profileData.image}" alt="${profileData.name}">`;
+            } else {
+                // Generate initials
+                const initials = profileData.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 8);
+                profileImageEl.innerHTML = initials;
+            }
+
+            profileNameEl.textContent = profileData.name;
+            profileTitleEl.textContent = profileData.title;
+        }
+
+        function updateProfileForm() {
+            document.getElementById('profileName').value = profileData.name || '';
+            document.getElementById('profileTitle').value = profileData.title || '';
+            
+            if (profileData.image) {
+                const preview = document.getElementById('profilePicturePreview');
+                preview.innerHTML = `<img src="${profileData.image}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #e5e7eb;">`;
+            }
+        }
+
+        // Profile picture upload handler
+        document.getElementById('profilePictureUpload').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Profile picture must be under 2MB');
+                return;
+            }
+            
+            try {
+                const compressedImage = await compressProfileImage(file, 300, 0.8);
+                profileData.image = compressedImage;
+                
+                // Update preview in admin panel
+                const preview = document.getElementById('profilePicturePreview');
+                preview.innerHTML = `<img src="${compressedImage}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #e5e7eb;">`;
+                
+                // Update display in about section
+                updateProfileDisplay();
+                
+            } catch (error) {
+                console.error('Error processing profile picture:', error);
+                alert('Error processing profile picture. Please try again.');
+            }
+        });
+
+        // Real-time updates for profile fields
+        document.getElementById('profileName').addEventListener('input', function() {
+            profileData.name = this.value || 'Your Name';
+            updateProfileDisplay();
+        });
+
+        document.getElementById('profileTitle').addEventListener('input', function() {
+            profileData.title = this.value || 'Your Title';
+            updateProfileDisplay();
+        });
+
+        // Handle philosophy text
+        document.getElementById('philosophyText').addEventListener('input', function() {
+            philosophyText = this.value;
+            const philosophySection = document.getElementById('philosophySection');
+            const philosophyDisplay = document.getElementById('philosophyDisplay');
+            
+            if (philosophyText.trim()) {
+                philosophyDisplay.textContent = philosophyText;
+                philosophySection.style.display = 'block';
+            } else {
+                philosophySection.style.display = 'none';
+            }
+        });
+
+        // Profile image compression (square crop)
+        function compressProfileImage(file, maxWidth = 300, quality = 0.8) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = function() {
+                    // Make it square for profile pictures
+                    const size = Math.min(img.width, img.height);
+                    const offsetX = (img.width - size) / 2;
+                    const offsetY = (img.height - size) / 2;
+                    
+                    canvas.width = maxWidth;
+                    canvas.height = maxWidth;
+                    
+                    ctx.drawImage(img, offsetX, offsetY, size, size, 0, 0, maxWidth, maxWidth);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    
+                    console.log('Compressed profile image from', file.size, 'bytes to', Math.round(compressedDataUrl.length * 0.75), 'bytes');
+                    resolve(compressedDataUrl);
+                };
+                
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
+        // Save profile function
+        async function saveProfile() {
+            if (!isAuthenticated) {
+                alert('Please login to update profile');
+                return;
+            }
+
+            try {
+                const { data: existingData } = await supabase
+                    .from('profile')
+                    .select('id')
+                    .limit(1);
+
+                const profileToSave = {
+                    name: profileData.name,
+                    title: profileData.title,
+                    image: profileData.image,
+                    updated_at: new Date().toISOString()
+                };
+
+                if (existingData && existingData.length > 0) {
+                    const { error } = await supabase
+                        .from('profile')
+                        .update(profileToSave)
+                        .eq('id', existingData[0].id);
+
+                    if (error) throw error;
+                } else {
+                    const { error } = await supabase
+                        .from('profile')
+                        .insert([profileToSave]);
+
+                    if (error) throw error;
+                }
+
+                alert('Profile updated successfully!');
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                alert('Failed to save profile: ' + error.message);
+            }
         }
 
         // Artwork functions
@@ -2082,18 +2547,54 @@
             try {
                 const { data, error } = await supabase
                     .from('about')
-                    .select('content')
+                    .select('*')
                     .order('updated_at', { ascending: false })
                     .limit(1);
 
                 if (error) throw error;
 
                 if (data && data.length > 0) {
-                    aboutText = data[0].content;
-                    document.getElementById('aboutContent').innerHTML = aboutText.split('\n').map(p => `<p>${p}</p>`).join('');
+                    aboutText = data[0].content || '';
+                    philosophyText = data[0].philosophy || '';
+                    
+                    // Update form fields
+                    document.getElementById('aboutText').value = aboutText;
+                    document.getElementById('philosophyText').value = philosophyText;
+                    
+                    // Update display
+                    updateAboutDisplay();
                 }
             } catch (error) {
                 console.error('Error loading about:', error);
+            }
+        }
+
+        // Update about display
+        function updateAboutDisplay() {
+            const paragraphs = aboutText.split('\n\n').filter(p => p.trim());
+            let htmlContent = '';
+            
+            if (paragraphs.length >= 2) {
+                htmlContent = `
+                    <p>${paragraphs[0]}</p>
+                    <div class="text-divider"></div>
+                    <p>${paragraphs.slice(1).join('</p><p>')}</p>
+                `;
+            } else {
+                htmlContent = paragraphs.map(p => `<p>${p}</p>`).join('');
+            }
+            
+            document.getElementById('aboutContentDisplay').innerHTML = htmlContent;
+            
+            // Update philosophy
+            const philosophySection = document.getElementById('philosophySection');
+            const philosophyDisplay = document.getElementById('philosophyDisplay');
+            
+            if (philosophyText.trim()) {
+                philosophyDisplay.textContent = philosophyText;
+                philosophySection.style.display = 'block';
+            } else {
+                philosophySection.style.display = 'none';
             }
         }
 
@@ -2103,7 +2604,8 @@
                 return;
             }
 
-            aboutText = document.getElementById('aboutText').value;
+            const aboutTextValue = document.getElementById('aboutText').value;
+            const philosophyTextValue = document.getElementById('philosophyText').value;
 
             try {
                 const { data: existingData } = await supabase
@@ -2111,22 +2613,32 @@
                     .select('id')
                     .limit(1);
 
+                const aboutToSave = {
+                    content: aboutTextValue,
+                    philosophy: philosophyTextValue,
+                    updated_at: new Date().toISOString()
+                };
+
                 if (existingData && existingData.length > 0) {
                     const { error } = await supabase
                         .from('about')
-                        .update({ content: aboutText, updated_at: new Date().toISOString() })
+                        .update(aboutToSave)
                         .eq('id', existingData[0].id);
 
                     if (error) throw error;
                 } else {
                     const { error } = await supabase
                         .from('about')
-                        .insert([{ content: aboutText }]);
+                        .insert([aboutToSave]);
 
                     if (error) throw error;
                 }
 
-                document.getElementById('aboutContent').innerHTML = aboutText.split('\n').map(p => `<p>${p}</p>`).join('');
+                // Update display
+                aboutText = aboutTextValue;
+                philosophyText = philosophyTextValue;
+                updateAboutDisplay();
+                
                 alert('About section updated successfully!');
             } catch (error) {
                 console.error('Error saving about:', error);
@@ -2136,6 +2648,7 @@
 
         function editAbout() {
             document.getElementById('aboutText').value = aboutText;
+            document.getElementById('philosophyText').value = philosophyText;
             document.getElementById('aboutText').focus();
         }
 
